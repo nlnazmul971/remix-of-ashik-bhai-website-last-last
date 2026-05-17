@@ -87,9 +87,9 @@ const Index = () => {
 
   const showProducts = activeCategory || searchQuery || activeSub;
 
-  // Apply size + price filters client-side
+  // Apply size + price filters + sort client-side
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
+    const filtered = products.filter(p => {
       if (selectedSizes.length > 0) {
         const sizes = (p.sizes || []).map(s => s.toUpperCase());
         if (!selectedSizes.some(s => sizes.includes(s))) return false;
@@ -103,7 +103,22 @@ const Index = () => {
       }
       return true;
     });
-  }, [products, selectedSizes, selectedPriceIdx]);
+    const sorted = [...filtered];
+    switch (sortBy) {
+      case 'price-asc': sorted.sort((a, b) => a.price - b.price); break;
+      case 'price-desc': sorted.sort((a, b) => b.price - a.price); break;
+      case 'name-asc': sorted.sort((a, b) => (a.name || '').localeCompare(b.name || '')); break;
+      case 'newest': sorted.sort((a, b) => {
+        const ad = (a as any).created_at ? new Date((a as any).created_at).getTime() : 0;
+        const bd = (b as any).created_at ? new Date((b as any).created_at).getTime() : 0;
+        return bd - ad;
+      }); break;
+    }
+    return sorted;
+  }, [products, selectedSizes, selectedPriceIdx, sortBy]);
+
+  // Reset to page 1 when filters / category / search / sort changes
+  useEffect(() => { setPage(1); }, [activeCategory, activeSub, searchQuery, selectedSizes, selectedPriceIdx, sortBy]);
 
   const activeFilterCount = selectedSizes.length + selectedPriceIdx.length;
   const toggleSize = (s: string) =>
