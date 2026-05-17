@@ -101,17 +101,17 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
               Sold Out
             </span>
           ) : discountPercent ? (
-            <span className="absolute top-2 left-2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-destructive text-white flex items-center justify-center text-[12px] sm:text-[13px] font-bold shadow-md">
+            <span className="absolute top-2 left-2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[hsl(0,75%,55%)] text-white flex items-center justify-center text-[13px] font-bold shadow-md">
               {discountPercent}%
             </span>
           ) : null}
 
-          {/* Wishlist top-right always visible */}
+          {/* Wishlist top-right */}
           <button
             onClick={handleWishlist}
             aria-label="Wishlist"
-            className={`absolute top-2 right-2 w-9 h-9 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition ${
-              isInWishlist(product.id) ? 'text-destructive' : 'text-foreground/70 hover:text-foreground'
+            className={`absolute top-2 right-2 w-9 h-9 rounded-full bg-white border border-border flex items-center justify-center transition ${
+              isInWishlist(product.id) ? 'text-destructive' : 'text-foreground/60 hover:text-foreground'
             }`}
           >
             <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
