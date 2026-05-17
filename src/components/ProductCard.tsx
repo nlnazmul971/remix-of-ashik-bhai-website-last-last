@@ -61,7 +61,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
   };
 
   return (
-    <div className="group animate-fade-in bg-card rounded-xl border border-border/60 overflow-hidden flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
+    <div className="group animate-fade-in bg-background flex flex-col h-full">
       <Link to={`/product/${product.id}`} className="block">
         <div
           ref={imageRef}
