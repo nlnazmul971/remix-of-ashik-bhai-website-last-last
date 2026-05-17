@@ -65,7 +65,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
       <Link to={`/product/${product.id}`} className="block">
         <div
           ref={imageRef}
-          className="relative overflow-hidden aspect-square bg-muted"
+          className="relative overflow-hidden aspect-square bg-white rounded-lg border border-border/40"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
