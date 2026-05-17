@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Heart, Minus, Plus, Star, Truck, Shield, RotateCcw, Send, ZoomIn, X, ChevronDown } from 'lucide-react';
+import { Heart, Minus, Plus, Star, Send, ZoomIn, X, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CartDrawer from '@/components/CartDrawer';
@@ -49,16 +49,19 @@ const ProductImageGallery = ({ mainImage, name, productId }: { mainImage: string
     }
   };
 
+  const goPrev = () => setActiveIndex((activeIndex - 1 + images.length) % images.length);
+  const goNext = () => setActiveIndex((activeIndex + 1) % images.length);
+
   return (
-    <div className="flex flex-col sm:flex-row gap-3">
-      {/* Thumbnails */}
-      <div className="hidden sm:flex sm:flex-col gap-2 sm:max-h-[600px] lg:max-h-[670px] overflow-y-auto">
+    <div className="flex flex-col-reverse sm:flex-row gap-3">
+      {/* Thumbnails - vertical left */}
+      <div className="hidden sm:flex sm:flex-col gap-2.5 w-20 max-h-[600px] overflow-y-auto">
         {images.map((img, i) => (
           <button
             key={i}
             onClick={() => setActiveIndex(i)}
-            className={`shrink-0 w-16 h-20 overflow-hidden border-2 transition-all ${
-              i === activeIndex ? 'border-foreground' : 'border-transparent opacity-50 hover:opacity-100'
+            className={`shrink-0 w-20 h-20 overflow-hidden border transition-all ${
+              i === activeIndex ? 'border-foreground' : 'border-border hover:border-foreground/40'
             }`}
           >
             <img src={img} alt={`${name} view ${i + 1}`} className="w-full h-full object-cover" />
@@ -66,10 +69,10 @@ const ProductImageGallery = ({ mainImage, name, productId }: { mainImage: string
         ))}
       </div>
 
-      {/* Main image */}
+      {/* Main image with arrows + zoom icon */}
       <div
         ref={imgRef}
-        className="flex-1 aspect-[2/3] lg:h-[670px] lg:max-h-[670px] overflow-hidden bg-secondary cursor-crosshair relative border border-border"
+        className="relative flex-1 aspect-square bg-secondary overflow-hidden cursor-crosshair group"
         onMouseEnter={() => setZoomed(true)}
         onMouseLeave={() => setZoomed(false)}
         onMouseMove={handleMouseMove}
@@ -80,38 +83,49 @@ const ProductImageGallery = ({ mainImage, name, productId }: { mainImage: string
           src={images[activeIndex]}
           alt={name}
           className="w-full h-full object-cover transition-transform duration-200"
-          style={zoomed ? { transform: 'scale(2.5)', transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
+          style={zoomed ? { transform: 'scale(2.2)', transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
           draggable={false}
         />
-        {/* Mobile zoom button */}
+        {/* Zoom icon top-right */}
         <button
           onClick={() => setMobileZoom(true)}
-          className="sm:hidden absolute bottom-3 right-3 p-2.5 bg-foreground/60 backdrop-blur-sm text-background rounded-full shadow-lg active:scale-95 transition-transform"
+          className="absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur-sm text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors"
           aria-label="Zoom image"
         >
-          <ZoomIn size={18} />
+          <ZoomIn size={16} />
         </button>
+        {/* Prev/Next arrows */}
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={goPrev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm text-muted-foreground hover:text-foreground hover:bg-background flex items-center justify-center transition-all"
+              aria-label="Previous image"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={goNext}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm text-muted-foreground hover:text-foreground hover:bg-background flex items-center justify-center transition-all"
+              aria-label="Next image"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </>
+        )}
       </div>
 
-      {/* Mobile fullscreen zoom overlay - pinch to zoom */}
+      {/* Mobile fullscreen zoom overlay */}
       {mobileZoom && (
-        <div
-          className="fixed inset-0 z-[100] bg-black flex items-center justify-center"
-          style={{ touchAction: 'pinch-zoom' }}
-        >
+        <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center" style={{ touchAction: 'pinch-zoom' }}>
           <button
             onClick={() => setMobileZoom(false)}
-            className="fixed top-4 right-4 z-[101] p-2.5 bg-white/20 backdrop-blur-sm text-white rounded-full shadow-lg"
+            className="fixed top-4 right-4 z-[101] p-2.5 bg-white/20 backdrop-blur-sm text-white rounded-full"
             aria-label="Close zoom"
           >
             <X size={20} />
           </button>
-          <img
-            src={images[activeIndex]}
-            alt={name}
-            className="w-full h-auto max-h-screen object-contain"
-            draggable={false}
-          />
+          <img src={images[activeIndex]} alt={name} className="w-full h-auto max-h-screen object-contain" draggable={false} />
         </div>
       )}
 
@@ -121,8 +135,8 @@ const ProductImageGallery = ({ mainImage, name, productId }: { mainImage: string
           <button
             key={i}
             onClick={() => setActiveIndex(i)}
-            className={`shrink-0 w-12 h-14 overflow-hidden border transition-all ${
-              i === activeIndex ? 'border-foreground' : 'border-transparent opacity-50'
+            className={`shrink-0 w-14 h-14 overflow-hidden border transition-all ${
+              i === activeIndex ? 'border-foreground' : 'border-border opacity-60'
             }`}
           >
             <img src={img} alt={`${name} view ${i + 1}`} className="w-full h-full object-cover" />
