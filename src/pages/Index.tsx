@@ -169,7 +169,7 @@ const Index = () => {
 
   // Category banners (3 horizontal banners section) — MOCK fallback when empty
   const rawCategoryBanners = settings['homepage_category_banners'];
-  const parsedBanners: { image: string; label: string; link: string }[] = rawCategoryBanners ? JSON.parse(rawCategoryBanners) : [];
+  const parsedBanners: { image: string; label: string; link: string; productIds?: string[] }[] = rawCategoryBanners ? JSON.parse(rawCategoryBanners) : [];
   const categoryBanners = parsedBanners.length > 0 ? parsedBanners : MOCK_CATEGORY_BANNERS;
 
   // NEW DROPS — products marked as "New Drop" in admin
