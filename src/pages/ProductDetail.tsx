@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Heart, Minus, Plus, Star, Send, ZoomIn, X, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, Minus, Plus, Star, Send, ZoomIn, X, ChevronDown, ChevronLeft, ChevronRight, Check, Facebook, Twitter, Linkedin } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CartDrawer from '@/components/CartDrawer';
@@ -18,7 +18,7 @@ import SEO from '@/components/SEO';
 import { pushViewItem } from '@/lib/gtm';
 import { flyToCart } from '@/lib/flyToCart';
 
-const ProductImageGallery = ({ mainImage, name, productId }: { mainImage: string; name: string; productId: string }) => {
+const ProductImageGallery = ({ mainImage, name, productId, discountPercent }: { mainImage: string; name: string; productId: string; discountPercent?: number | null }) => {
   const { data: additionalImages = [] } = useProductImages(productId);
   
   // Build images array: main image + additional images
@@ -86,6 +86,12 @@ const ProductImageGallery = ({ mainImage, name, productId }: { mainImage: string
           style={zoomed ? { transform: 'scale(2.2)', transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
           draggable={false}
         />
+        {/* Discount circle */}
+        {discountPercent ? (
+          <span className="absolute top-3 left-3 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[hsl(0,75%,52%)] text-white flex items-center justify-center text-[14px] sm:text-[16px] font-semibold shadow-md z-10">
+            {discountPercent}%
+          </span>
+        ) : null}
         {/* Zoom icon top-right */}
         <button
           onClick={() => setMobileZoom(true)}
@@ -306,114 +312,200 @@ const ProductDetail = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-14">
           <div>
-            <ProductImageGallery mainImage={getProductImage(product.image_url)} name={product.name} productId={product.id} />
+            <ProductImageGallery
+              mainImage={getProductImage(product.image_url)}
+              name={product.name}
+              productId={product.id}
+              discountPercent={product.original_price ? Math.round(((product.original_price - product.price) / product.original_price) * 100) : null}
+            />
           </div>
 
           <div className="py-0 lg:py-2">
-            {/* Title + wishlist heart */}
-            <div className="flex items-start justify-between gap-4 mb-2 sm:mb-3">
-              <h1 className="text-2xl sm:text-[28px] leading-tight font-normal text-foreground" style={{ fontFamily: "var(--font-display)" }}>
-                {product.name}
-              </h1>
-              <button
-                onClick={() => toggleItem(product)}
-                className={`shrink-0 w-10 h-10 rounded-full border border-border flex items-center justify-center transition-colors hover:bg-accent ${isInWishlist(product.id) ? 'text-destructive border-destructive' : ''}`}
-                aria-label="Add to wishlist"
-              >
-                <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
-              </button>
-            </div>
+            {/* Title */}
+            <h1 className="text-[24px] sm:text-[28px] leading-tight font-bold text-foreground mb-4">
+              {product.name}
+            </h1>
+
+            <hr className="border-border mb-4" />
 
             {/* Price */}
-            <div className="flex items-baseline gap-3 mb-6 sm:mb-8">
-              <span className="text-[20px] sm:text-[22px] text-foreground">Tk {product.price.toLocaleString()}.00</span>
+            <div className="flex items-baseline gap-3 mb-4">
               {product.original_price && (
-                <>
-                  <span className="text-sm text-muted-foreground line-through">Tk {product.original_price.toLocaleString()}.00</span>
-                  <span className="text-[11px] font-semibold text-destructive">
-                    -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
-                  </span>
-                </>
+                <span className="text-[15px] text-muted-foreground line-through">{product.original_price.toLocaleString()}.00৳</span>
               )}
+              <span className="text-[22px] font-bold text-[hsl(0,75%,50%)]">{product.price.toLocaleString()}.00৳</span>
             </div>
 
-            {/* Size */}
-            <div className="mb-6 sm:mb-8">
-              <p className="text-sm mb-3 text-foreground">
-                <span className="font-semibold">Size:</span> {size}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes.map(s => {
-                  const avail = getSizeAvailable(s);
-                  const isSelected = size === s;
-                  return (
-                    <button
-                      key={s}
-                      onClick={() => setSelectedSize(s)}
-                      disabled={avail <= 0}
-                      className={`min-w-[64px] h-10 px-4 text-[13px] rounded-sm border transition-all ${
-                        avail <= 0
-                          ? 'opacity-40 line-through border-border'
-                          : isSelected
-                          ? 'bg-primary text-primary-foreground border-primary'
-                          : 'bg-background text-foreground border-border hover:border-foreground'
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  );
-                })}
+            {/* In stock pill */}
+            {!allSoldOut && (
+              <div className="inline-block mb-5">
+                <span className="inline-block bg-[hsl(140,55%,92%)] text-[hsl(140,65%,28%)] text-[13px] font-semibold px-3 py-1.5 rounded">
+                  {currentSizeAvailable || product.stock} in stock
+                </span>
               </div>
-            </div>
+            )}
 
-            {/* Quantity label */}
-            <p className="text-sm mb-2 text-foreground font-medium">Quantity</p>
+            {/* Stock progress */}
+            {!allSoldOut && (
+              <div className="mb-5">
+                <p className="text-[15px] font-bold text-foreground mb-2">Products are almost sold out</p>
+                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[hsl(0,75%,52%)] rounded-full"
+                    style={{ width: `${Math.min(100, Math.max(4, ((currentSizeAvailable || product.stock) / Math.max(product.stock, currentSizeAvailable || 1)) * 12))}%` }}
+                  />
+                </div>
+                <p className="text-[13px] text-muted-foreground mt-2">
+                  the available products :{' '}
+                  <span className="text-[hsl(0,75%,50%)] font-semibold">{currentSizeAvailable || product.stock}</span>
+                </p>
+              </div>
+            )}
 
-            {/* Quantity + Add to cart row */}
+            {/* Size (only if multiple) */}
+            {product.sizes.length > 1 && (
+              <div className="mb-5">
+                <p className="text-sm mb-2 text-foreground">
+                  <span className="font-semibold">Size:</span> {size}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes.map(s => {
+                    const avail = getSizeAvailable(s);
+                    const isSelected = size === s;
+                    return (
+                      <button
+                        key={s}
+                        onClick={() => setSelectedSize(s)}
+                        disabled={avail <= 0}
+                        className={`min-w-[56px] h-10 px-3 text-[13px] rounded border transition-all ${
+                          avail <= 0
+                            ? 'opacity-40 line-through border-border'
+                            : isSelected
+                            ? 'bg-foreground text-background border-foreground'
+                            : 'bg-background text-foreground border-border hover:border-foreground'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {allSoldOut ? (
-              <div className="w-full py-3.5 text-center bg-destructive/10 text-destructive text-sm font-medium tracking-wider uppercase rounded-sm">SOLD OUT</div>
+              <div className="w-full py-3.5 text-center bg-destructive/10 text-destructive text-sm font-semibold tracking-wider uppercase rounded">SOLD OUT</div>
             ) : (
               <>
+                {/* WhatsApp order */}
+                <a
+                  href={messageLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-5 h-11 bg-[hsl(140,65%,30%)] hover:bg-[hsl(140,65%,25%)] text-white text-[14px] font-semibold rounded mb-3 transition"
+                >
+                  Order on WhatsApp
+                </a>
+
+                {/* Qty + Add to cart */}
                 <div className="flex items-stretch gap-3 mb-3">
-                  {/* Qty stepper - khaki bg */}
-                  <div className="flex items-center bg-primary text-primary-foreground rounded-sm overflow-hidden h-12">
+                  <div className="flex items-center border border-border rounded overflow-hidden h-11 bg-background">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-3 h-full hover:bg-foreground/10 transition-colors"
+                      className="px-3 h-full hover:bg-muted transition-colors"
                       aria-label="Decrease quantity"
                     >
                       <Minus size={14} />
                     </button>
-                    <span className="w-10 text-center text-sm">{quantity}</span>
+                    <span className="w-10 text-center text-[14px] font-semibold">{quantity}</span>
                     <button
                       onClick={() => setQuantity(Math.min(currentSizeAvailable || product.stock, quantity + 1))}
-                      className="px-3 h-full hover:bg-foreground/10 transition-colors"
+                      className="px-3 h-full hover:bg-muted transition-colors"
                       aria-label="Increase quantity"
                     >
                       <Plus size={14} />
                     </button>
                   </div>
-                  {/* Add to cart - outline */}
                   <button
                     onClick={(e) => {
                       flyToCart((e.currentTarget as HTMLElement).closest('main')?.querySelector('img') || e.currentTarget, getProductImage(product.image_url, 400));
                       handleAddToCart();
                     }}
                     disabled={currentSizeAvailable <= 0}
-                    className="flex-1 h-12 border border-primary text-primary text-sm font-medium rounded-sm hover:bg-primary/5 transition-colors disabled:opacity-40"
+                    className="flex-1 h-11 bg-[hsl(140,65%,30%)] hover:bg-[hsl(140,65%,25%)] text-white text-[14px] font-semibold rounded transition disabled:opacity-40"
                   >
                     Add to cart
                   </button>
                 </div>
 
-                {/* Buy it now - solid gold full-width */}
+                {/* Buy Now - red full width */}
                 <button
                   onClick={handleBuyNow}
                   disabled={currentSizeAvailable <= 0}
-                  className="w-full h-12 bg-primary text-primary-foreground text-sm font-medium rounded-sm hover:opacity-90 transition-opacity disabled:opacity-40"
+                  className="w-full h-12 bg-[hsl(0,75%,52%)] hover:bg-[hsl(0,75%,46%)] text-white text-[15px] font-semibold rounded transition disabled:opacity-40 mb-4"
                 >
-                  Buy it now
+                  Buy Now
                 </button>
+
+                {/* Wishlist + favorites count */}
+                <div className="flex items-center gap-2 mb-5">
+                  <button
+                    onClick={() => toggleItem(product)}
+                    className={`inline-flex items-center gap-1.5 text-[14px] font-semibold transition ${isInWishlist(product.id) ? 'text-destructive' : 'text-foreground'}`}
+                  >
+                    <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
+                    Add to wishlist
+                  </button>
+                </div>
+
+                {/* WhatsApp contact line */}
+                <div className="flex items-start gap-2 py-3 border-t border-border text-[13px]">
+                  <Check size={16} className="text-[hsl(140,65%,30%)] mt-0.5 shrink-0" />
+                  <p className="text-foreground">
+                    যে কোন পণ্য অর্ডার করতে: কল বা WhatsApp করুন:{' '}
+                    {storeSettings?.contact_phone && (
+                      <span className="font-semibold">{storeSettings.contact_phone}</span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Categories */}
+                <div className="py-3 border-t border-border text-[13px]">
+                  <span className="text-muted-foreground">Categories: </span>
+                  <Link to={`/?category=${product.category}`} className="text-[hsl(0,75%,50%)] hover:underline capitalize font-medium">
+                    {product.category}
+                  </Link>
+                </div>
+
+                {/* Social share circles */}
+                <div className="flex items-center gap-2 py-3 border-t border-border">
+                  {[
+                    { Icon: Facebook, color: 'hsl(220,90%,55%)', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` },
+                    { Icon: Twitter, color: 'hsl(200,90%,55%)', href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&text=${encodeURIComponent(product.name)}` },
+                    { Icon: Linkedin, color: 'hsl(210,90%,40%)', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` },
+                  ].map(({ Icon, color, href }, i) => (
+                    <a
+                      key={i}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-9 h-9 rounded-full border-2 flex items-center justify-center transition hover:scale-110"
+                      style={{ borderColor: color, color }}
+                    >
+                      <Icon size={14} />
+                    </a>
+                  ))}
+                  <a
+                    href={messageLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 rounded-full border-2 flex items-center justify-center transition hover:scale-110"
+                    style={{ borderColor: 'hsl(140,65%,40%)', color: 'hsl(140,65%,40%)' }}
+                    aria-label="WhatsApp"
+                  >
+                    <Send size={13} />
+                  </a>
+                </div>
 
                 {currentSizeAvailable > 0 && currentSizeAvailable <= 5 && (
                   <p className="text-[11px] text-destructive mt-2">Only {currentSizeAvailable} left in stock</p>
