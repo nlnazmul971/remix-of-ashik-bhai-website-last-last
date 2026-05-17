@@ -6,7 +6,7 @@ const AnnouncementBar = () => {
   const { data: s = {} } = useStoreSettings();
   const [dismissed, setDismissed] = useState(true);
 
-  const message = s['announcement_text'] || 'FREE SHIPPING ON ORDERS OVER TK 2000 — SHOP NOW';
+  const message = s['announcement_text'] || 'SUMMER SALE | 20% OFF on orders above 2000 BDT';
   const enabled = s['announcement_enabled'] !== 'false';
 
   useEffect(() => {
@@ -17,9 +17,12 @@ const AnnouncementBar = () => {
   if (!enabled || dismissed) return null;
 
   return (
-    <div className="relative w-full bg-primary text-primary-foreground text-[11px] sm:text-xs tracking-[0.15em] uppercase font-medium">
-      <div className="overflow-hidden whitespace-nowrap py-2.5 px-12 text-center">
-        {message}
+    <div
+      className="relative w-full text-[11px] sm:text-[12px] tracking-[0.05em] font-medium"
+      style={{ backgroundColor: 'hsl(var(--announce))', color: 'hsl(var(--announce-foreground))' }}
+    >
+      <div className="overflow-hidden whitespace-nowrap py-2 px-10 text-center">
+        {message} <span className="ml-1">🏷️</span>
       </div>
       <button
         onClick={() => {

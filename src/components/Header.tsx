@@ -91,39 +91,72 @@ const Header = () => {
         {!scrolled && (
           <div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center justify-between h-14 sm:h-16">
-                <div className="flex items-center gap-2">
-                  <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="sm:hidden p-1.5 hover:opacity-60 transition-opacity">
-                    {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-                  </button>
-                  <button onClick={() => setSearchOpen(!searchOpen)} className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity">
-                    <Search size={16} className="sm:w-[18px] sm:h-[18px]" />
-                  </button>
-                </div>
-                <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center" aria-label="Home">
-                  <img src={siteLogo} alt="Logo" className="h-14 sm:h-24 w-auto object-contain" loading="eager" fetchPriority={"high" as any} decoding="async" />
+              <div className="flex items-center gap-4 sm:gap-6 h-14 sm:h-20">
+                {/* Mobile menu */}
+                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="sm:hidden p-1.5 hover:opacity-60 transition-opacity">
+                  {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                </button>
+
+                {/* Logo */}
+                <Link to="/" className="shrink-0 flex items-center" aria-label="Home">
+                  <img src={siteLogo} alt="Logo" className="h-12 sm:h-16 w-auto object-contain" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
-                <div className="flex items-center gap-0 sm:gap-2">
+
+                {/* Search bar - desktop center */}
+                <form onSubmit={handleSearch} className="hidden sm:flex flex-1 max-w-2xl mx-auto">
+                  <div className="flex items-center w-full bg-primary text-primary-foreground rounded-sm overflow-hidden">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search products"
+                      className="flex-1 bg-transparent placeholder:text-primary-foreground/70 text-primary-foreground text-sm px-4 py-2.5 outline-none"
+                    />
+                    <button type="submit" className="px-4 py-2.5 hover:bg-foreground/10 transition-colors">
+                      <Search size={16} />
+                    </button>
+                  </div>
+                </form>
+
+                {/* Right icons */}
+                <div className="flex items-center gap-1 sm:gap-3 ml-auto sm:ml-0">
+                  <button onClick={() => setSearchOpen(true)} className="sm:hidden p-1.5 hover:opacity-60 transition-opacity">
+                    <Search size={20} />
+                  </button>
+                  <Link to={profilePath} className="p-1.5 hover:opacity-60 transition-opacity">
+                    <User size={20} />
+                  </Link>
                   <Link to="/wishlist" className="p-1.5 hover:opacity-60 transition-opacity relative">
-                    <Heart size={20} className="sm:w-[18px] sm:h-[18px]" />
+                    <Heart size={20} />
                     {wishlistItems.length > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] px-1 bg-foreground text-background text-[8px] rounded-full flex items-center justify-center">
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-foreground text-background text-[9px] rounded-full flex items-center justify-center">
                         {wishlistItems.length}
                       </span>
                     )}
                   </Link>
-                  <Link to={profilePath} className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity">
-                    <User size={15} className="sm:w-[18px] sm:h-[18px]" />
-                  </Link>
-                  <button data-cart-target onClick={() => setIsCartOpen(true)} className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity relative">
-                    <ShoppingBag size={15} className="sm:w-[18px] sm:h-[18px]" />
+                  <button data-cart-target onClick={() => setIsCartOpen(true)} className="p-1.5 hover:opacity-60 transition-opacity relative">
+                    <ShoppingBag size={20} />
                     {itemCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-foreground text-background text-[8px] rounded-full flex items-center justify-center">
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-primary text-primary-foreground text-[9px] rounded-full flex items-center justify-center">
                         {itemCount}
                       </span>
                     )}
                   </button>
                 </div>
+              </div>
+
+              {/* Popular Searches */}
+              <div className="hidden sm:flex items-center justify-center gap-3 pb-3 text-[12px] text-muted-foreground">
+                <span className="font-medium text-foreground">Popular Searches:</span>
+                {['Rompers', 'Bodysuits', 'T-shirt', 'Tank Top'].map((term) => (
+                  <Link
+                    key={term}
+                    to={`/?search=${encodeURIComponent(term)}`}
+                    className="underline-offset-2 hover:text-foreground hover:underline"
+                  >
+                    {term}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
