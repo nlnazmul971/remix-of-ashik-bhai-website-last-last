@@ -22,6 +22,7 @@ import { useProducts, useStoreSettings, useAllReviewStats, useAllProductImages, 
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { MOCK_PRODUCTS, MOCK_POSTERS, MOCK_CATEGORY_BANNERS } from '@/data/mockData';
 
 const SIZE_OPTIONS = ['S', 'M', 'L', 'XL', 'XXL', '3XL'];
 const PRICE_RANGES: { label: string; min: number; max: number }[] = [
@@ -44,12 +45,22 @@ const Index = () => {
   const activeCategory = searchParams.get('category') || '';
   const activeSub = searchParams.get('sub') || '';
   const searchQuery = searchParams.get('search') || '';
-  const { data: products = [], isLoading } = useProducts(
+  const { data: dbProducts = [], isLoading } = useProducts(
     activeCategory || undefined,
     searchQuery || undefined,
     activeSub || undefined
   );
-  const { data: allProducts = [] } = useProducts();
+  const { data: dbAllProducts = [] } = useProducts();
+  // MOCK fallback — remove `MOCK_PRODUCTS` filtering once DB has data
+  const allProducts = dbAllProducts.length > 0 ? dbAllProducts : MOCK_PRODUCTS;
+  const products = dbProducts.length > 0
+    ? dbProducts
+    : MOCK_PRODUCTS.filter(p => {
+        if (activeCategory && activeCategory !== 'All' && activeCategory !== 'New Dropped' && p.category.toLowerCase() !== activeCategory.toLowerCase()) return false;
+        if (activeCategory === 'New Dropped' && !p.is_new_drop) return false;
+        if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+        return true;
+      });
   const { data: subcategories = [] } = useQuery({
     queryKey: ['subcategories-filter', activeCategory],
     queryFn: async () => {
@@ -148,13 +159,15 @@ const Index = () => {
     return map;
   }, [allProductImages]);
 
-  // Dynamic posters from settings
+  // Dynamic posters from settings (MOCK fallback when empty)
   const rawPosters = settings['homepage_posters'];
-  const posters = rawPosters ? JSON.parse(rawPosters) : [];
+  const parsedPosters = rawPosters ? JSON.parse(rawPosters) : [];
+  const posters = parsedPosters.length > 0 ? parsedPosters : MOCK_POSTERS;
 
-  // Category banners (3 horizontal banners section)
+  // Category banners (3 horizontal banners section) — MOCK fallback when empty
   const rawCategoryBanners = settings['homepage_category_banners'];
-  const categoryBanners: { image: string; label: string; link: string }[] = rawCategoryBanners ? JSON.parse(rawCategoryBanners) : [];
+  const parsedBanners: { image: string; label: string; link: string }[] = rawCategoryBanners ? JSON.parse(rawCategoryBanners) : [];
+  const categoryBanners = parsedBanners.length > 0 ? parsedBanners : MOCK_CATEGORY_BANNERS;
 
   // NEW DROPS — products marked as "New Drop" in admin
   const newDrops = useMemo(
