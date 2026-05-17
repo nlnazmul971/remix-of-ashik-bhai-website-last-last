@@ -27,6 +27,29 @@ export const MOCK_HERO_SLIDES = [
   },
 ];
 
+export const MOCK_HOMEPAGE_VIDEOS = [
+  {
+    youtubeId: 'dQw4w9WgXcQ',
+    title: 'Cricketer Ethan Brokes Talks About Summer Collection',
+    date: '22/01/2026',
+  },
+  {
+    youtubeId: 'kJQP7kiw5Fk',
+    title: 'New Drop — Behind The Scenes',
+    date: '15/01/2026',
+  },
+  {
+    youtubeId: '3JZ_D3ELwOQ',
+    title: 'Customer Stories — Why They Love HIGHLIGHTS',
+    date: '08/01/2026',
+  },
+  {
+    youtubeId: 'jNQXAC9IVRw',
+    title: 'How To Style Our Oversized Tee',
+    date: '02/01/2026',
+  },
+];
+
 export const MOCK_POSTERS = [
   {
     image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=1200&q=90',

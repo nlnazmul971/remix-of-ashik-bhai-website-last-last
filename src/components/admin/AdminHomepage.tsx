@@ -17,6 +17,9 @@ const AdminHomepage = () => {
   const rawCategoryBanners = settings['homepage_category_banners'];
   const categoryBanners: CategoryBannerType[] = rawCategoryBanners ? JSON.parse(rawCategoryBanners) : [];
 
+  const rawVideos = settings['homepage_videos'];
+  const videos: VideoType[] = rawVideos ? JSON.parse(rawVideos) : [];
+
   const siteLogo = settings['site_logo'] || '';
 
   if (isLoading) {
@@ -58,6 +61,11 @@ const AdminHomepage = () => {
         await updateSetting.mutateAsync({ key: 'homepage_category_banners', value: JSON.stringify(newBanners) });
         toast.success('Category banners updated!');
       }} />
+
+      <VideoManager videos={videos} onSave={async (newVideos) => {
+        await updateSetting.mutateAsync({ key: 'homepage_videos', value: JSON.stringify(newVideos) });
+        toast.success('Videos updated!');
+      }} />
     </div>
   );
 };
@@ -65,6 +73,80 @@ const AdminHomepage = () => {
 type SlideType = { image: string; mobileImage?: string; title: string; topText: string; bottomText: string };
 type PosterType = { image: string; link: string; subtitle: string; title: string };
 type CategoryBannerType = { image: string; label: string; link: string };
+type VideoType = { youtubeId: string; title: string; date?: string; thumbnail?: string };
+
+const VideoManager = ({ videos, onSave }: {
+  videos: VideoType[];
+  onSave: (videos: VideoType[]) => Promise<void>;
+}) => {
+  const [items, setItems] = useState<VideoType[]>(videos);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { setItems(videos); }, [JSON.stringify(videos)]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try { await onSave(items); } finally { setSaving(false); }
+  };
+
+  const addVideo = () => setItems([...items, { youtubeId: '', title: '', date: '' }]);
+  const removeVideo = (i: number) => setItems(items.filter((_, idx) => idx !== i));
+  const updateVideo = (i: number, field: string, value: string) =>
+    setItems(items.map((v, idx) => idx === i ? { ...v, [field]: value } : v));
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Homepage Videos (YouTube)</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">
+            {items.length} video configured • YouTube URL বা Video ID দিন (e.g. https://youtu.be/XXXXX or XXXXX)
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={addVideo} className="luxury-button-outline text-[10px] py-2 px-3">+ Add Video</button>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />}
+            Save
+          </button>
+        </div>
+      </div>
+
+      {items.length === 0 && (
+        <p className="text-xs text-muted-foreground py-4 text-center">No videos configured.</p>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {items.map((v, i) => (
+          <div key={i} className="border border-border p-4 space-y-3 relative">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground font-medium">Video {i + 1}</p>
+              <button onClick={() => removeVideo(i)} className="inline-flex items-center gap-1 text-[10px] text-destructive hover:bg-destructive/10 px-2 py-1 transition-colors">
+                <Trash2 size={12} /> Delete
+              </button>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider">YouTube URL or Video ID</label>
+              <input value={v.youtubeId} onChange={e => updateVideo(i, 'youtubeId', e.target.value)} className="luxury-input text-xs" placeholder="https://youtu.be/dQw4w9WgXcQ" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Title</label>
+              <input value={v.title} onChange={e => updateVideo(i, 'title', e.target.value)} className="luxury-input text-xs" placeholder="Cricketer Talks About..." />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Date (optional)</label>
+              <input value={v.date || ''} onChange={e => updateVideo(i, 'date', e.target.value)} className="luxury-input text-xs" placeholder="22/01/2026" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Custom Thumbnail URL (optional)</label>
+              <input value={v.thumbnail || ''} onChange={e => updateVideo(i, 'thumbnail', e.target.value)} className="luxury-input text-xs" placeholder="Auto: YouTube thumbnail" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const SliderManager = ({ slides, onSave }: {
   slides: SlideType[];
