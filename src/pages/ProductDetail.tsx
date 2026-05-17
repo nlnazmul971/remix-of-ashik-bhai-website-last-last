@@ -312,7 +312,12 @@ const ProductDetail = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-14">
           <div>
-            <ProductImageGallery mainImage={getProductImage(product.image_url)} name={product.name} productId={product.id} />
+            <ProductImageGallery
+              mainImage={getProductImage(product.image_url)}
+              name={product.name}
+              productId={product.id}
+              discountPercent={product.original_price ? Math.round(((product.original_price - product.price) / product.original_price) * 100) : null}
+            />
           </div>
 
           <div className="py-0 lg:py-2">
