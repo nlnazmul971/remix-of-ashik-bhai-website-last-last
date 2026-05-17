@@ -484,7 +484,7 @@ const Index = () => {
                 <div key={i} className="space-y-5 sm:space-y-6">
                   <Link
                     to={b.link || '/'}
-                    className="relative block overflow-hidden group aspect-[16/6] sm:aspect-[16/5]"
+                    className="relative block overflow-hidden group aspect-[16/6] sm:aspect-[16/5] rounded-lg"
                   >
                     <img
                       src={b.image}
@@ -492,18 +492,41 @@ const Index = () => {
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/20 via-transparent to-transparent" />
-                    <div className="absolute inset-0 flex items-center px-6 sm:px-12">
-                      <h3 className="text-background text-sm sm:text-lg tracking-[0.4em] uppercase font-light drop-shadow-md">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 sm:gap-4">
+                      <h3 className="text-foreground text-xl sm:text-3xl lg:text-4xl tracking-[0.2em] uppercase font-bold drop-shadow-sm text-center px-4">
                         {b.label}
                       </h3>
+                      <span className="inline-flex items-center gap-2 px-5 py-2 sm:px-7 sm:py-2.5 bg-[hsl(var(--announce))] text-background text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold rounded-sm shadow-md group-hover:scale-105 transition">
+                        Shop Now
+                      </span>
                     </div>
                   </Link>
 
+                  {b.subItems && b.subItems.length > 0 && (
+                    <div className="grid grid-cols-4 gap-3 sm:gap-6">
+                      {b.subItems.map((s, si) => (
+                        <Link key={si} to={s.link || '/'} className="group flex flex-col items-center text-center">
+                          <div className="w-full aspect-square rounded-xl border border-border bg-card overflow-hidden p-2 sm:p-3 transition-transform group-hover:scale-[1.03]">
+                            <img src={s.image} alt={s.label} className="w-full h-full object-contain" loading="lazy" />
+                          </div>
+                          <h4 className="mt-2 sm:mt-3 text-[11px] sm:text-sm font-semibold uppercase tracking-wide text-foreground leading-tight">
+                            {s.label}
+                          </h4>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+
                   {catProducts.length > 0 && (
                     <>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                        {catProducts.map((product, idx) => (
+                      <div className="flex items-center justify-between pt-2">
+                        <h4 className="text-sm sm:text-base font-semibold tracking-wide uppercase">{b.label}</h4>
+                        <Link to={b.link || '/'} className="text-xs sm:text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+                          View all <ChevronRight size={14} />
+                        </Link>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
+                        {catProducts.slice(0, 5).map((product, idx) => (
                           <ProductCard
                             key={product.id}
                             product={product}
@@ -513,14 +536,6 @@ const Index = () => {
                             priority={idx < 2}
                           />
                         ))}
-                      </div>
-                      <div className="flex justify-center">
-                        <Link
-                          to={b.link || '/'}
-                          className="inline-flex items-center gap-2 px-8 py-3 border border-foreground text-[11px] tracking-[0.25em] uppercase hover:bg-foreground hover:text-background transition"
-                        >
-                          View All {b.label}
-                        </Link>
                       </div>
                     </>
                   )}
