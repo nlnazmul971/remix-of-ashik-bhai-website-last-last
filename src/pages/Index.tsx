@@ -1,6 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { SlidersHorizontal } from 'lucide-react';
+import { ChevronRight, Grid2x2, Grid3x3, SlidersHorizontal } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import ProductCard from '@/components/ProductCard';
@@ -30,6 +37,10 @@ const Index = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedPriceIdx, setSelectedPriceIdx] = useState<number[]>([]);
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'newest' | 'name-asc'>('featured');
+  const [gridCols, setGridCols] = useState<3 | 4>(4);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 24;
   const activeCategory = searchParams.get('category') || '';
   const activeSub = searchParams.get('sub') || '';
   const searchQuery = searchParams.get('search') || '';
@@ -76,9 +87,9 @@ const Index = () => {
 
   const showProducts = activeCategory || searchQuery || activeSub;
 
-  // Apply size + price filters client-side
+  // Apply size + price filters + sort client-side
   const filteredProducts = useMemo(() => {
-    return products.filter(p => {
+    const filtered = products.filter(p => {
       if (selectedSizes.length > 0) {
         const sizes = (p.sizes || []).map(s => s.toUpperCase());
         if (!selectedSizes.some(s => sizes.includes(s))) return false;
@@ -92,7 +103,22 @@ const Index = () => {
       }
       return true;
     });
-  }, [products, selectedSizes, selectedPriceIdx]);
+    const sorted = [...filtered];
+    switch (sortBy) {
+      case 'price-asc': sorted.sort((a, b) => a.price - b.price); break;
+      case 'price-desc': sorted.sort((a, b) => b.price - a.price); break;
+      case 'name-asc': sorted.sort((a, b) => (a.name || '').localeCompare(b.name || '')); break;
+      case 'newest': sorted.sort((a, b) => {
+        const ad = (a as any).created_at ? new Date((a as any).created_at).getTime() : 0;
+        const bd = (b as any).created_at ? new Date((b as any).created_at).getTime() : 0;
+        return bd - ad;
+      }); break;
+    }
+    return sorted;
+  }, [products, selectedSizes, selectedPriceIdx, sortBy]);
+
+  // Reset to page 1 when filters / category / search / sort changes
+  useEffect(() => { setPage(1); }, [activeCategory, activeSub, searchQuery, selectedSizes, selectedPriceIdx, sortBy]);
 
   const activeFilterCount = selectedSizes.length + selectedPriceIdx.length;
   const toggleSize = (s: string) =>
@@ -230,6 +256,15 @@ const Index = () => {
             </div>
           );
 
+          const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
+          const safePage = Math.min(page, totalPages);
+          const pagedProducts = showProducts
+            ? filteredProducts.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+            : homeProducts;
+          const plpGridClass = gridCols === 3
+            ? 'grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'
+            : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6';
+
           const productsGrid = isLoading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
               {[...Array(4)].map((_, i) => (
@@ -242,8 +277,8 @@ const Index = () => {
           ) : filteredProducts.length === 0 ? (
             <p className="text-center text-muted-foreground py-20">No products found.</p>
           ) : (
-            <div className={`grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 ${showProducts ? '' : 'lg:grid-cols-4'}`}>
-              {homeProducts.map((product, idx) => <ProductCard key={product.id} product={product} reviewStats={reviewStats} hoverImageUrl={hoverImageMap[product.id]} isSoldOut={soldOutMap[product.id] || false} priority={idx < 4} />)}
+            <div className={showProducts ? plpGridClass : `grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-4`}>
+              {pagedProducts.map((product, idx) => <ProductCard key={product.id} product={product} reviewStats={reviewStats} hoverImageUrl={hoverImageMap[product.id]} isSoldOut={soldOutMap[product.id] || false} priority={idx < 4} />)}
             </div>
           );
 
@@ -265,6 +300,15 @@ const Index = () => {
             );
           }
 
+          // Breadcrumb label
+          const crumbLabel = searchQuery
+            ? `Search: "${searchQuery}"`
+            : activeSub
+            ? activeSub.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+            : activeCategory && activeCategory !== 'All'
+            ? activeCategory
+            : 'All Products';
+
           return (
             <div className="lg:grid lg:grid-cols-[240px_1fr] lg:gap-8">
               {/* Desktop sidebar */}
@@ -274,40 +318,124 @@ const Index = () => {
               </aside>
 
               <div>
-                {/* Mobile/tablet filter trigger */}
-                <div className="flex justify-start mb-4 sm:mb-6 lg:hidden">
-                  <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
-                    <SheetTrigger asChild>
-                      <button className="flex items-center gap-2 px-4 py-2 border border-border text-[11px] tracking-[0.15em] uppercase hover:bg-muted transition">
-                        <SlidersHorizontal size={14} />
-                        <span>Filters</span>
-                        {activeFilterCount > 0 && (
-                          <span className="ml-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-foreground text-background text-[10px]">
-                            {activeFilterCount}
-                          </span>
-                        )}
-                      </button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-[85vw] sm:w-[380px] flex flex-col p-0">
-                      <SheetHeader className="px-6 pt-6 pb-4 border-b">
-                        <SheetTitle className="tracking-[0.2em] text-sm uppercase text-left">Filters</SheetTitle>
-                      </SheetHeader>
-                      <div className="flex-1 overflow-y-auto px-6 py-6">
-                        {filterPanel}
-                      </div>
-                      <div className="border-t p-4">
-                        <button
-                          onClick={() => setFilterOpen(false)}
-                          className="w-full py-3 bg-foreground text-background text-[11px] tracking-[0.2em] uppercase hover:opacity-90 transition"
-                        >
-                          View Results ({filteredProducts.length})
+                {/* Breadcrumb */}
+                <nav className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground mb-4 tracking-wider uppercase">
+                  <Link to="/" className="hover:text-foreground transition">Home</Link>
+                  <ChevronRight size={12} />
+                  <span className="text-foreground">{crumbLabel}</span>
+                </nav>
+
+                {/* PLP toolbar */}
+                <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6 pb-4 border-b">
+                  <div className="flex items-center gap-3">
+                    {/* Mobile filter trigger */}
+                    <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
+                      <SheetTrigger asChild>
+                        <button className="lg:hidden flex items-center gap-2 px-3 py-2 border border-border text-[11px] tracking-[0.15em] uppercase hover:bg-muted transition">
+                          <SlidersHorizontal size={14} />
+                          <span>Filters</span>
+                          {activeFilterCount > 0 && (
+                            <span className="ml-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-foreground text-background text-[10px]">
+                              {activeFilterCount}
+                            </span>
+                          )}
                         </button>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
+                      </SheetTrigger>
+                      <SheetContent side="left" className="w-[85vw] sm:w-[380px] flex flex-col p-0">
+                        <SheetHeader className="px-6 pt-6 pb-4 border-b">
+                          <SheetTitle className="tracking-[0.2em] text-sm uppercase text-left">Filters</SheetTitle>
+                        </SheetHeader>
+                        <div className="flex-1 overflow-y-auto px-6 py-6">
+                          {filterPanel}
+                        </div>
+                        <div className="border-t p-4">
+                          <button
+                            onClick={() => setFilterOpen(false)}
+                            className="w-full py-3 bg-foreground text-background text-[11px] tracking-[0.2em] uppercase hover:opacity-90 transition"
+                          >
+                            View Results ({filteredProducts.length})
+                          </button>
+                        </div>
+                      </SheetContent>
+                    </Sheet>
+                    <span className="text-xs sm:text-sm text-muted-foreground tracking-wider">
+                      {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    {/* Density switcher (desktop only) */}
+                    <div className="hidden lg:flex items-center border border-border">
+                      <button
+                        onClick={() => setGridCols(3)}
+                        aria-label="3 columns"
+                        className={`p-2 transition ${gridCols === 3 ? 'bg-foreground text-background' : 'hover:bg-muted'}`}
+                      >
+                        <Grid2x2 size={14} />
+                      </button>
+                      <button
+                        onClick={() => setGridCols(4)}
+                        aria-label="4 columns"
+                        className={`p-2 transition ${gridCols === 4 ? 'bg-foreground text-background' : 'hover:bg-muted'}`}
+                      >
+                        <Grid3x3 size={14} />
+                      </button>
+                    </div>
+
+                    {/* Sort */}
+                    <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
+                      <SelectTrigger className="w-[140px] sm:w-[180px] h-9 text-xs uppercase tracking-wider rounded-none">
+                        <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="featured">Featured</SelectItem>
+                        <SelectItem value="newest">Newest</SelectItem>
+                        <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                        <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                        <SelectItem value="name-asc">Name: A–Z</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {productsGrid}
+
+                {/* Pagination */}
+                {filteredProducts.length > PAGE_SIZE && (
+                  <div className="flex items-center justify-center gap-2 mt-10 sm:mt-14">
+                    <button
+                      onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      disabled={safePage === 1}
+                      className="px-4 py-2 text-[11px] tracking-[0.2em] uppercase border border-border hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition"
+                    >
+                      Prev
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter(n => n === 1 || n === totalPages || Math.abs(n - safePage) <= 1)
+                      .map((n, i, arr) => (
+                        <span key={n} className="flex items-center">
+                          {i > 0 && arr[i - 1] !== n - 1 && <span className="px-2 text-muted-foreground">…</span>}
+                          <button
+                            onClick={() => { setPage(n); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                            className={`min-w-9 h-9 px-3 text-xs border transition ${
+                              n === safePage
+                                ? 'bg-foreground text-background border-foreground'
+                                : 'border-border hover:bg-muted'
+                            }`}
+                          >
+                            {n}
+                          </button>
+                        </span>
+                      ))}
+                    <button
+                      onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      disabled={safePage === totalPages}
+                      className="px-4 py-2 text-[11px] tracking-[0.2em] uppercase border border-border hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           );
