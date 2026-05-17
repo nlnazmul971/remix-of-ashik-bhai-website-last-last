@@ -540,6 +540,73 @@ const CategoryBannerManager = ({ banners, onSave }: {
   );
 };
 
+const BannerProductPicker = ({ selectedIds, onChange }: { selectedIds: string[]; onChange: (ids: string[]) => void }) => {
+  const { data: products = [] } = useProducts(undefined, undefined, undefined, true);
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return products;
+    return products.filter((p: any) =>
+      p.name?.toLowerCase().includes(q) || p.sku?.toLowerCase().includes(q) || p.category?.toLowerCase().includes(q)
+    );
+  }, [products, search]);
+
+  const toggle = (id: string) => {
+    if (selectedIds.includes(id)) onChange(selectedIds.filter(x => x !== id));
+    else onChange([...selectedIds, id]);
+  };
+
+  const selectedProducts = products.filter((p: any) => selectedIds.includes(p.id));
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wider">
+          Products under banner ({selectedIds.length} selected) — leave empty to auto-pull from link category
+        </label>
+        <button type="button" onClick={() => setOpen(o => !o)} className="text-[10px] underline text-muted-foreground hover:text-foreground">
+          {open ? 'Close' : 'Pick Products'}
+        </button>
+      </div>
+
+      {selectedProducts.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {selectedProducts.map((p: any) => (
+            <span key={p.id} className="inline-flex items-center gap-1 text-[10px] bg-secondary px-2 py-1 rounded">
+              {p.name}
+              <button type="button" onClick={() => toggle(p.id)} className="text-destructive">×</button>
+            </span>
+          ))}
+        </div>
+      )}
+
+      {open && (
+        <div className="border border-border p-2 space-y-2 max-h-64 overflow-auto bg-background">
+          <input
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Search by name / SKU / category..."
+            className="luxury-input text-xs w-full"
+          />
+          <div className="space-y-1">
+            {filtered.slice(0, 100).map((p: any) => (
+              <label key={p.id} className="flex items-center gap-2 text-[11px] cursor-pointer hover:bg-secondary/50 px-1 py-0.5 rounded">
+                <input type="checkbox" checked={selectedIds.includes(p.id)} onChange={() => toggle(p.id)} />
+                {p.image_url && <img src={p.image_url} alt="" className="w-6 h-6 object-cover" />}
+                <span className="flex-1 truncate">{p.name}</span>
+                <span className="text-muted-foreground">{p.sku}</span>
+              </label>
+            ))}
+            {filtered.length === 0 && <p className="text-[10px] text-muted-foreground text-center py-2">No products</p>}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default AdminHomepage;
 
 const LogoManager = ({ logo, onSave }: { logo: string; onSave: (url: string) => Promise<void> }) => {
