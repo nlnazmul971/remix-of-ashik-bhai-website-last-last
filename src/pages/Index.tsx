@@ -463,17 +463,22 @@ const Index = () => {
         {/* Category Banners (3 horizontal banners) — each with 2 rows of products */}
         {!showProducts && categoryBanners.length > 0 && (
           <section className="mt-16 sm:mt-24 space-y-12 sm:space-y-16">
-            {categoryBanners.slice(0, 3).map((b, i) => {
-              // Extract category from link (e.g. "/?category=Shirts")
-              let catName = '';
-              try {
-                const url = new URL(b.link || '/', 'http://x');
-                catName = url.searchParams.get('category') || '';
-              } catch { /* noop */ }
-
-              const catProducts = catName
-                ? allProducts.filter(p => p.category?.toLowerCase() === catName.toLowerCase()).slice(0, 8)
-                : [];
+            {categoryBanners.slice(0, 3).map((b: any, i) => {
+              // If admin picked specific products, use them; else auto-pull from link category
+              let catProducts: typeof allProducts = [];
+              if (b.productIds && b.productIds.length > 0) {
+                const idSet = new Set(b.productIds);
+                catProducts = allProducts.filter(p => idSet.has(p.id)).slice(0, 8);
+              } else {
+                let catName = '';
+                try {
+                  const url = new URL(b.link || '/', 'http://x');
+                  catName = url.searchParams.get('category') || '';
+                } catch { /* noop */ }
+                catProducts = catName
+                  ? allProducts.filter(p => p.category?.toLowerCase() === catName.toLowerCase()).slice(0, 8)
+                  : [];
+              }
 
               return (
                 <div key={i} className="space-y-5 sm:space-y-6">
