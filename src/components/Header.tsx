@@ -91,7 +91,7 @@ const Header = () => {
         {!scrolled && (
           <div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center gap-4 sm:gap-6 h-14 sm:h-20">
+              <div className="flex items-center gap-4 sm:gap-6 h-12 sm:h-16">
                 {/* Mobile menu */}
                 <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="sm:hidden p-1.5 hover:opacity-60 transition-opacity">
                   {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -99,7 +99,7 @@ const Header = () => {
 
                 {/* Logo */}
                 <Link to="/" className="shrink-0 flex items-center" aria-label="Home">
-                  <img src={siteLogo} alt="Logo" className="h-12 sm:h-16 w-auto object-contain" loading="eager" fetchPriority={"high" as any} decoding="async" />
+                  <img src={siteLogo} alt="Logo" className="h-10 sm:h-12 w-auto object-contain" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
 
                 {/* Search bar - desktop center */}
@@ -174,7 +174,7 @@ const Header = () => {
         {/* Category nav */}
         <nav className="border-b border-border" onMouseLeave={() => !isMobile && setOpenDropdown(null)}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center gap-6 sm:gap-12 h-10 sm:h-16 overflow-x-auto sm:overflow-visible">
+            <div className="flex items-center justify-center gap-6 sm:gap-12 h-8 sm:h-12 overflow-x-auto sm:overflow-visible">
               {navCategories.map(cat => {
                 const subs = subcategories.filter(s => s.parent_category === cat.slug);
                 const hasSubs = subs.length > 0;
