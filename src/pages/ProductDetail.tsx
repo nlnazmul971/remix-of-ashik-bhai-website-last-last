@@ -18,7 +18,7 @@ import SEO from '@/components/SEO';
 import { pushViewItem } from '@/lib/gtm';
 import { flyToCart } from '@/lib/flyToCart';
 
-const ProductImageGallery = ({ mainImage, name, productId }: { mainImage: string; name: string; productId: string }) => {
+const ProductImageGallery = ({ mainImage, name, productId, discountPercent }: { mainImage: string; name: string; productId: string; discountPercent?: number | null }) => {
   const { data: additionalImages = [] } = useProductImages(productId);
   
   // Build images array: main image + additional images
