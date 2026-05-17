@@ -612,6 +612,40 @@ const BannerProductPicker = ({ selectedIds, onChange }: { selectedIds: string[];
   );
 };
 
+const BannerSubItemsEditor = ({ items, onChange }: { items: SubItem[]; onChange: (arr: SubItem[]) => void }) => {
+  const update = (i: number, field: keyof SubItem, value: string) =>
+    onChange(items.map((it, idx) => idx === i ? { ...it, [field]: value } : it));
+  const add = () => onChange([...items, { image: '', label: '', link: '' }]);
+  const remove = (i: number) => onChange(items.filter((_, idx) => idx !== i));
+
+  return (
+    <div className="space-y-2 border-t border-border pt-3">
+      <div className="flex items-center justify-between">
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wider">
+          Sub-category Icons ({items.length}) — shown as round tiles under the banner
+        </label>
+        <button type="button" onClick={add} className="text-[10px] underline text-muted-foreground hover:text-foreground">
+          + Add Icon
+        </button>
+      </div>
+      {items.length > 0 && (
+        <div className="space-y-2">
+          {items.map((it, i) => (
+            <div key={i} className="grid grid-cols-[60px_1fr_1fr_auto] gap-2 items-start border border-border p-2">
+              <HomepageImageUpload value={it.image} onChange={(url) => update(i, 'image', url)} folder="category-banner" />
+              <input value={it.label} onChange={e => update(i, 'label', e.target.value)} className="luxury-input text-xs" placeholder="Label" />
+              <input value={it.link} onChange={e => update(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=..." />
+              <button type="button" onClick={() => remove(i)} className="text-[10px] text-destructive p-1">
+                <Trash2 size={12} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default AdminHomepage;
 
 const LogoManager = ({ logo, onSave }: { logo: string; onSave: (url: string) => Promise<void> }) => {
