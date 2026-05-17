@@ -12,6 +12,7 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import VideoCarousel from '@/components/VideoCarousel';
 import FeaturedCategories from '@/components/FeaturedCategories';
+import TrendingProducts from '@/components/TrendingProducts';
 import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
 import IconBoxRow from '@/components/IconBoxRow';
@@ -194,6 +195,7 @@ const Index = () => {
       {!showProducts && <Hero />}
       {!showProducts && <VideoCarousel />}
       {!showProducts && <FeaturedCategories />}
+      {!showProducts && <TrendingProducts />}
 
       <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-28 sm:pt-40' : 'pt-10 sm:pt-32'}`}>
         <div className="text-center mb-2 sm:mb-8">

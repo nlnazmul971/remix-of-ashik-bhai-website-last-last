@@ -9,7 +9,7 @@ const TrendingProducts = () => {
   const { data: dbProducts = [] } = useProducts();
   const source = dbProducts.length > 0 ? dbProducts : MOCK_PRODUCTS;
   const products = source.slice(0, 12);
-  const { addToCart } = useCart() as any;
+  const { addItem } = useCart();
 
   if (products.length === 0) return null;
 
@@ -68,15 +68,7 @@ const TrendingProducts = () => {
                       <button
                         onClick={() => {
                           try {
-                            addToCart?.({
-                              id: p.id,
-                              name: p.name,
-                              price: p.price,
-                              image: p.image_url,
-                              size: (p.sizes || ['M'])[0],
-                              color: (p.colors?.[0] as any)?.name || '',
-                              quantity: 1,
-                            });
+                            addItem(p as any, (p.sizes || ['M'])[0], (p.colors?.[0] as any)?.name || '', 1);
                             toast.success('Added to cart');
                           } catch {
                             toast.error('Could not add');
