@@ -61,11 +61,11 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
   };
 
   return (
-    <div className="group animate-fade-in bg-card rounded-xl border border-border/60 overflow-hidden flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
+    <div className="group animate-fade-in bg-background flex flex-col h-full">
       <Link to={`/product/${product.id}`} className="block">
         <div
           ref={imageRef}
-          className="relative overflow-hidden aspect-square bg-muted"
+          className="relative overflow-hidden aspect-square bg-white rounded-lg border border-border/40"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -101,17 +101,17 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
               Sold Out
             </span>
           ) : discountPercent ? (
-            <span className="absolute top-2 left-2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-destructive text-white flex items-center justify-center text-[12px] sm:text-[13px] font-bold shadow-md">
+            <span className="absolute top-2 left-2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[hsl(0,75%,55%)] text-white flex items-center justify-center text-[13px] font-bold shadow-md">
               {discountPercent}%
             </span>
           ) : null}
 
-          {/* Wishlist top-right always visible */}
+          {/* Wishlist top-right */}
           <button
             onClick={handleWishlist}
             aria-label="Wishlist"
-            className={`absolute top-2 right-2 w-9 h-9 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition ${
-              isInWishlist(product.id) ? 'text-destructive' : 'text-foreground/70 hover:text-foreground'
+            className={`absolute top-2 right-2 w-9 h-9 rounded-full bg-white border border-border flex items-center justify-center transition ${
+              isInWishlist(product.id) ? 'text-destructive' : 'text-foreground/60 hover:text-foreground'
             }`}
           >
             <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
@@ -144,18 +144,18 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
       </Link>
 
       {/* Info */}
-      <div className="px-3 pt-3 pb-3 flex flex-col flex-1">
+      <div className="pt-3 pb-1 flex flex-col flex-1">
         <Link to={`/product/${product.id}`}>
-          <h3 className="text-[13px] sm:text-sm font-semibold text-foreground leading-snug line-clamp-2 min-h-[2.5em]">
+          <h3 className="text-[14px] font-semibold text-foreground leading-snug line-clamp-2 min-h-[2.6em]">
             {product.name}
           </h3>
         </Link>
 
         <div className="flex items-baseline gap-2 mt-1.5">
           {product.original_price && (
-            <span className="text-[12px] text-muted-foreground line-through">৳{product.original_price.toLocaleString()}</span>
+            <span className="text-[13px] text-muted-foreground line-through">{product.original_price.toLocaleString()}.00৳</span>
           )}
-          <span className="text-[15px] font-bold text-destructive">৳{product.price.toLocaleString()}</span>
+          <span className="text-[15px] font-bold text-[hsl(0,75%,50%)]">{product.price.toLocaleString()}.00৳</span>
         </div>
 
         {reviewStats[product.id] && (
@@ -177,10 +177,10 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
         <button
           onClick={isSoldOut ? handleWishlist : handleOpenSizes}
           disabled={isSoldOut && isInWishlist(product.id)}
-          className={`mt-3 w-full py-2.5 rounded-md text-[13px] font-semibold tracking-wide text-white transition ${
+          className={`mt-3 w-full py-2.5 rounded-md text-[14px] font-semibold text-white transition ${
             isSoldOut
               ? 'bg-foreground/60 hover:bg-foreground/70'
-              : 'bg-[hsl(142,72%,29%)] hover:bg-[hsl(142,72%,24%)]'
+              : 'bg-[hsl(140,65%,30%)] hover:bg-[hsl(140,65%,25%)]'
           }`}
         >
           {isSoldOut ? (isInWishlist(product.id) ? 'In Wishlist' : 'Add to Wishlist') : 'Add to cart'}
