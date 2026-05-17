@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Heart, ShoppingBag, Star } from 'lucide-react';
+import { Heart, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Product, getProductImage } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
@@ -61,75 +61,70 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
   };
 
   return (
-    <div className="group animate-fade-in">
-      <Link to={`/product/${product.id}`}>
+    <div className="group animate-fade-in bg-card rounded-xl border border-border/60 overflow-hidden flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
+      <Link to={`/product/${product.id}`} className="block">
         <div
           ref={imageRef}
-          className="relative overflow-hidden aspect-[3/4] bg-muted"
+          className="relative overflow-hidden aspect-square bg-muted"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          {/* Main image - eager for above-fold, lazy for rest */}
           <img
             src={getProductImage(product.image_url, 600)}
             srcSet={`${getProductImage(product.image_url, 400)} 400w, ${getProductImage(product.image_url, 600)} 600w, ${getProductImage(product.image_url, 800)} 800w`}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             alt={product.name}
             width={600}
-            height={800}
-            className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-in-out ${
+            height={600}
+            className={`absolute inset-0 w-full h-full object-contain p-3 transition-all duration-500 ease-in-out ${
               isHovered && hoverImage ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
             loading={priority ? 'eager' : 'lazy'}
             fetchPriority={priority ? 'high' : 'auto' as any}
             decoding="async"
           />
-          {/* Hover image - only mounted after first hover (saves bandwidth) */}
           {hoverImage && isHovered && (
             <img
               src={getProductImage(hoverImage, 600)}
-              srcSet={`${getProductImage(hoverImage, 400)} 400w, ${getProductImage(hoverImage, 600)} 600w, ${getProductImage(hoverImage, 800)} 800w`}
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               alt={`${product.name} alternate`}
               width={600}
-              height={800}
-              className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-in-out opacity-100 scale-100"
+              height={600}
+              className="absolute inset-0 w-full h-full object-contain p-3 transition-all duration-500"
               loading="lazy"
               decoding="async"
             />
           )}
 
-          {/* Discount badge / Sold Out badge */}
+          {/* Discount circle badge top-left */}
           {isSoldOut ? (
-            <span className="absolute top-3 left-3 text-[10px] tracking-[0.15em] uppercase font-semibold px-2.5 py-1 text-destructive-foreground bg-destructive">
+            <span className="absolute top-2 left-2 text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 text-destructive-foreground bg-destructive rounded">
               Sold Out
             </span>
           ) : discountPercent ? (
-            <span className="absolute top-3 left-3 text-[11px] sm:text-xs tracking-wider font-semibold px-2.5 py-1 text-white bg-foreground/80 backdrop-blur-sm shadow-sm rounded-sm">
-              −{discountPercent}% OFF
+            <span className="absolute top-2 left-2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-destructive text-white flex items-center justify-center text-[12px] sm:text-[13px] font-bold shadow-md">
+              {discountPercent}%
             </span>
           ) : null}
 
-          {/* Wishlist + Quick view - fully transparent */}
-          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex flex-col gap-1.5 sm:gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
-            <button
-              onClick={handleWishlist}
-              className={`p-2 sm:p-2.5 bg-transparent hover:bg-background/30 backdrop-blur-none transition-all duration-300 ${
-                isInWishlist(product.id) ? 'text-destructive' : 'text-foreground'
-              }`}
-            >
-              <Heart size={15} className="sm:w-4 sm:h-4 drop-shadow-sm" fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
-            </button>
-          </div>
+          {/* Wishlist top-right always visible */}
+          <button
+            onClick={handleWishlist}
+            aria-label="Wishlist"
+            className={`absolute top-2 right-2 w-9 h-9 rounded-full bg-background/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition ${
+              isInWishlist(product.id) ? 'text-destructive' : 'text-foreground/70 hover:text-foreground'
+            }`}
+          >
+            <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
+          </button>
 
           {/* Size selector popup */}
           {showSizes && (
             <div
               ref={popupRef}
-              className="absolute inset-x-0 bottom-0 bg-background/80 backdrop-blur-xl p-3 animate-scale-in z-10"
+              className="absolute inset-x-0 bottom-0 bg-background/95 backdrop-blur-xl p-3 animate-scale-in z-10"
               onClick={e => { e.preventDefault(); e.stopPropagation(); }}
             >
-              <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2 text-center" style={{ fontFamily: 'var(--font-body)' }}>
+              <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground mb-2 text-center">
                 Select Size
               </p>
               <div className="flex items-center justify-center gap-1.5 flex-wrap">
@@ -137,8 +132,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
                   <button
                     key={size}
                     onClick={(e) => handleSelectSize(e, size)}
-                    className="min-w-[36px] h-9 px-2 border border-border/50 text-xs tracking-wider hover:bg-primary hover:text-primary-foreground transition-colors bg-background/50 backdrop-blur-sm"
-                    style={{ fontFamily: 'var(--font-body)' }}
+                    className="min-w-[36px] h-9 px-2 border border-border text-xs hover:bg-primary hover:text-primary-foreground transition-colors bg-background rounded"
                   >
                     {size}
                   </button>
@@ -146,60 +140,52 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
               </div>
             </div>
           )}
-
-          {/* Add to cart button - hidden when sold out */}
-          {!showSizes && !isSoldOut && (
-            <div className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-              <button
-                onClick={handleOpenSizes}
-                className="w-full py-2.5 sm:py-3 text-[9px] sm:text-[10px] flex items-center justify-center gap-1.5 sm:gap-2 bg-foreground/50 backdrop-blur-md text-background tracking-[0.2em] uppercase transition-all duration-300 hover:bg-foreground/70"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
-                <ShoppingBag size={12} className="sm:w-[13px] sm:h-[13px]" />
-                Add to Cart
-              </button>
-            </div>
-          )}
-          {/* Wishlist only when sold out */}
-          {isSoldOut && (
-            <div className="absolute bottom-0 left-0 right-0 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-              <button
-                onClick={handleWishlist}
-                className="w-full py-2.5 sm:py-3 text-[9px] sm:text-[10px] flex items-center justify-center gap-1.5 sm:gap-2 bg-foreground/50 backdrop-blur-md text-background tracking-[0.2em] uppercase transition-all duration-300 hover:bg-foreground/70"
-                style={{ fontFamily: 'var(--font-body)' }}
-              >
-                <Heart size={12} className="sm:w-[13px] sm:h-[13px]" fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
-                {isInWishlist(product.id) ? 'In Wishlist' : 'Add to Wishlist'}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Product info */}
-        <div className="pt-3 pb-1 px-1">
-          <h3 className="text-[14px] sm:text-[15px] font-medium tracking-wide text-foreground leading-tight">{product.name}</h3>
-          <div className="flex items-center gap-2 mt-1.5">
-            <span className="text-base font-semibold text-foreground">৳{product.price.toLocaleString()}</span>
-            {product.original_price && (
-              <span className="text-[12px] text-muted-foreground line-through">৳{product.original_price.toLocaleString()}</span>
-            )}
-          </div>
-          {reviewStats[product.id] && (
-            <div className="flex items-center gap-1 mt-1.5">
-              <div className="flex items-center">
-                {[1, 2, 3, 4, 5].map(star => (
-                  <Star
-                    key={star}
-                    size={11}
-                    className={star <= Math.round(reviewStats[product.id].avg) ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/20'}
-                  />
-                ))}
-              </div>
-              <span className="text-[10px] text-muted-foreground">({reviewStats[product.id].avg.toFixed(1)})</span>
-            </div>
-          )}
         </div>
       </Link>
+
+      {/* Info */}
+      <div className="px-3 pt-3 pb-3 flex flex-col flex-1">
+        <Link to={`/product/${product.id}`}>
+          <h3 className="text-[13px] sm:text-sm font-semibold text-foreground leading-snug line-clamp-2 min-h-[2.5em]">
+            {product.name}
+          </h3>
+        </Link>
+
+        <div className="flex items-baseline gap-2 mt-1.5">
+          {product.original_price && (
+            <span className="text-[12px] text-muted-foreground line-through">৳{product.original_price.toLocaleString()}</span>
+          )}
+          <span className="text-[15px] font-bold text-destructive">৳{product.price.toLocaleString()}</span>
+        </div>
+
+        {reviewStats[product.id] && (
+          <div className="flex items-center gap-1 mt-1">
+            <div className="flex items-center">
+              {[1, 2, 3, 4, 5].map(star => (
+                <Star
+                  key={star}
+                  size={10}
+                  className={star <= Math.round(reviewStats[product.id].avg) ? 'text-amber-500 fill-amber-500' : 'text-muted-foreground/20'}
+                />
+              ))}
+            </div>
+            <span className="text-[10px] text-muted-foreground">({reviewStats[product.id].avg.toFixed(1)})</span>
+          </div>
+        )}
+
+        {/* Full-width green Add to cart */}
+        <button
+          onClick={isSoldOut ? handleWishlist : handleOpenSizes}
+          disabled={isSoldOut && isInWishlist(product.id)}
+          className={`mt-3 w-full py-2.5 rounded-md text-[13px] font-semibold tracking-wide text-white transition ${
+            isSoldOut
+              ? 'bg-foreground/60 hover:bg-foreground/70'
+              : 'bg-[hsl(142,72%,29%)] hover:bg-[hsl(142,72%,24%)]'
+          }`}
+        >
+          {isSoldOut ? (isInWishlist(product.id) ? 'In Wishlist' : 'Add to Wishlist') : 'Add to cart'}
+        </button>
+      </div>
     </div>
   );
 };
