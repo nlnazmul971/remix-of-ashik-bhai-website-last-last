@@ -534,6 +534,10 @@ const CategoryBannerManager = ({ banners, onSave }: {
               selectedIds={banner.productIds || []}
               onChange={(ids) => updateBanner(i, 'productIds', ids)}
             />
+            <BannerSubItemsEditor
+              items={banner.subItems || []}
+              onChange={(arr) => updateBanner(i, 'subItems', arr)}
+            />
           </div>
         ))}
       </div>
