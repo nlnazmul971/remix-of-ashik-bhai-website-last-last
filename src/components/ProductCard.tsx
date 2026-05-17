@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Heart, Star } from 'lucide-react';
+import { Heart, Maximize2, Scale, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Product, getProductImage } from '@/data/products';
 import { useCart } from '@/contexts/CartContext';
@@ -27,6 +27,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
     : null;
 
   const hoverImage = hoverImageUrl ?? null;
+  const stock = (product as any).stock as number | undefined;
 
   useEffect(() => {
     if (!showSizes) return;
@@ -60,12 +61,18 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
     toggleItem(product);
   };
 
+  const stopAndGo = (e: React.MouseEvent) => {
+    // wishlist target — keep default link nav blocked
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
-    <div className="group animate-fade-in bg-background flex flex-col h-full">
+    <div className="group animate-fade-in bg-white rounded-lg border border-border/60 p-3 flex flex-col h-full">
       <Link to={`/product/${product.id}`} className="block">
         <div
           ref={imageRef}
-          className="relative overflow-hidden aspect-square bg-white rounded-lg border border-border/40"
+          className="relative overflow-hidden aspect-square bg-white"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
@@ -76,7 +83,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
             alt={product.name}
             width={600}
             height={600}
-            className={`absolute inset-0 w-full h-full object-contain p-3 transition-all duration-500 ease-in-out ${
+            className={`absolute inset-0 w-full h-full object-contain transition-all duration-500 ease-in-out ${
               isHovered && hoverImage ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
             loading={priority ? 'eager' : 'lazy'}
@@ -89,33 +96,47 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
               alt={`${product.name} alternate`}
               width={600}
               height={600}
-              className="absolute inset-0 w-full h-full object-contain p-3 transition-all duration-500"
+              className="absolute inset-0 w-full h-full object-contain transition-all duration-500"
               loading="lazy"
               decoding="async"
             />
           )}
 
-          {/* Discount circle badge top-left */}
+          {/* Discount square badge top-left */}
           {isSoldOut ? (
-            <span className="absolute top-2 left-2 text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 text-destructive-foreground bg-destructive rounded">
+            <span className="absolute top-0 left-0 text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 text-white bg-[hsl(0,75%,52%)] rounded">
               Sold Out
             </span>
           ) : discountPercent ? (
-            <span className="absolute top-2 left-2 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[hsl(0,75%,55%)] text-white flex items-center justify-center text-[13px] font-bold shadow-md">
+            <span className="absolute top-0 left-0 min-w-[42px] h-[26px] px-2 rounded bg-[hsl(0,75%,52%)] text-white flex items-center justify-center text-[12px] font-semibold">
               {discountPercent}%
             </span>
           ) : null}
 
-          {/* Wishlist top-right */}
-          <button
-            onClick={handleWishlist}
-            aria-label="Wishlist"
-            className={`absolute top-2 right-2 w-9 h-9 rounded-full bg-white border border-border flex items-center justify-center transition ${
-              isInWishlist(product.id) ? 'text-destructive' : 'text-foreground/60 hover:text-foreground'
-            }`}
-          >
-            <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
-          </button>
+          {/* Right icon stack */}
+          <div className="absolute top-0 right-0 flex flex-col gap-2">
+            <button
+              onClick={handleWishlist}
+              aria-label="Wishlist"
+              className={`w-8 h-8 rounded-full bg-white border border-border/70 flex items-center justify-center transition ${
+                isInWishlist(product.id) ? 'text-destructive' : 'text-foreground/60 hover:text-foreground'
+              }`}
+            >
+              <Heart size={14} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
+            </button>
+            <span
+              aria-hidden
+              className="w-8 h-8 rounded-full bg-white border border-border/70 flex items-center justify-center text-foreground/60"
+            >
+              <Maximize2 size={13} />
+            </span>
+            <span
+              aria-hidden
+              className="w-8 h-8 rounded-full bg-white border border-border/70 flex items-center justify-center text-foreground/60"
+            >
+              <Scale size={13} />
+            </span>
+          </div>
 
           {/* Size selector popup */}
           {showSizes && (
@@ -144,7 +165,13 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
       </Link>
 
       {/* Info */}
-      <div className="pt-3 pb-1 flex flex-col flex-1">
+      <div className="pt-3 flex flex-col flex-1">
+        {!isSoldOut && typeof stock === 'number' && stock > 0 && (
+          <p className="text-[12px] font-semibold text-[hsl(140,65%,30%)] mb-1">
+            {stock} in stock
+          </p>
+        )}
+
         <Link to={`/product/${product.id}`}>
           <h3 className="text-[14px] font-semibold text-foreground leading-snug line-clamp-2 min-h-[2.6em]">
             {product.name}
@@ -153,7 +180,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
 
         <div className="flex items-baseline gap-2 mt-1.5">
           {product.original_price && (
-            <span className="text-[13px] text-muted-foreground line-through">{product.original_price.toLocaleString()}.00৳</span>
+            <span className="text-[12px] text-muted-foreground line-through">{product.original_price.toLocaleString()}.00৳</span>
           )}
           <span className="text-[15px] font-bold text-[hsl(0,75%,50%)]">{product.price.toLocaleString()}.00৳</span>
         </div>
