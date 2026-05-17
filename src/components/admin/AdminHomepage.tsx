@@ -20,6 +20,9 @@ const AdminHomepage = () => {
   const rawVideos = settings['homepage_videos'];
   const videos: VideoType[] = rawVideos ? JSON.parse(rawVideos) : [];
 
+  const rawFeatCats = settings['homepage_featured_categories'];
+  const featCats: FeaturedCatType[] = rawFeatCats ? JSON.parse(rawFeatCats) : [];
+
   const siteLogo = settings['site_logo'] || '';
 
   if (isLoading) {
@@ -66,6 +69,11 @@ const AdminHomepage = () => {
         await updateSetting.mutateAsync({ key: 'homepage_videos', value: JSON.stringify(newVideos) });
         toast.success('Videos updated!');
       }} />
+
+      <FeaturedCategoriesManager items={featCats} onSave={async (newItems) => {
+        await updateSetting.mutateAsync({ key: 'homepage_featured_categories', value: JSON.stringify(newItems) });
+        toast.success('Featured categories updated!');
+      }} />
     </div>
   );
 };
@@ -73,6 +81,77 @@ const AdminHomepage = () => {
 type SlideType = { image: string; mobileImage?: string; title: string; topText: string; bottomText: string };
 type PosterType = { image: string; link: string; subtitle: string; title: string };
 type CategoryBannerType = { image: string; label: string; link: string };
+type FeaturedCatType = { image: string; label: string; link: string };
+
+const FeaturedCategoriesManager = ({ items: initial, onSave }: {
+  items: FeaturedCatType[];
+  onSave: (items: FeaturedCatType[]) => Promise<void>;
+}) => {
+  const [items, setItems] = useState<FeaturedCatType[]>(initial);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => { setItems(initial); }, [JSON.stringify(initial)]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try { await onSave(items); } finally { setSaving(false); }
+  };
+
+  const addItem = () => setItems([...items, { image: '', label: '', link: '' }]);
+  const removeItem = (i: number) => setItems(items.filter((_, idx) => idx !== i));
+  const updateItem = (i: number, field: string, value: string) =>
+    setItems(items.map((b, idx) => idx === i ? { ...b, [field]: value } : b));
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Featured Categories</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">
+            {items.length} category configured • Square image (600×600px) • Shown below video carousel
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={addItem} className="luxury-button-outline text-[10px] py-2 px-3">+ Add Category</button>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />}
+            Save
+          </button>
+        </div>
+      </div>
+
+      {items.length === 0 && (
+        <p className="text-xs text-muted-foreground py-4 text-center">No featured categories.</p>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {items.map((it, i) => (
+          <div key={i} className="border border-border p-4 space-y-3 relative">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground font-medium">Category {i + 1}</p>
+              <button onClick={() => removeItem(i)} className="inline-flex items-center gap-1 text-[10px] text-destructive hover:bg-destructive/10 px-2 py-1 transition-colors">
+                <Trash2 size={12} /> Delete
+              </button>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Image (600×600, max 10MB)</label>
+              <HomepageImageUpload value={it.image} onChange={(url) => updateItem(i, 'image', url)} folder="featured-category" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Label</label>
+              <input value={it.label} onChange={e => updateItem(i, 'label', e.target.value)} className="luxury-input text-xs" placeholder="Baby Formula Milks" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Link</label>
+              <input value={it.link} onChange={e => updateItem(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Shirts" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 type VideoType = { youtubeId: string; title: string; date?: string; thumbnail?: string };
 
 const VideoManager = ({ videos, onSave }: {
