@@ -86,6 +86,12 @@ const ProductImageGallery = ({ mainImage, name, productId, discountPercent }: { 
           style={zoomed ? { transform: 'scale(2.2)', transformOrigin: `${zoomPos.x}% ${zoomPos.y}%` } : undefined}
           draggable={false}
         />
+        {/* Discount circle */}
+        {discountPercent ? (
+          <span className="absolute top-3 left-3 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[hsl(0,75%,52%)] text-white flex items-center justify-center text-[14px] sm:text-[16px] font-semibold shadow-md z-10">
+            {discountPercent}%
+          </span>
+        ) : null}
         {/* Zoom icon top-right */}
         <button
           onClick={() => setMobileZoom(true)}
