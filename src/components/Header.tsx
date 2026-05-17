@@ -8,6 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole, useStoreSettings } from '@/hooks/useSupabase';
 import MobileBottomNav from '@/components/MobileBottomNav';
 import SearchOverlay from '@/components/SearchOverlay';
+import AnnouncementBar from '@/components/AnnouncementBar';
+import TopBar from '@/components/TopBar';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -82,7 +84,9 @@ const Header = () => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background sm:pt-3 ${scrolled ? 'shadow-sm' : ''}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background ${scrolled ? 'shadow-sm' : ''}`}>
+        {!scrolled && <AnnouncementBar />}
+        {!scrolled && <TopBar />}
         {/* Top bar - hidden on scroll for both mobile and desktop */}
         {!scrolled && (
           <div>

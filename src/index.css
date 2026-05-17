@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,27 +7,30 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 8%;
-    --card: 0 0% 99%;
-    --card-foreground: 0 0% 8%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 8%;
-    --primary: 0 0% 8%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 36 32% 43%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 8%;
+    --secondary-foreground: 0 0% 13%;
     --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted-foreground: 0 0% 40%;
     --accent: 0 0% 93%;
-    --accent-foreground: 0 0% 8%;
+    --accent-foreground: 0 0% 13%;
     --message: 142 71% 31%;
     --message-foreground: 0 0% 100%;
-    --destructive: 0 84% 60%;
+    --destructive: 0 75% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 8%;
-    --radius: 0px;
+    --border: 0 0% 93%;
+    --input: 0 0% 93%;
+    --ring: 36 32% 43%;
+    --radius: 5px;
+    --price-sale: 0 75% 60%;
+    --promo: 36 32% 43%;
+    --promo-foreground: 0 0% 100%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 26%;
     --sidebar-primary: 0 0% 10%;
@@ -37,14 +40,14 @@
     --sidebar-border: 0 0% 91%;
     --sidebar-ring: 0 0% 60%;
 
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'Inter', sans-serif;
+    --font-display: 'Jost', sans-serif;
+    --font-body: 'Jost', sans-serif;
 
     --luxury-surface: 0 0% 98%;
-    --luxury-divider: 0 0% 88%;
-    --luxury-badge: 0 0% 8%;
+    --luxury-divider: 0 0% 93%;
+    --luxury-badge: 36 32% 43%;
     --luxury-badge-text: 0 0% 100%;
-    --luxury-hover: 0 0% 95%;
+    --luxury-hover: 0 0% 96%;
   }
 }
 
