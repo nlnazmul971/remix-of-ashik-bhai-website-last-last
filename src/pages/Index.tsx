@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
+import IconBoxRow from '@/components/IconBoxRow';
 import CartDrawer from '@/components/CartDrawer';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import SEO from '@/components/SEO';
