@@ -174,7 +174,7 @@ const Header = () => {
         {/* Category nav */}
         <nav className="border-b border-border" onMouseLeave={() => !isMobile && setOpenDropdown(null)}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center gap-6 sm:gap-12 h-10 sm:h-16 overflow-x-auto sm:overflow-visible">
+            <div className="flex items-center justify-center gap-6 sm:gap-12 h-8 sm:h-12 overflow-x-auto sm:overflow-visible">
               {navCategories.map(cat => {
                 const subs = subcategories.filter(s => s.parent_category === cat.slug);
                 const hasSubs = subs.length > 0;
