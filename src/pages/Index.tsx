@@ -395,6 +395,7 @@ const Index = () => {
           </section>
         )}
       </main>
+      <IconBoxRow />
       <Footer />
     </div>
   );
