@@ -529,6 +529,10 @@ const CategoryBannerManager = ({ banners, onSave }: {
               <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Link (e.g. /?category=Shirts)</label>
               <input value={banner.link} onChange={e => updateBanner(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Shirts" />
             </div>
+            <BannerProductPicker
+              selectedIds={banner.productIds || []}
+              onChange={(ids) => updateBanner(i, 'productIds', ids)}
+            />
           </div>
         ))}
       </div>
