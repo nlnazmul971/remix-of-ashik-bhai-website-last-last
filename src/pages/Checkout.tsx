@@ -379,365 +379,321 @@ const Checkout = () => {
     }
   };
 
+  const { data: settings = {} } = { data: storeSettings || {} } as any;
+  const siteLogo = (storeSettings as any)?.['site_logo'] || '/logo.png';
+  const { itemCount, setIsCartOpen } = useCart();
+
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="Checkout" description="Complete your HIGHLIGHTS order — secure checkout with cash on delivery available." path="/checkout" noIndex />
-      <Header />
+      <SEO title="Checkout" description="Complete your order — secure checkout with cash on delivery available." path="/checkout" noIndex />
       <CartDrawer />
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">
-        <h1 className="luxury-heading text-3xl tracking-[0.15em] text-center mb-12">Checkout</h1>
-        {items.length === 0 ? (
-          <p className="text-center text-muted-foreground">Your cart is empty.</p>
-        ) : (
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
-            <div className="space-y-6">
-              <h2 className="luxury-body text-[11px] text-foreground mb-4">Delivery Information</h2>
-              
-              {/* Saved address toggle */}
+
+      {/* Slim header with centered logo + cart */}
+      <header className="border-b border-border bg-background">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-5 flex items-center justify-between">
+          <div className="w-8" />
+          <button type="button" onClick={() => navigate('/')} className="flex items-center justify-center" aria-label="Home">
+            <img src={siteLogo} alt="Logo" className="h-12 w-auto object-contain" />
+          </button>
+          <button type="button" onClick={() => setIsCartOpen(true)} className="relative p-1 text-foreground/70 hover:text-foreground" aria-label="Cart">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            {itemCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-foreground text-background text-[10px] rounded-full flex items-center justify-center">{itemCount}</span>
+            )}
+          </button>
+        </div>
+      </header>
+
+      {items.length === 0 ? (
+        <main className="max-w-2xl mx-auto px-4 py-20 text-center">
+          <p className="text-muted-foreground mb-4">Your cart is empty.</p>
+          <button onClick={() => navigate('/')} className="text-sm underline">Continue shopping</button>
+        </main>
+      ) : (
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-[1fr_1fr]">
+          {/* LEFT — form column */}
+          <div className="bg-background order-2 lg:order-1">
+            <div className="max-w-[560px] ml-auto mr-0 w-full px-5 sm:px-10 py-8 sm:py-12">
+
+              {/* Saved address chip (logged in) */}
               {user && profile?.address && (
-                <div className="flex items-center gap-3 p-3 bg-secondary/50 border border-border">
-                  <label className="flex items-center gap-2 cursor-pointer text-xs">
-                    <input
-                      type="checkbox"
-                      checked={useSavedAddress}
-                      onChange={e => {
-                        setUseSavedAddress(e.target.checked);
-                        if (!e.target.checked) {
-                          setForm(f => ({ ...f, name: '', phone: '', address: '', city: '' }));
-                        }
-                      }}
-                      className="accent-foreground"
-                    />
-                    Use saved address
-                  </label>
-                  {useSavedAddress && (
-                    <span className="text-[10px] text-muted-foreground ml-auto">
-                      {profile.address}, {profile.city}
-                    </span>
-                  )}
-                </div>
+                <label className="flex items-center gap-2 mb-6 text-sm cursor-pointer">
+                  <input type="checkbox" checked={useSavedAddress} onChange={e => {
+                    setUseSavedAddress(e.target.checked);
+                    if (!e.target.checked) setForm(f => ({ ...f, name: '', phone: '', address: '', city: '' }));
+                  }} className="accent-[#1773b0]" />
+                  Use saved address — {profile.address}, {profile.city}
+                </label>
               )}
 
-              <div>
-                <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Full Name *" className={`luxury-input ${attempted && !form.name.trim() ? 'border-destructive' : ''}`} />
-                {attempted && !form.name.trim() && <p className="text-destructive text-xs mt-1">নাম লিখুন (Full Name দিন)</p>}
-              </div>
-              <div>
-                <input required type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="Email *" className={`luxury-input ${attempted && (!form.email.trim() || !isValidEmail(form.email)) ? 'border-destructive' : ''}`} />
-                {attempted && !form.email.trim() && <p className="text-destructive text-xs mt-1">ইমেইল লিখুন (example@gmail.com)</p>}
-                {attempted && form.email.trim() && !isValidEmail(form.email) && <p className="text-destructive text-xs mt-1">সঠিক ইমেইল দিন (example@gmail.com ফরম্যাটে)</p>}
-              </div>
-              <div>
-                <input required value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="Phone Number *" className={`luxury-input ${attempted && (!form.phone.trim() || !isValidBDPhone(form.phone)) ? 'border-destructive' : ''}`} />
-                {attempted && !form.phone.trim() && <p className="text-destructive text-xs mt-1">ফোন নম্বর লিখুন (01XXXXXXXXX)</p>}
-                {attempted && form.phone.trim() && !isValidBDPhone(form.phone) && <p className="text-destructive text-xs mt-1">সঠিক বাংলাদেশি ফোন নম্বর দিন (01XXXXXXXXX ফরম্যাটে)</p>}
-              </div>
-              <div>
-                <textarea required value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} placeholder="Full Address (House, Road, Area) *" className={`luxury-input min-h-[100px] resize-y ${attempted && !form.address.trim() ? 'border-destructive' : ''}`} rows={4} />
-                {attempted && !form.address.trim() && <p className="text-destructive text-xs mt-1">সম্পূর্ণ ঠিকানা লিখুন (বাড়ি, রোড, এলাকা)</p>}
-              </div>
-              <div>
-                <input required value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} placeholder="City *" className={`luxury-input ${attempted && !form.city.trim() ? 'border-destructive' : ''}`} />
-                {attempted && !form.city.trim() && <p className="text-destructive text-xs mt-1">শহরের নাম লিখুন (যেমন: Dhaka)</p>}
-              </div>
-              <textarea value={form.customerNote} onChange={e => setForm({ ...form, customerNote: e.target.value })} placeholder="Order Note (optional)" className="luxury-input min-h-[60px] resize-y" rows={2} />
-
-              {/* Delivery Zone — separate section, no auto-selection */}
-              <div className="border border-border p-5 mt-8">
-                <h2 className="luxury-body text-[11px] text-foreground mb-1">Delivery Charge</h2>
-                <p className="text-[11px] text-muted-foreground mb-4">আপনার এলাকা সিলেক্ট করুন</p>
-                <div className="space-y-2">
-                  {deliveryOptions.map(d => (
-                    <label
-                      key={d.id}
-                      className={`flex items-start gap-3 p-4 border cursor-pointer transition-colors ${delivery === d.id ? 'border-foreground' : 'border-border hover:border-muted-foreground'}`}
-                      onClick={() => handleDeliveryChange(d.id)}
-                    >
-                      <div
-                        className={`mt-0.5 w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-                          delivery === d.id ? 'border-foreground' : 'border-muted-foreground'
-                        }`}
-                      >
-                        {delivery === d.id && <div className="w-2 h-2 rounded-full bg-foreground" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm">{d.label}</p>
-                        {d.subtitle ? (
-                          <p className="text-xs mt-0.5 text-muted-foreground">{d.subtitle}</p>
-                        ) : null}
-                      </div>
-                      <span className="text-sm flex-shrink-0">৳{d.price}</span>
-                      <input type="radio" name="delivery" value={d.id} checked={delivery === d.id} onChange={() => handleDeliveryChange(d.id)} className="hidden" />
-                    </label>
-                  ))}
-                </div>
-                {attempted && !delivery && (
-                  <p className="text-destructive text-xs mt-2">Delivery zone সিলেক্ট করুন</p>
+              {/* Contact */}
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-[20px] font-semibold text-foreground">Contact</h2>
+                {!user && (
+                  <button type="button" onClick={() => navigate('/profile')} className="text-sm text-[#1773b0] underline">Sign in</button>
                 )}
               </div>
+              <FloatingInput
+                label="Email or mobile phone number"
+                value={form.email}
+                onChange={v => setForm({ ...form, email: v })}
+                error={attempted && (!form.email.trim() || !isValidEmail(form.email))}
+                required
+              />
+              <label className="flex items-center gap-2 mt-3 text-sm text-foreground/80 cursor-pointer">
+                <input type="checkbox" className="accent-[#1773b0] w-4 h-4" />
+                Email me with news and offers
+              </label>
 
-              {/* Payment Method — separate section */}
-              <div className="border border-border p-5 mt-6">
-                <h2 className="luxury-body text-[11px] text-foreground mb-4">Payment Method</h2>
-                <div className="space-y-3">
-                  {/* Cash on Delivery */}
-                  {(
-                    <label className={`flex items-center justify-between p-4 border cursor-pointer transition-colors ${payment === 'cod' ? 'border-foreground' : 'border-border hover:border-muted-foreground'}`}>
-                      <div className="flex items-center gap-3">
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${payment === 'cod' ? 'border-foreground' : 'border-muted-foreground'}`}>
-                          {payment === 'cod' && <div className="w-2 h-2 rounded-full bg-foreground" />}
-                        </div>
-                        <div>
-                          <p className="text-sm">Cash on Delivery</p>
-                          <p className="text-xs text-muted-foreground">Pay when you receive</p>
-                        </div>
+              {/* Delivery */}
+              <h2 className="text-[20px] font-semibold text-foreground mt-8 mb-3">Delivery</h2>
+              <div className="space-y-3">
+                <FloatingInput label="Country/Region" value="Bangladesh" onChange={() => {}} disabled />
+                <FloatingInput
+                  label="Full name"
+                  value={form.name}
+                  onChange={v => setForm({ ...form, name: v })}
+                  error={attempted && !form.name.trim()}
+                  required
+                />
+                <FloatingInput
+                  label="Address"
+                  value={form.address}
+                  onChange={v => setForm({ ...form, address: v })}
+                  error={attempted && !form.address.trim()}
+                  required
+                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <FloatingInput
+                    label="City"
+                    value={form.city}
+                    onChange={v => setForm({ ...form, city: v })}
+                    error={attempted && !form.city.trim()}
+                    required
+                  />
+                  <FloatingInput label="Postal code (optional)" value="" onChange={() => {}} />
+                </div>
+                <FloatingInput
+                  label="Phone"
+                  value={form.phone}
+                  onChange={v => setForm({ ...form, phone: v })}
+                  error={attempted && (!form.phone.trim() || !isValidBDPhone(form.phone))}
+                  required
+                />
+                <label className="flex items-center gap-2 text-sm text-foreground/80 cursor-pointer">
+                  <input type="checkbox" className="accent-[#1773b0] w-4 h-4" />
+                  Save this information for next time
+                </label>
+              </div>
+
+              {/* Shipping method */}
+              <h2 className="text-[18px] font-semibold text-foreground mt-8 mb-3">Shipping method</h2>
+              <div className="border border-border rounded-md overflow-hidden">
+                {deliveryOptions.map((d, i) => {
+                  const selected = delivery === d.id;
+                  return (
+                    <label
+                      key={d.id}
+                      onClick={() => handleDeliveryChange(d.id)}
+                      className={`flex items-center justify-between gap-3 px-4 py-3.5 cursor-pointer transition-colors ${i > 0 ? 'border-t border-border' : ''} ${selected ? 'bg-[#eff5fb] ring-1 ring-[#1773b0] ring-inset' : 'hover:bg-secondary/40'}`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className={`w-[18px] h-[18px] rounded-full border flex items-center justify-center shrink-0 ${selected ? 'border-[#1773b0]' : 'border-muted-foreground/50'}`}>
+                          {selected && <span className="w-2.5 h-2.5 rounded-full bg-[#1773b0]" />}
+                        </span>
+                        <span className="text-sm text-foreground truncate">{d.label}</span>
                       </div>
-                      <input
-                        type="radio"
-                        name="payment"
-                        value="cod"
-                        checked={payment === 'cod'}
-                        onChange={() => {
-                          setPayment('cod');
-                          setOnlineProvider(null);
-                          setForm(f => ({ ...f, senderNumber: '', transactionId: '' }));
-                        }}
-                        className="hidden"
-                      />
+                      <span className="text-sm text-foreground whitespace-nowrap tabular-nums">৳{d.price.toFixed(2)}</span>
                     </label>
-                  )}
+                  );
+                })}
+              </div>
+              {attempted && !delivery && (
+                <p className="text-destructive text-xs mt-2">Please select a delivery zone</p>
+              )}
 
-                  {/* Online Payment */}
-                  <div className={`border transition-colors ${payment === 'online' ? 'border-foreground' : 'border-border hover:border-muted-foreground'}`}>
-                    <label className="flex items-center justify-between p-4 cursor-pointer">
+              {/* Payment */}
+              <h2 className="text-[20px] font-semibold text-foreground mt-8 mb-1">Payment</h2>
+              <p className="text-xs text-muted-foreground mb-3">All transactions are secure and encrypted.</p>
+              <div className="border border-border rounded-md overflow-hidden">
+                <label
+                  onClick={() => { setPayment('cod'); setOnlineProvider(null); setForm(f => ({ ...f, senderNumber: '', transactionId: '' })); }}
+                  className={`flex items-center justify-between px-4 py-3.5 cursor-pointer transition-colors ${payment === 'cod' ? 'bg-[#eff5fb] ring-1 ring-[#1773b0] ring-inset' : 'hover:bg-secondary/40'}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={`w-[18px] h-[18px] rounded-full border flex items-center justify-center ${payment === 'cod' ? 'border-[#1773b0]' : 'border-muted-foreground/50'}`}>
+                      {payment === 'cod' && <span className="w-2.5 h-2.5 rounded-full bg-[#1773b0]" />}
+                    </span>
+                    <span className="text-sm text-foreground">Cash on Delivery (COD)</span>
+                  </div>
+                </label>
+                {selectableProviders.length > 0 && (
+                  <div className={`border-t border-border ${payment === 'online' ? 'bg-[#eff5fb]' : ''}`}>
+                    <label
+                      onClick={() => setPayment('online')}
+                      className={`flex items-center justify-between px-4 py-3.5 cursor-pointer ${payment === 'online' ? 'ring-1 ring-[#1773b0] ring-inset' : 'hover:bg-secondary/40'}`}
+                    >
                       <div className="flex items-center gap-3">
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${payment === 'online' ? 'border-foreground' : 'border-muted-foreground'}`}>
-                          {payment === 'online' && <div className="w-2 h-2 rounded-full bg-foreground" />}
-                        </div>
-                        <div>
-                          <p className="text-sm">Online Payment</p>
-                          <p className="text-xs text-muted-foreground">Pay via bKash or Nagad</p>
-                        </div>
+                        <span className={`w-[18px] h-[18px] rounded-full border flex items-center justify-center ${payment === 'online' ? 'border-[#1773b0]' : 'border-muted-foreground/50'}`}>
+                          {payment === 'online' && <span className="w-2.5 h-2.5 rounded-full bg-[#1773b0]" />}
+                        </span>
+                        <span className="text-sm text-foreground">Online Payment (bKash / Nagad)</span>
                       </div>
-                      <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${payment === 'online' ? 'rotate-180' : ''}`} />
-                      <input type="radio" name="payment" value="online" checked={payment === 'online'} onChange={() => setPayment('online')} className="hidden" />
                     </label>
-
                     {payment === 'online' && (
-                      <div className="px-4 pb-4 space-y-4">
-                        <div className="grid grid-cols-2 gap-3">
+                      <div className="px-4 pb-4 pt-1 space-y-3">
+                        <div className="flex gap-3">
                           {selectableProviders.includes('bkash') && (
-                            <button
-                              type="button"
-                              onClick={() => setOnlineProvider('bkash')}
-                              className={`p-3 border-2 transition-colors ${onlineProvider === 'bkash' ? 'border-[#E2136E]' : 'border-border hover:border-muted-foreground'}`}
-                            >
-                              <BkashLogo />
-                            </button>
+                            <button type="button" onClick={() => setOnlineProvider('bkash')} className={`flex-1 p-2 border-2 rounded ${onlineProvider === 'bkash' ? 'border-[#E2136E]' : 'border-border'}`}><BkashLogo /></button>
                           )}
-
                           {selectableProviders.includes('nagad') && (
-                            <button
-                              type="button"
-                              onClick={() => setOnlineProvider('nagad')}
-                              className={`p-3 border-2 transition-colors ${onlineProvider === 'nagad' ? 'border-[#F6921E]' : 'border-border hover:border-muted-foreground'}`}
-                            >
-                              <NagadLogo />
-                            </button>
+                            <button type="button" onClick={() => setOnlineProvider('nagad')} className={`flex-1 p-2 border-2 rounded ${onlineProvider === 'nagad' ? 'border-[#F6921E]' : 'border-border'}`}><NagadLogo /></button>
                           )}
                         </div>
-
                         {onlineProvider && providerNumber && (
-                          <div className="p-4 bg-secondary/30 border border-border space-y-4">
-                            <p className="text-sm font-medium">Send payment to {onlineProvider === 'bkash' ? 'bKash' : 'Nagad'}:</p>
-
-                            {providerInstruction ? (
-                              <p className="text-xs text-muted-foreground leading-relaxed">{providerInstruction}</p>
-                            ) : null}
-
-                            <div className="flex items-center justify-between gap-3 p-3 bg-background border border-border rounded">
-                              <div>
-                                <span className="text-xs text-muted-foreground">Number</span>
-                                <p className="font-semibold tracking-wider">{providerNumber}</p>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleCopy('number', providerNumber)}
-                                className="inline-flex items-center gap-2 h-9 px-3 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
-                              >
-                                {copied === 'number' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                                <span className="text-sm">Copy</span>
-                              </button>
+                          <div className="space-y-3">
+                            {providerInstruction && <p className="text-xs text-muted-foreground">{providerInstruction}</p>}
+                            <div className="flex items-center justify-between p-3 bg-background border border-border rounded">
+                              <div><span className="text-xs text-muted-foreground">Number</span><p className="font-semibold">{providerNumber}</p></div>
+                              <button type="button" onClick={() => handleCopy('number', providerNumber)} className="px-3 py-1.5 border border-border rounded text-xs flex items-center gap-1">{copied === 'number' ? <Check size={12} /> : <Copy size={12} />}Copy</button>
                             </div>
-
-                            <div className="flex items-center justify-between gap-3 p-3 bg-background border border-border rounded">
-                              <div>
-                                <span className="text-xs text-muted-foreground">Amount</span>
-                                <p className="font-semibold">৳{grandTotal.toLocaleString()}</p>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleCopy('amount', grandTotal.toString())}
-                                className="inline-flex items-center gap-2 h-9 px-3 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors"
-                              >
-                                {copied === 'amount' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                                <span className="text-sm">Copy</span>
-                              </button>
+                            <div className="flex items-center justify-between p-3 bg-background border border-border rounded">
+                              <div><span className="text-xs text-muted-foreground">Amount</span><p className="font-semibold">৳{grandTotal.toLocaleString()}</p></div>
+                              <button type="button" onClick={() => handleCopy('amount', grandTotal.toString())} className="px-3 py-1.5 border border-border rounded text-xs flex items-center gap-1">{copied === 'amount' ? <Check size={12} /> : <Copy size={12} />}Copy</button>
                             </div>
-
-                            <div>
-                              <label className="text-xs text-muted-foreground tracking-wider uppercase block mb-2">
-                                Sender Number <span className="text-destructive">*</span>
-                              </label>
-                              <input
-                                required
-                                value={form.senderNumber}
-                                onChange={e => setForm({ ...form, senderNumber: e.target.value })}
-                                placeholder={`Enter your ${onlineProvider === 'bkash' ? 'bKash' : 'Nagad'} number`}
-                                className="luxury-input"
-                              />
-                            </div>
-
-                            <div>
-                              <label className="text-xs text-muted-foreground tracking-wider uppercase block mb-2">
-                                Transaction ID <span className="text-destructive">*</span>
-                              </label>
-                              <input
-                                required
-                                value={form.transactionId}
-                                onChange={e => setForm({ ...form, transactionId: e.target.value })}
-                                placeholder={`Enter your ${onlineProvider === 'bkash' ? 'bKash' : 'Nagad'} transaction ID`}
-                                className="luxury-input"
-                              />
-                            </div>
+                            <FloatingInput label="Sender number" value={form.senderNumber} onChange={v => setForm({ ...form, senderNumber: v })} required />
+                            <FloatingInput label="Transaction ID" value={form.transactionId} onChange={v => setForm({ ...form, transactionId: v })} required />
                           </div>
                         )}
                       </div>
                     )}
                   </div>
-                </div>
+                )}
+              </div>
+
+              {/* Billing address */}
+              <h2 className="text-[18px] font-semibold text-foreground mt-8 mb-3">Billing address</h2>
+              <div className="border border-border rounded-md overflow-hidden">
+                <label className="flex items-center gap-3 px-4 py-3.5 cursor-pointer bg-[#eff5fb] ring-1 ring-[#1773b0] ring-inset">
+                  <span className="w-[18px] h-[18px] rounded-full border border-[#1773b0] flex items-center justify-center">
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#1773b0]" />
+                  </span>
+                  <span className="text-sm">Same as shipping address</span>
+                </label>
+                <label className="flex items-center gap-3 px-4 py-3.5 cursor-not-allowed opacity-60 border-t border-border">
+                  <span className="w-[18px] h-[18px] rounded-full border border-muted-foreground/50" />
+                  <span className="text-sm">Use a different billing address</span>
+                </label>
+              </div>
+
+              {/* Optional note (hidden compact) */}
+              <textarea
+                value={form.customerNote}
+                onChange={e => setForm({ ...form, customerNote: e.target.value })}
+                placeholder="Order note (optional)"
+                className="w-full mt-4 px-4 py-3 text-sm border border-border rounded-md bg-background focus:outline-none focus:border-[#1773b0] focus:ring-1 focus:ring-[#1773b0] resize-none"
+                rows={2}
+              />
+
+              {/* Complete order */}
+              <button
+                type="submit"
+                disabled={createOrder.isPending}
+                className="w-full mt-6 py-4 rounded-md bg-[#1773b0] hover:bg-[#155f93] text-white text-[15px] font-medium transition-colors disabled:opacity-60"
+              >
+                {createOrder.isPending ? 'Placing Order...' : 'Complete order'}
+              </button>
+
+              {/* Policy links */}
+              <div className="mt-8 pt-5 border-t border-border flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-[#1773b0]">
+                <a href="/refund-policy" className="underline">Refund policy</a>
+                <a href="/shipping-policy" className="underline">Shipping</a>
+                <a href="/privacy-policy" className="underline">Privacy policy</a>
+                <a href="/terms" className="underline">Terms of service</a>
+                <a href="/contact" className="underline">Contact</a>
               </div>
             </div>
+          </div>
 
-            <div className="lg:sticky lg:top-40 h-fit">
-              <div className="bg-card border border-border rounded-2xl p-6 sm:p-7 shadow-sm">
-                <h2 className="text-2xl font-bold text-foreground tracking-tight">Your order</h2>
-                <p className="text-sm text-muted-foreground mt-1 mb-5">HIGHLIGHTS</p>
-
-                <div className="space-y-4">
-                  {items.map((item, idx) => (
-                    <div key={idx} className="flex justify-between items-start gap-4 text-sm">
-                      <div className="flex gap-3 min-w-0">
-                        <span className="text-muted-foreground shrink-0 tabular-nums">{item.quantity} &nbsp;x</span>
-                        <div className="min-w-0">
-                          <p className="text-foreground leading-snug">{item.product.name}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">{item.size} / {item.color}</p>
-                        </div>
-                      </div>
-                      <span className="text-foreground whitespace-nowrap tabular-nums">৳{(item.product.price * item.quantity).toLocaleString()}</span>
+          {/* RIGHT — order summary (gray panel) */}
+          <aside className="bg-[#f5f5f5] order-1 lg:order-2 border-b lg:border-b-0 lg:border-l border-border">
+            <div className="max-w-[560px] mr-auto ml-0 w-full px-5 sm:px-10 py-8 sm:py-12 lg:sticky lg:top-0">
+              <div className="space-y-4 mb-6">
+                {items.map((item, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div className="relative shrink-0">
+                      <img src={item.product.image_url} alt={item.product.name} className="w-[60px] h-[60px] object-cover rounded border border-border" />
+                      <span className="absolute -top-2 -right-2 min-w-[22px] h-[22px] px-1.5 bg-foreground text-background text-[11px] rounded-full flex items-center justify-center">{item.quantity}</span>
                     </div>
-                  ))}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-foreground leading-snug line-clamp-2">{item.product.name}</p>
+                      {(item.size || item.color) && (
+                        <p className="text-xs text-muted-foreground mt-0.5">{[item.size, item.color].filter(Boolean).join(' / ')}</p>
+                      )}
+                    </div>
+                    <span className="text-sm text-foreground whitespace-nowrap tabular-nums">৳{(item.product.price * item.quantity).toLocaleString()}.00</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Coupon */}
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between p-3 border border-border rounded-md bg-background mb-4">
+                  <span className="text-sm font-medium">{appliedCoupon.code}</span>
+                  <button type="button" onClick={handleRemoveCoupon} className="text-xs text-destructive">Remove</button>
                 </div>
+              ) : (
+                <div className="flex gap-2 mb-5">
+                  <input
+                    value={couponCode}
+                    onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                    placeholder="Discount code"
+                    className="flex-1 px-3 py-2.5 text-sm border border-border rounded-md bg-background focus:outline-none focus:border-[#1773b0] focus:ring-1 focus:ring-[#1773b0]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    disabled={validateCoupon.isPending || !couponCode.trim()}
+                    className="px-5 py-2.5 rounded-md bg-foreground/10 text-foreground text-sm font-medium hover:bg-foreground/20 disabled:opacity-50"
+                  >
+                    Apply
+                  </button>
+                </div>
+              )}
 
-                <button
-                  type="button"
-                  onClick={() => navigate('/')}
-                  className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-foreground/60 transition-colors mt-5"
-                >
-                  <span className="text-lg leading-none">+</span>
-                  <span>Add more items</span>
-                </button>
-
-                <div className="border-t border-dashed border-border my-5" />
-
-                {/* Coupon Section */}
-                <h3 className="text-base font-bold text-foreground mb-3">Vouchers for your order</h3>
-                <div className="mb-5">
-                  {appliedCoupon ? (
-                    <div className="flex items-center justify-between p-3 border border-foreground/20 rounded-lg text-sm bg-secondary/40">
-                      <div>
-                        <span className="font-medium text-foreground">{appliedCoupon.code}</span>
-                        {appliedCoupon.name && <span className="text-muted-foreground ml-1">({appliedCoupon.name})</span>}
-                        <span className="text-foreground ml-2 tabular-nums">-৳{couponDiscount.toLocaleString()}</span>
-                      </div>
-                      <button type="button" onClick={handleRemoveCoupon} className="text-xs font-medium text-destructive hover:opacity-80">Remove</button>
-                    </div>
+              <div className="space-y-2 text-sm border-t border-border pt-4">
+                <div className="flex justify-between">
+                  <span className="text-foreground">Subtotal</span>
+                  <span className="tabular-nums">৳{total.toLocaleString()}.00</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-foreground flex items-center gap-1">Shipping <span className="text-muted-foreground">ⓘ</span></span>
+                  {delivery ? (
+                    isFreeShipping ? <span className="tabular-nums">FREE</span> : <span className="tabular-nums">৳{deliveryFee.toFixed(2)}</span>
                   ) : (
-                    <div className="flex gap-2">
-                      <input
-                        value={couponCode}
-                        onChange={e => setCouponCode(e.target.value.toUpperCase())}
-                        placeholder="Coupon Code"
-                        className="flex-1 px-3 py-2.5 border border-border rounded-lg bg-background text-sm uppercase tracking-wide focus:outline-none focus:border-foreground transition-colors"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleApplyCoupon}
-                        disabled={validateCoupon.isPending}
-                        className="px-5 py-2.5 rounded-lg border border-foreground text-foreground text-sm font-semibold hover:bg-foreground hover:text-background transition-colors whitespace-nowrap"
-                      >
-                        {validateCoupon.isPending ? '...' : 'Apply'}
-                      </button>
-                    </div>
+                    <span className="text-muted-foreground text-xs">Enter shipping address</span>
                   )}
                 </div>
-
-                <div className="border-t border-dashed border-border my-5" />
-
-                <div className="space-y-2.5 text-sm">
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>Subtotal</span>
-                    <span className="tabular-nums text-foreground">৳{total.toLocaleString()}</span>
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between text-foreground">
+                    <span>Discount</span>
+                    <span className="tabular-nums">-৳{couponDiscount.toLocaleString()}.00</span>
                   </div>
-                  <div className="flex justify-between text-muted-foreground">
-                    <span>Delivery</span>
-                    {isFreeShipping ? (
-                      <span className="tabular-nums"><span className="line-through mr-1">৳{deliveryFee}</span><span className="text-foreground font-medium">FREE</span></span>
-                    ) : (
-                      <span className="tabular-nums text-foreground">৳{deliveryFee}</span>
-                    )}
-                  </div>
-                  {couponDiscount > 0 && (
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Coupon discount</span>
-                      <span className="tabular-nums text-foreground">-৳{couponDiscount.toLocaleString()}</span>
-                    </div>
-                  )}
-                  {isFreeShipping && (
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Free shipping ({appliedCoupon?.code})</span>
-                      <span className="tabular-nums text-foreground">-৳{deliveryFee.toLocaleString()}</span>
-                    </div>
-                  )}
+                )}
+              </div>
+
+              <div className="flex justify-between items-baseline mt-5 pt-4 border-t border-border">
+                <span className="text-[18px] font-semibold text-foreground">Total</span>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xs text-muted-foreground">BDT</span>
+                  <span className="text-[22px] font-semibold text-foreground tabular-nums">৳{grandTotal.toLocaleString()}.00</span>
                 </div>
-
-                <div className="flex justify-between items-end mt-6">
-                  <div>
-                    <div className="text-2xl font-bold text-foreground">Total</div>
-                    <div className="text-[11px] text-muted-foreground">(incl. fees and tax)</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-foreground tabular-nums">৳{grandTotal.toLocaleString()}</div>
-                    {couponDiscount > 0 && (
-                      <div className="text-sm text-muted-foreground line-through tabular-nums">৳{(total + deliveryFee).toLocaleString()}</div>
-                    )}
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={createOrder.isPending}
-                  className="w-full mt-6 rounded-full bg-background text-foreground border border-foreground font-semibold text-base py-4 tracking-wide shadow-sm hover:bg-foreground hover:text-background active:bg-foreground active:text-background active:scale-[0.99] transition-all disabled:opacity-60"
-                >
-                  {createOrder.isPending ? 'Placing Order...' : 'Place order'}
-                </button>
               </div>
             </div>
-          </form>
-        )}
-      </main>
-      <Footer />
+          </aside>
+        </form>
+      )}
+
       {showConfirmedPopup && (
         <OrderConfirmedPopup
           image={orderConfirmedImage}
@@ -752,5 +708,48 @@ const Checkout = () => {
   );
 };
 
+// Shopify-style floating-label input
+const FloatingInput = ({
+  label, value, onChange, required, disabled, error, type = 'text',
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  disabled?: boolean;
+  error?: boolean;
+  type?: string;
+}) => {
+  const [focused, setFocused] = useState(false);
+  const filled = value.length > 0;
+  return (
+    <div className="relative">
+      <input
+        type={type}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        disabled={disabled}
+        className={`peer w-full h-[52px] px-3 pt-5 pb-1.5 text-sm bg-background border rounded-md focus:outline-none transition-colors ${
+          error ? 'border-destructive ring-1 ring-destructive'
+          : focused ? 'border-[#1773b0] ring-1 ring-[#1773b0]'
+          : 'border-border hover:border-foreground/40'
+        } ${disabled ? 'bg-secondary/50 cursor-not-allowed' : ''}`}
+      />
+      <label
+        className={`absolute left-3 pointer-events-none transition-all ${
+          focused || filled
+            ? 'top-1.5 text-[11px] text-muted-foreground'
+            : 'top-1/2 -translate-y-1/2 text-sm text-muted-foreground'
+        }`}
+      >
+        {label}
+      </label>
+    </div>
+  );
+};
+
 export default Checkout;
+
 
