@@ -80,7 +80,8 @@ const AdminHomepage = () => {
 
 type SlideType = { image: string; mobileImage?: string; title: string; topText: string; bottomText: string };
 type PosterType = { image: string; link: string; subtitle: string; title: string };
-type CategoryBannerType = { image: string; label: string; link: string; productIds?: string[] };
+type SubItem = { image: string; label: string; link: string };
+type CategoryBannerType = { image: string; label: string; link: string; productIds?: string[]; subItems?: SubItem[] };
 type FeaturedCatType = { image: string; label: string; link: string };
 
 const FeaturedCategoriesManager = ({ items: initial, onSave }: {
