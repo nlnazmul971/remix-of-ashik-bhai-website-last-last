@@ -1,0 +1,115 @@
+import { useState, useEffect, useCallback } from 'react';
+import { useStoreSettings } from '@/hooks/useSupabase';
+import { getProductImage } from '@/data/products';
+
+const Hero = () => {
+  const { data: settings = {} } = useStoreSettings();
+  const [current, setCurrent] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const rawSlides = settings['hero_slides'];
+  const slides = rawSlides ? JSON.parse(rawSlides) : [];
+
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
+
+  const goTo = useCallback((index: number) => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrent(index);
+    setTimeout(() => setIsTransitioning(false), 600);
+  }, [isTransitioning]);
+
+  const next = useCallback(() => goTo((current + 1) % slides.length), [current, goTo, slides.length]);
+
+  useEffect(() => {
+    const detectMobile = () => {
+      const byWidth = window.matchMedia('(max-width: 767px)').matches;
+      const byUA = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+      setIsMobileDevice(byWidth || byUA);
+    };
+
+    detectMobile();
+    window.addEventListener('resize', detectMobile);
+    return () => window.removeEventListener('resize', detectMobile);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(next, 5000);
+    return () => clearInterval(timer);
+  }, [next]);
+
+  if (slides.length === 0) return null;
+
+  const slide = slides[current];
+
+  return (
+    <section className="relative w-full h-[60vh] sm:h-screen overflow-hidden">
+      {slides.map((s: any, i: number) => {
+        const rawSrc = isMobileDevice && s.mobileImage ? s.mobileImage : s.image;
+        const targetWidth = isMobileDevice ? 800 : 1600;
+        const imageSrc = getProductImage(rawSrc, targetWidth, 92);
+        const isFirst = i === 0;
+
+        return (
+          <div
+            key={`${i}-${isMobileDevice ? 'mobile' : 'desktop'}`}
+            className={`w-full h-[60vh] sm:h-screen transition-opacity duration-700 ${i === current ? 'opacity-100 relative' : 'opacity-0 absolute inset-0'}`}
+          >
+            <img
+              src={imageSrc}
+              alt={`HIGHLIGHTS ${s.title} Collection`}
+              className="w-full h-full object-cover block"
+              loading={isFirst ? 'eager' : 'lazy'}
+              fetchPriority={isFirst ? 'high' : 'auto' as any}
+              decoding="async"
+            />
+          </div>
+        );
+      })}
+
+      <div className="absolute inset-0 bg-gradient-to-b from-foreground/10 via-transparent to-foreground/20 pointer-events-none" />
+
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <h1
+          className="luxury-heading text-[18vw] sm:text-[14vw] lg:text-[12vw] leading-none text-background/20 font-light tracking-[0.1em] select-none transition-all duration-700"
+          style={{ mixBlendMode: 'overlay' }}
+        >
+          {slide.title}
+        </h1>
+      </div>
+
+      {slide.topText && (
+        <div className="absolute top-[15%] right-4 sm:right-10 max-w-[220px] sm:max-w-xs text-right animate-fade-in">
+          <p className="text-[10px] sm:text-xs text-background/80 leading-relaxed whitespace-pre-line" style={{ fontFamily: 'var(--font-body)' }}>
+            {slide.topText}
+          </p>
+        </div>
+      )}
+
+      {slide.bottomText && (
+        <div className="absolute bottom-[12%] left-4 sm:left-10 max-w-[220px] sm:max-w-xs animate-fade-in">
+          <p className="text-[10px] sm:text-xs text-background/80 leading-relaxed whitespace-pre-line" style={{ fontFamily: 'var(--font-body)' }}>
+            {slide.bottomText}
+          </p>
+        </div>
+      )}
+
+      {slides.length > 1 && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
+          {slides.map((_: any, i: number) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                i === current ? 'bg-background w-6' : 'bg-background/40'
+              }`}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+};
+
+export default Hero;

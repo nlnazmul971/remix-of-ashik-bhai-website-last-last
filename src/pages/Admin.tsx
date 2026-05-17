@@ -1,0 +1,160 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Header from '@/components/Header';
+import CartDrawer from '@/components/CartDrawer';
+import { useAuth } from '@/contexts/AuthContext';
+import { useUserRole } from '@/hooks/useSupabase';
+import { ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
+import SEO from '@/components/SEO';
+import AdminSidebar from '@/components/admin/AdminSidebar';
+import AdminDashboard from '@/components/admin/AdminDashboard';
+import AdminProducts from '@/components/admin/AdminProducts';
+import AdminOrders from '@/components/admin/AdminOrders';
+import AdminReviews from '@/components/admin/AdminReviews';
+import AdminUsers from '@/components/admin/AdminUsers';
+import AdminSettings from '@/components/admin/AdminSettings';
+import AdminDeliveryCharge from '@/components/admin/AdminDeliveryCharge';
+import AdminPaymentMethods from '@/components/admin/AdminPaymentMethods';
+import AdminAPI from '@/components/admin/AdminAPI';
+import AdminHomepage from '@/components/admin/AdminHomepage';
+import AdminWishlist from '@/components/admin/AdminWishlist';
+import AdminNewsletter from '@/components/admin/AdminNewsletter';
+import AdminCoupons from '@/components/admin/AdminCoupons';
+import AdminFacebookOrders from '@/components/admin/AdminFacebookOrders';
+import AdminOfflineOrders from '@/components/admin/AdminOfflineOrders';
+import AdminStockManagement from '@/components/admin/AdminStockManagement';
+import AdminTrash from '@/components/admin/AdminTrash';
+import AdminReturnParcels from '@/components/admin/AdminReturnParcels';
+import AdminPackaging from '@/components/admin/AdminPackaging';
+import AdminDeliveredItems from '@/components/admin/AdminDeliveredItems';
+import AdminSubcategories from '@/components/admin/AdminHeaderCategories';
+import AdminCustomPages from '@/components/admin/AdminCustomPages';
+import AdminPopups from '@/components/admin/AdminPopups';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import OrderTracker from '@/components/OrderTracker';
+
+const Admin = () => {
+  const { user, signIn, signUp, signOut, resetPassword } = useAuth();
+  const { data: role } = useUserRole(user?.uid);
+  const [authForm, setAuthForm] = useState({ email: '', password: '', displayName: '', phone: '', mode: 'login' as 'login' | 'signup' });
+  const [activeTab, setActiveTab] = useState('dashboard');
+
+  const isAdmin = role === 'admin';
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header /><CartDrawer />
+        <main className="max-w-md mx-auto px-4 pt-40 text-center">
+          <h1 className="luxury-heading text-3xl tracking-[0.15em] mb-8">
+            {authForm.mode === 'login' ? 'Sign In' : 'Create Account'}
+          </h1>
+          {authForm.mode === 'login' ? (
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              try { await signIn(authForm.email, authForm.password); } catch (err: any) { toast.error(err.message); }
+            }} className="space-y-4">
+              <input type="email" value={authForm.email} onChange={e => setAuthForm({ ...authForm, email: e.target.value })} placeholder="Email" className="luxury-input" required />
+              <input type="password" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} placeholder="Password" className="luxury-input" required />
+              <button type="submit" className="luxury-button-primary w-full">Sign In</button>
+              <button type="button" onClick={async () => {
+                if (!authForm.email.trim()) { toast.error('Please enter your email first'); return; }
+                try {
+                  await resetPassword(authForm.email);
+                  toast.success('Password reset link sent! Check your email.');
+                } catch (err: any) { toast.error(err.message); }
+              }} className="text-xs text-muted-foreground hover:text-foreground transition-colors mt-1">
+                Forgot Password?
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              if (!authForm.displayName.trim()) { toast.error('Please enter your name'); return; }
+              if (!authForm.email.trim()) { toast.error('Please enter email'); return; }
+              if (!authForm.password || authForm.password.length < 6) { toast.error('Password must be at least 6 characters'); return; }
+              try {
+                await signUp(authForm.email, authForm.password, authForm.displayName, authForm.phone);
+                toast.success('Account created successfully!');
+              } catch (err: any) { toast.error(err.message); }
+            }} className="space-y-4">
+              <input value={authForm.displayName} onChange={e => setAuthForm({ ...authForm, displayName: e.target.value })} placeholder="Full Name" className="luxury-input" required />
+              <input type="email" value={authForm.email} onChange={e => setAuthForm({ ...authForm, email: e.target.value })} placeholder="Email" className="luxury-input" required />
+              <input type="tel" value={authForm.phone} onChange={e => setAuthForm({ ...authForm, phone: e.target.value })} placeholder="Phone Number (optional)" className="luxury-input" />
+              <input type="password" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} placeholder="Password (min 6 characters)" className="luxury-input" required />
+              <button type="submit" className="luxury-button-primary w-full">Sign Up</button>
+            </form>
+          )}
+          <button onClick={() => setAuthForm({ ...authForm, mode: authForm.mode === 'login' ? 'signup' : 'login' })} className="text-sm text-muted-foreground hover:text-foreground mt-4 transition-colors">
+            {authForm.mode === 'login' ? "Don't have an account? Sign Up" : 'Already have an account? Sign In'}
+          </button>
+          <Link to="/" className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground mt-6"><ArrowLeft size={14} /> Back to store</Link>
+        </main>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header /><CartDrawer />
+        <main className="max-w-lg mx-auto px-4 pt-40">
+          <div className="text-center mb-8">
+            <h1 className="luxury-heading text-3xl tracking-[0.15em] mb-4">My Account</h1>
+            <p className="text-sm text-muted-foreground mb-2">{user.email}</p>
+            <button onClick={signOut} className="luxury-button-outline text-xs">Sign Out</button>
+          </div>
+          <OrderTracker userId={user.uid} />
+          <Link to="/" className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground mt-6"><ArrowLeft size={14} /> Back to store</Link>
+        </main>
+      </div>
+    );
+  }
+
+  return (
+    <SidebarProvider>
+      <SEO title="Admin Panel" description="HIGHLIGHTS admin dashboard." path="/admin" noIndex />
+      <div className="min-h-screen flex w-full bg-background">
+        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} onSignOut={signOut} />
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="h-14 flex items-center border-b border-border px-4 gap-3 bg-background sticky top-0 z-30">
+            <SidebarTrigger />
+            <h1 className="text-sm font-medium tracking-wide capitalize">{activeTab}</h1>
+            <div className="ml-auto flex items-center gap-3">
+              <Link to="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors">← Back to Store</Link>
+              <span className="text-xs text-muted-foreground">{user.email}</span>
+            </div>
+          </header>
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
+            {activeTab === 'dashboard' && <AdminDashboard />}
+            {activeTab === 'homepage' && <AdminHomepage />}
+            {activeTab === 'subcategories' && <AdminSubcategories />}
+            {activeTab === 'custom-pages' && <AdminCustomPages />}
+            {activeTab === 'popups' && <AdminPopups />}
+            {activeTab === 'products' && <AdminProducts />}
+            {activeTab === 'orders' && <AdminOrders />}
+            {activeTab === 'facebook-orders' && <AdminFacebookOrders />}
+            {activeTab === 'offline-orders' && <AdminOfflineOrders />}
+            {activeTab === 'stock' && <AdminStockManagement />}
+            {activeTab === 'returns' && <AdminReturnParcels />}
+            {activeTab === 'packaging' && <AdminPackaging />}
+            {activeTab === 'delivered-items' && <AdminDeliveredItems />}
+            {activeTab === 'reviews' && <AdminReviews />}
+            {activeTab === 'wishlist' && <AdminWishlist />}
+            {activeTab === 'newsletter' && <AdminNewsletter />}
+            {activeTab === 'coupons' && <AdminCoupons />}
+            {activeTab === 'users' && <AdminUsers />}
+            {activeTab === 'trash' && <AdminTrash />}
+            {activeTab === 'settings' && <AdminSettings />}
+            {activeTab === 'delivery-charge' && <AdminDeliveryCharge />}
+            {activeTab === 'payment-methods' && <AdminPaymentMethods />}
+            {activeTab === 'api' && <AdminAPI />}
+          </main>
+        </div>
+      </div>
+    </SidebarProvider>
+  );
+};
+
+export default Admin;

@@ -1,0 +1,2 @@
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_new_drop boolean NOT NULL DEFAULT false;
+CREATE INDEX IF NOT EXISTS idx_products_is_new_drop ON public.products(is_new_drop) WHERE is_new_drop = true;

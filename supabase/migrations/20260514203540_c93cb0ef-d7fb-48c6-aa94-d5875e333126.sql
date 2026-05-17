@@ -1,0 +1,1 @@
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS is_new_drop boolean NOT NULL DEFAULT false;

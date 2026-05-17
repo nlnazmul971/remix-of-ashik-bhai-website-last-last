@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /profile
+Disallow: /wishlist
+Disallow: /reset-password
+
+Sitemap: https://www.highlightsbd.shop/sitemap.xml
