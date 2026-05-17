@@ -99,7 +99,7 @@ const Header = () => {
 
                 {/* Logo */}
                 <Link to="/" className="shrink-0 flex items-center" aria-label="Home">
-                  <img src={siteLogo} alt="Logo" className="h-12 sm:h-16 w-auto object-contain" loading="eager" fetchPriority={"high" as any} decoding="async" />
+                  <img src={siteLogo} alt="Logo" className="h-10 sm:h-12 w-auto object-contain" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
 
                 {/* Search bar - desktop center */}
