@@ -460,29 +460,68 @@ const Index = () => {
           );
         })()}
 
-        {/* Category Banners (3 horizontal banners) */}
+        {/* Category Banners (3 horizontal banners) — each with 2 rows of products */}
         {!showProducts && categoryBanners.length > 0 && (
-          <section className="mt-16 sm:mt-24 space-y-4 sm:space-y-6">
-            {categoryBanners.slice(0, 3).map((b, i) => (
-              <Link
-                key={i}
-                to={b.link || '/'}
-                className="relative block overflow-hidden group aspect-[16/6] sm:aspect-[16/5]"
-              >
-                <img
-                  src={b.image}
-                  alt={b.label}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-foreground/20 via-transparent to-transparent" />
-                <div className="absolute inset-0 flex items-center px-6 sm:px-12">
-                  <h3 className="text-background text-sm sm:text-lg tracking-[0.4em] uppercase font-light drop-shadow-md">
-                    {b.label}
-                  </h3>
+          <section className="mt-16 sm:mt-24 space-y-12 sm:space-y-16">
+            {categoryBanners.slice(0, 3).map((b, i) => {
+              // Extract category from link (e.g. "/?category=Shirts")
+              let catName = '';
+              try {
+                const url = new URL(b.link || '/', 'http://x');
+                catName = url.searchParams.get('category') || '';
+              } catch { /* noop */ }
+
+              const catProducts = catName
+                ? allProducts.filter(p => p.category?.toLowerCase() === catName.toLowerCase()).slice(0, 8)
+                : [];
+
+              return (
+                <div key={i} className="space-y-5 sm:space-y-6">
+                  <Link
+                    to={b.link || '/'}
+                    className="relative block overflow-hidden group aspect-[16/6] sm:aspect-[16/5]"
+                  >
+                    <img
+                      src={b.image}
+                      alt={b.label}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/20 via-transparent to-transparent" />
+                    <div className="absolute inset-0 flex items-center px-6 sm:px-12">
+                      <h3 className="text-background text-sm sm:text-lg tracking-[0.4em] uppercase font-light drop-shadow-md">
+                        {b.label}
+                      </h3>
+                    </div>
+                  </Link>
+
+                  {catProducts.length > 0 && (
+                    <>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                        {catProducts.map((product, idx) => (
+                          <ProductCard
+                            key={product.id}
+                            product={product}
+                            reviewStats={reviewStats}
+                            hoverImageUrl={hoverImageMap[product.id]}
+                            isSoldOut={soldOutMap[product.id] || false}
+                            priority={idx < 2}
+                          />
+                        ))}
+                      </div>
+                      <div className="flex justify-center">
+                        <Link
+                          to={b.link || '/'}
+                          className="inline-flex items-center gap-2 px-8 py-3 border border-foreground text-[11px] tracking-[0.25em] uppercase hover:bg-foreground hover:text-background transition"
+                        >
+                          View All {b.label}
+                        </Link>
+                      </div>
+                    </>
+                  )}
                 </div>
-              </Link>
-            ))}
+              );
+            })}
           </section>
         )}
 
