@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useStoreSettings } from '@/hooks/useSupabase';
 import { getProductImage } from '@/data/products';
+import { MOCK_HERO_SLIDES } from '@/data/mockData';
 
 const Hero = () => {
   const { data: settings = {} } = useStoreSettings();
@@ -8,7 +9,8 @@ const Hero = () => {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const rawSlides = settings['hero_slides'];
-  const slides = rawSlides ? JSON.parse(rawSlides) : [];
+  const parsed = rawSlides ? JSON.parse(rawSlides) : [];
+  const slides = parsed.length > 0 ? parsed : MOCK_HERO_SLIDES;
 
   const [isMobileDevice, setIsMobileDevice] = useState(false);
 
