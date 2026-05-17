@@ -50,6 +50,13 @@ export const MOCK_HOMEPAGE_VIDEOS = [
   },
 ];
 
+export const MOCK_FEATURED_CATEGORIES = [
+  { image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400&q=85', label: 'T-Shirts', link: '/?category=T-Shirt' },
+  { image: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400&q=85', label: 'Shirts', link: '/?category=Shirts' },
+  { image: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400&q=85', label: 'Pants', link: '/?category=Pant' },
+  { image: 'https://images.unsplash.com/photo-1622445275576-721325763afe?w=400&q=85', label: 'Panjabi', link: '/?category=Panjabi' },
+];
+
 export const MOCK_POSTERS = [
   {
     image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=1200&q=90',
