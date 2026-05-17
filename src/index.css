@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -40,8 +40,11 @@
     --sidebar-border: 0 0% 91%;
     --sidebar-ring: 0 0% 60%;
 
-    --font-display: 'Jost', sans-serif;
-    --font-body: 'Jost', sans-serif;
+    --font-display: 'Lora', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+
+    --announce: 22 95% 55%;
+    --announce-foreground: 0 0% 100%;
 
     --luxury-surface: 0 0% 98%;
     --luxury-divider: 0 0% 93%;
