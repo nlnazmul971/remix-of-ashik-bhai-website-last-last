@@ -482,7 +482,7 @@ const CategoryBannerManager = ({ banners, onSave }: {
     try { await onSave(items); } finally { setSaving(false); }
   };
 
-  const addBanner = () => setItems([...items, { image: '', label: '', link: '', productIds: [] }]);
+  const addBanner = () => setItems([...items, { image: '', label: '', link: '', productIds: [], subItems: [] }]);
   const removeBanner = (i: number) => setItems(items.filter((_, idx) => idx !== i));
   const updateBanner = (i: number, field: string, value: any) =>
     setItems(items.map((b, idx) => idx === i ? { ...b, [field]: value } : b));
