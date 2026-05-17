@@ -296,135 +296,130 @@ const ProductDetail = () => {
       <Header /><CartDrawer />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-20 sm:pb-8">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-[11px] text-muted-foreground mb-1 sm:mb-3">
-          <Link to="/" className="hover:text-foreground transition-colors">Home</Link>
-          <span>/</span>
-          <Link to={`/?category=${product.category}`} className="hover:text-foreground transition-colors">{product.category}</Link>
-          <span>/</span>
+        <div className="flex items-center gap-2 text-[12px] text-muted-foreground mb-4 sm:mb-6">
+          <Link to="/" className="hover:text-foreground transition-colors">🏠 Home</Link>
+          <span>›</span>
+          <Link to={`/?category=${product.category}`} className="hover:text-foreground transition-colors capitalize">{product.category}</Link>
+          <span>›</span>
           <span className="text-foreground truncate">{product.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-14">
           <div>
             <ProductImageGallery mainImage={getProductImage(product.image_url)} name={product.name} productId={product.id} />
-            {/* Description under main image (desktop only) */}
-            <div className="hidden lg:block mt-6">
-              <h3 className="luxury-heading text-base sm:text-lg tracking-[0.1em] mb-3">Description</h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{product.description}</p>
-            </div>
           </div>
 
-          <div className="py-0 lg:py-4">
-            <p className="luxury-body text-[10px] text-muted-foreground mb-1 tracking-[0.15em]">{product.category}</p>
-            <h1 className="text-2xl sm:text-4xl font-medium leading-tight mb-1.5 sm:mb-3 text-foreground" style={{ fontFamily: "'Playfair Display', serif", letterSpacing: '0.005em' }}>{product.name}</h1>
-            {(product.brand || product.sku) && (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-2 sm:mb-3">
-                {product.brand && <span className="text-[11px] text-muted-foreground">Brand: <span className="text-foreground font-medium">{product.brand}</span></span>}
-                {product.sku && <span className="text-[11px] text-muted-foreground">SKU: <span className="text-foreground font-medium">{product.sku}</span></span>}
-              </div>
-            )}
+          <div className="py-0 lg:py-2">
+            {/* Title + wishlist heart */}
+            <div className="flex items-start justify-between gap-4 mb-2 sm:mb-3">
+              <h1 className="text-2xl sm:text-[28px] leading-tight font-normal text-foreground" style={{ fontFamily: "var(--font-display)" }}>
+                {product.name}
+              </h1>
+              <button
+                onClick={() => toggleItem(product)}
+                className={`shrink-0 w-10 h-10 rounded-full border border-border flex items-center justify-center transition-colors hover:bg-accent ${isInWishlist(product.id) ? 'text-destructive border-destructive' : ''}`}
+                aria-label="Add to wishlist"
+              >
+                <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
+              </button>
+            </div>
 
-            {reviews.length > 0 && (
-              <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                <div className="flex">
-                  {Array.from({ length: 5 }).map((_, j) => (
-                    <Star key={j} size={12} fill={j < Math.round(avgRating) ? 'currentColor' : 'none'} className={j < Math.round(avgRating) ? 'text-foreground' : 'text-muted-foreground/30'} />
-                  ))}
-                </div>
-                <span className="text-[11px] text-muted-foreground">({reviews.length} reviews)</span>
-              </div>
-            )}
-
-            <div className="flex items-baseline gap-2 sm:gap-3 mb-3 sm:mb-6">
-              <span className="text-lg sm:text-2xl font-light">৳{product.price.toLocaleString()}</span>
+            {/* Price */}
+            <div className="flex items-baseline gap-3 mb-6 sm:mb-8">
+              <span className="text-[20px] sm:text-[22px] text-foreground">Tk {product.price.toLocaleString()}.00</span>
               {product.original_price && (
                 <>
-                  <span className="text-xs sm:text-sm text-muted-foreground line-through">৳{product.original_price.toLocaleString()}</span>
-                  <span className="inline-flex items-center text-[11px] sm:text-sm font-semibold tracking-wider bg-destructive/10 text-destructive px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-sm">
-                    -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}% OFF
+                  <span className="text-sm text-muted-foreground line-through">Tk {product.original_price.toLocaleString()}.00</span>
+                  <span className="text-[11px] font-semibold text-destructive">
+                    -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
                   </span>
                 </>
               )}
             </div>
 
-            <div className="mb-3 sm:mb-6">
-              <p className="luxury-body text-[10px] mb-1.5 sm:mb-2 tracking-[0.1em]">Size — <span className="text-muted-foreground">{size}</span></p>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            {/* Size */}
+            <div className="mb-6 sm:mb-8">
+              <p className="text-sm mb-3 text-foreground">
+                <span className="font-semibold">Size:</span> {size}
+              </p>
+              <div className="flex flex-wrap gap-2">
                 {product.sizes.map(s => {
                   const avail = getSizeAvailable(s);
+                  const isSelected = size === s;
                   return (
-                    <button key={s} onClick={() => setSelectedSize(s)}
-                      className={`min-w-[36px] h-9 sm:min-w-[40px] sm:h-11 px-2.5 sm:px-3 text-[11px] sm:text-xs tracking-wider border transition-all relative ${
-                        avail <= 0 ? 'opacity-40 line-through' :
-                        size === s ? 'bg-foreground text-background border-foreground' : 'border-border hover:border-foreground'
-                      }`}>{s}</button>
+                    <button
+                      key={s}
+                      onClick={() => setSelectedSize(s)}
+                      disabled={avail <= 0}
+                      className={`min-w-[64px] h-10 px-4 text-[13px] rounded-sm border transition-all ${
+                        avail <= 0
+                          ? 'opacity-40 line-through border-border'
+                          : isSelected
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background text-foreground border-border hover:border-foreground'
+                      }`}
+                    >
+                      {s}
+                    </button>
                   );
                 })}
               </div>
             </div>
 
-            <div className="mb-4 sm:mb-8">
-              <p className="luxury-body text-[10px] mb-1.5 sm:mb-2 tracking-[0.1em]">Quantity</p>
-              <div className="inline-flex items-center border border-border">
-                <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="p-2 sm:p-3 hover:bg-accent transition-colors"><Minus size={13} /></button>
-                <span className="w-9 sm:w-12 text-center text-xs sm:text-sm">{quantity}</span>
-                <button onClick={() => setQuantity(Math.min(currentSizeAvailable || product.stock, quantity + 1))} className="p-2 sm:p-3 hover:bg-accent transition-colors"><Plus size={13} /></button>
-              </div>
-              <p className="text-[10px] sm:text-[11px] text-muted-foreground mt-1">
-                {currentSizeAvailable > 0 ? `${currentSizeAvailable} in stock` : allSoldOut ? 'Sold Out' : 'This size is out of stock'}
-              </p>
-            </div>
+            {/* Quantity label */}
+            <p className="text-sm mb-2 text-foreground font-medium">Quantity</p>
 
+            {/* Quantity + Add to cart row */}
             {allSoldOut ? (
-              <div className="space-y-2">
-                <div className="w-full py-3.5 text-center bg-destructive/10 text-destructive text-sm font-medium tracking-wider uppercase">SOLD OUT</div>
-                <button onClick={() => toggleItem(product)}
-                  className={`w-full py-2.5 sm:py-3.5 text-[11px] sm:text-sm flex items-center justify-center gap-2 border transition-colors ${isInWishlist(product.id) ? 'border-destructive text-destructive' : 'border-border hover:bg-accent'}`}>
-                  <Heart size={16} fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
-                  {isInWishlist(product.id) ? 'In Wishlist' : 'Add to Wishlist'}
-                </button>
-              </div>
+              <div className="w-full py-3.5 text-center bg-destructive/10 text-destructive text-sm font-medium tracking-wider uppercase rounded-sm">SOLD OUT</div>
             ) : (
               <>
-                <div className="flex gap-2 sm:gap-3 mb-2 sm:mb-3">
-                  <button onClick={(e) => { flyToCart((e.currentTarget as HTMLElement).closest('main')?.querySelector('img') || e.currentTarget, getProductImage(product.image_url, 400)); handleAddToCart(); }} disabled={currentSizeAvailable <= 0} className="flex-1 luxury-button-primary py-2.5 sm:py-3.5 text-[11px] sm:text-sm disabled:opacity-40">Add to Cart</button>
-                  <button onClick={() => toggleItem(product)}
-                    className={`p-2.5 sm:p-3.5 border border-border hover:bg-accent transition-colors ${isInWishlist(product.id) ? 'text-destructive' : ''}`}>
-                    <Heart size={16} className="sm:w-[18px] sm:h-[18px]" fill={isInWishlist(product.id) ? 'currentColor' : 'none'} />
+                <div className="flex items-stretch gap-3 mb-3">
+                  {/* Qty stepper - khaki bg */}
+                  <div className="flex items-center bg-primary text-primary-foreground rounded-sm overflow-hidden h-12">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="px-3 h-full hover:bg-foreground/10 transition-colors"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus size={14} />
+                    </button>
+                    <span className="w-10 text-center text-sm">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(Math.min(currentSizeAvailable || product.stock, quantity + 1))}
+                      className="px-3 h-full hover:bg-foreground/10 transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus size={14} />
+                    </button>
+                  </div>
+                  {/* Add to cart - outline */}
+                  <button
+                    onClick={(e) => {
+                      flyToCart((e.currentTarget as HTMLElement).closest('main')?.querySelector('img') || e.currentTarget, getProductImage(product.image_url, 400));
+                      handleAddToCart();
+                    }}
+                    disabled={currentSizeAvailable <= 0}
+                    className="flex-1 h-12 border border-primary text-primary text-sm font-medium rounded-sm hover:bg-primary/5 transition-colors disabled:opacity-40"
+                  >
+                    Add to cart
                   </button>
                 </div>
-                
+
+                {/* Buy it now - solid gold full-width */}
+                <button
+                  onClick={handleBuyNow}
+                  disabled={currentSizeAvailable <= 0}
+                  className="w-full h-12 bg-primary text-primary-foreground text-sm font-medium rounded-sm hover:opacity-90 transition-opacity disabled:opacity-40"
+                >
+                  Buy it now
+                </button>
+
+                {currentSizeAvailable > 0 && currentSizeAvailable <= 5 && (
+                  <p className="text-[11px] text-destructive mt-2">Only {currentSizeAvailable} left in stock</p>
+                )}
               </>
             )}
-            <a
-              href={messageLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              onPointerDown={() => setIsMessagePressed(true)}
-              onPointerUp={() => setIsMessagePressed(false)}
-              onPointerLeave={() => setIsMessagePressed(false)}
-              onPointerCancel={() => setIsMessagePressed(false)}
-              onBlur={() => setIsMessagePressed(false)}
-              className={`w-full py-2.5 sm:py-3.5 text-[11px] sm:text-sm flex items-center justify-center gap-2 mt-2 border border-message transition-colors tracking-[0.15em] uppercase [@media(hover:hover)]:hover:bg-message [@media(hover:hover)]:hover:text-message-foreground ${isMessagePressed ? 'bg-message text-message-foreground' : 'bg-background text-message'}`}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              Message Now
-            </a>
-
-            <div className="flex items-center justify-between sm:justify-start gap-4 sm:gap-6 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-border">
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Shield size={14} className="sm:w-4 sm:h-4" />
-                <span className="text-[10px] sm:text-[11px]">Secure Payment</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Truck size={14} className="sm:w-4 sm:h-4" />
-                <span className="text-[10px] sm:text-[11px]">Fast Delivery</span>
-              </div>
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <RotateCcw size={14} className="sm:w-4 sm:h-4" />
-                <span className="text-[10px] sm:text-[11px]">Easy Returns</span>
-              </div>
-            </div>
 
             <div className="lg:hidden mt-4 sm:mt-6">
               <button
