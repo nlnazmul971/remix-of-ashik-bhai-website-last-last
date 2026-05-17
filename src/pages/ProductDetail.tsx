@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Heart, Minus, Plus, Star, Send, ZoomIn, X, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, Minus, Plus, Star, Send, ZoomIn, X, ChevronDown, ChevronLeft, ChevronRight, Check, Facebook, Twitter, Linkedin } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CartDrawer from '@/components/CartDrawer';
