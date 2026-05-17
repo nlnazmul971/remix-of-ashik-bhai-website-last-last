@@ -37,6 +37,10 @@ const Index = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [selectedPriceIdx, setSelectedPriceIdx] = useState<number[]>([]);
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'newest' | 'name-asc'>('featured');
+  const [gridCols, setGridCols] = useState<3 | 4>(4);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 24;
   const activeCategory = searchParams.get('category') || '';
   const activeSub = searchParams.get('sub') || '';
   const searchQuery = searchParams.get('search') || '';
