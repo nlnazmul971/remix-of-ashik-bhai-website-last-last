@@ -200,14 +200,14 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
           </div>
         )}
 
-        {/* Full-width green Add to cart */}
+        {/* Full-width Add to cart - accent mint */}
         <button
           onClick={isSoldOut ? handleWishlist : handleOpenSizes}
           disabled={isSoldOut && isInWishlist(product.id)}
-          className={`mt-3 w-full py-2.5 rounded-md text-[14px] font-semibold text-white transition ${
+          className={`mt-3 w-full py-2.5 rounded-md text-[14px] font-semibold transition ${
             isSoldOut
-              ? 'bg-foreground/60 hover:bg-foreground/70'
-              : 'bg-[hsl(140,65%,30%)] hover:bg-[hsl(140,65%,25%)]'
+              ? 'bg-foreground/60 hover:bg-foreground/70 text-background'
+              : 'bg-accent text-accent-foreground hover:bg-accent/80 border border-accent-foreground/10'
           }`}
         >
           {isSoldOut ? (isInWishlist(product.id) ? 'In Wishlist' : 'Add to Wishlist') : 'Add to cart'}
