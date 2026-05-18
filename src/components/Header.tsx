@@ -98,8 +98,8 @@ const Header = () => {
                 </button>
 
                 {/* Logo */}
-                <Link to="/" className="shrink-0 flex items-center" aria-label="Home">
-                  <img src={siteLogo} alt="Logo" className="h-10 sm:h-12 w-auto object-contain" loading="eager" fetchPriority={"high" as any} decoding="async" />
+                <Link to="/" className="shrink-0 flex items-center relative" aria-label="Home">
+                  <img src={siteLogo} alt="Logo" className="h-16 sm:h-12 w-auto object-contain relative z-10" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
 
                 {/* Search bar - desktop center */}
@@ -120,13 +120,10 @@ const Header = () => {
 
                 {/* Right icons */}
                 <div className="flex items-center gap-1 sm:gap-3 ml-auto sm:ml-0">
-                  <button onClick={() => setSearchOpen(true)} className="sm:hidden p-1.5 hover:opacity-60 transition-opacity">
-                    <Search size={20} />
-                  </button>
-                  <Link to={profilePath} className="p-1.5 hover:opacity-60 transition-opacity">
+                  <Link to={profilePath} className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity">
                     <User size={20} />
                   </Link>
-                  <Link to="/wishlist" className="p-1.5 hover:opacity-60 transition-opacity relative">
+                  <Link to="/wishlist" className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity relative">
                     <Heart size={20} />
                     {wishlistItems.length > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-foreground text-background text-[9px] rounded-full flex items-center justify-center">
