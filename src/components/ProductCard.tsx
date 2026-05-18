@@ -104,11 +104,11 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
 
           {/* Discount square badge top-left */}
           {isSoldOut ? (
-            <span className="absolute top-0 left-0 text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 text-white bg-[hsl(0,75%,52%)] rounded">
+            <span className="absolute top-0 left-0 text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 text-destructive-foreground bg-destructive rounded">
               Sold Out
             </span>
           ) : discountPercent ? (
-            <span className="absolute top-0 left-0 min-w-[42px] h-[26px] px-2 rounded bg-[hsl(0,75%,52%)] text-white flex items-center justify-center text-[12px] font-semibold">
+            <span className="absolute top-0 left-0 min-w-[42px] h-[26px] px-2 rounded bg-destructive text-destructive-foreground flex items-center justify-center text-[12px] font-semibold">
               {discountPercent}%
             </span>
           ) : null}
@@ -167,7 +167,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
       {/* Info */}
       <div className="pt-3 flex flex-col flex-1">
         {!isSoldOut && typeof stock === 'number' && stock > 0 && (
-          <p className="text-[12px] font-semibold text-[hsl(140,65%,30%)] mb-1">
+          <p className="text-[12px] font-semibold text-accent-foreground mb-1">
             {stock} in stock
           </p>
         )}
@@ -182,7 +182,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
           {product.original_price && (
             <span className="text-[12px] text-muted-foreground line-through">{product.original_price.toLocaleString()}.00৳</span>
           )}
-          <span className="text-[15px] font-bold text-[hsl(0,75%,50%)]">{product.price.toLocaleString()}.00৳</span>
+          <span className="text-[15px] font-bold" style={{ color: 'hsl(var(--price-sale))' }}>{product.price.toLocaleString()}.00৳</span>
         </div>
 
         {reviewStats[product.id] && (
@@ -200,14 +200,14 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
           </div>
         )}
 
-        {/* Full-width green Add to cart */}
+        {/* Full-width Add to cart - accent mint */}
         <button
           onClick={isSoldOut ? handleWishlist : handleOpenSizes}
           disabled={isSoldOut && isInWishlist(product.id)}
-          className={`mt-3 w-full py-2.5 rounded-md text-[14px] font-semibold text-white transition ${
+          className={`mt-3 w-full py-2.5 rounded-md text-[14px] font-semibold transition ${
             isSoldOut
-              ? 'bg-foreground/60 hover:bg-foreground/70'
-              : 'bg-[hsl(140,65%,30%)] hover:bg-[hsl(140,65%,25%)]'
+              ? 'bg-foreground/60 hover:bg-foreground/70 text-background'
+              : 'bg-accent text-accent-foreground hover:bg-accent/80 border border-accent-foreground/10'
           }`}
         >
           {isSoldOut ? (isInWishlist(product.id) ? 'In Wishlist' : 'Add to Wishlist') : 'Add to cart'}

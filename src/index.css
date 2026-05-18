@@ -6,31 +6,31 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --background: 210 17% 98%;
+    --foreground: 200 25% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 200 25% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
-    --primary: 36 32% 43%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 13%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 0 0% 93%;
-    --accent-foreground: 0 0% 13%;
-    --message: 142 71% 31%;
+    --popover-foreground: 200 25% 12%;
+    --primary: 182 39% 70%;
+    --primary-foreground: 200 40% 15%;
+    --secondary: 182 39% 92%;
+    --secondary-foreground: 200 30% 18%;
+    --muted: 210 17% 95%;
+    --muted-foreground: 200 12% 42%;
+    --accent: 125 39% 94%;
+    --accent-foreground: 145 45% 22%;
+    --message: 142 50% 40%;
     --message-foreground: 0 0% 100%;
-    --destructive: 0 75% 60%;
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 93%;
-    --input: 0 0% 93%;
-    --ring: 36 32% 43%;
+    --border: 200 15% 88%;
+    --input: 200 15% 88%;
+    --ring: 182 39% 60%;
     --radius: 5px;
-    --price-sale: 0 75% 60%;
-    --promo: 36 32% 43%;
-    --promo-foreground: 0 0% 100%;
+    --price-sale: 182 50% 32%;
+    --promo: 182 39% 70%;
+    --promo-foreground: 200 40% 15%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 0 0% 26%;
     --sidebar-primary: 0 0% 10%;
@@ -43,14 +43,14 @@
     --font-display: 'Lora', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
 
-    --announce: 22 95% 55%;
-    --announce-foreground: 0 0% 100%;
+    --announce: 182 39% 60%;
+    --announce-foreground: 200 40% 15%;
 
-    --luxury-surface: 0 0% 98%;
-    --luxury-divider: 0 0% 93%;
-    --luxury-badge: 36 32% 43%;
-    --luxury-badge-text: 0 0% 100%;
-    --luxury-hover: 0 0% 96%;
+    --luxury-surface: 210 17% 98%;
+    --luxury-divider: 200 15% 88%;
+    --luxury-badge: 125 39% 88%;
+    --luxury-badge-text: 145 45% 22%;
+    --luxury-hover: 182 39% 92%;
   }
 }
 
