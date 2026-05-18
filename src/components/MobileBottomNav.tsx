@@ -68,7 +68,7 @@ const MobileBottomNav = () => {
         </span>
       </div>
     );
-    const cls = `flex-1 flex active:scale-95 transition-all rounded-xl mx-0.5 ${
+    const cls = `flex-1 flex items-center justify-center active:scale-95 transition-all rounded-xl mx-0.5 my-1.5 ${
       active ? 'bg-primary' : ''
     }`;
     if (to) return <Link to={to} className={cls}>{inner}</Link>;
