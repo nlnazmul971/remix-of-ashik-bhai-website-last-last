@@ -98,8 +98,8 @@ const Header = () => {
                 </button>
 
                 {/* Logo */}
-                <Link to="/" className="shrink-0 flex items-center relative" aria-label="Home">
-                  <img src={siteLogo} alt="Logo" className="h-24 sm:h-32 w-auto object-contain relative z-10" loading="eager" fetchPriority={"high" as any} decoding="async" />
+                <Link to="/" className="shrink-0 flex items-center" aria-label="Home">
+                  <img src={siteLogo} alt="Logo" className="h-10 sm:h-12 w-auto object-contain" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
 
                 {/* Search bar - desktop center */}
