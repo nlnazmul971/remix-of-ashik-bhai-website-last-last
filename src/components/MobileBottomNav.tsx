@@ -46,21 +46,21 @@ const MobileBottomNav = () => {
   }) => {
     const showBadge = typeof badge === 'number' && badge > 0;
     const inner = (
-      <div className="flex flex-col items-center justify-center gap-1 flex-1 h-full">
+      <div className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full">
         <div className="relative">
           <Icon
-            size={22}
+            size={18}
             strokeWidth={1.6}
             className={active ? 'text-primary-foreground' : 'text-foreground/80'}
           />
           {showBadge && (
-            <span className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-1 bg-destructive text-destructive-foreground text-[9px] font-semibold rounded-full flex items-center justify-center leading-none">
+            <span className="absolute -top-1.5 -right-2 min-w-[14px] h-[14px] px-1 bg-destructive text-destructive-foreground text-[9px] font-semibold rounded-full flex items-center justify-center leading-none">
               {badge! > 9 ? '9+' : badge}
             </span>
           )}
         </div>
         <span
-          className={`text-[10px] ${
+          className={`text-[9px] ${
             active ? 'text-primary-foreground font-semibold' : 'text-foreground/70'
           }`}
         >
@@ -68,7 +68,7 @@ const MobileBottomNav = () => {
         </span>
       </div>
     );
-    const cls = `flex-1 flex active:scale-95 transition-all rounded-2xl mx-0.5 ${
+    const cls = `flex-1 flex active:scale-95 transition-all rounded-xl mx-0.5 ${
       active ? 'bg-primary' : ''
     }`;
     if (to) return <Link to={to} className={cls}>{inner}</Link>;
@@ -77,12 +77,12 @@ const MobileBottomNav = () => {
 
   return (
     <>
-      <nav className="sm:hidden fixed bottom-3 left-3 right-3 z-40">
+      <nav className="sm:hidden fixed bottom-2 left-4 right-4 z-40">
         <div
-          className="bg-card border border-border rounded-[28px] h-[72px] flex items-stretch px-2 pb-[env(safe-area-inset-bottom)]"
+          className="bg-card border border-border rounded-[22px] h-[56px] flex items-stretch px-1.5 pb-[env(safe-area-inset-bottom)]"
           style={{ boxShadow: '0 8px 24px -10px rgba(0,0,0,0.15)' }}
         >
-          <Item icon={Store} label="Store" to="/" active={isHome} />
+          <Item icon={Home} label="Home" to="/" active={isHome} />
           <Item icon={Search} label="Search" onClick={() => setSearchOpen(true)} />
           <Item icon={Heart} label="Wishlist" to="/wishlist" active={isWishlist} badge={wishlistItems.length} />
           <Item icon={User} label="Account" to={profilePath} active={isProfile} />
