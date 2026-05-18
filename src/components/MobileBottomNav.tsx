@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Search, Heart, User, Store, LayoutGrid } from 'lucide-react';
+import { Search, Heart, User, Home, LayoutGrid } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useSupabase';
