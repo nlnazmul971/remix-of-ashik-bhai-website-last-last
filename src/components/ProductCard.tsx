@@ -167,7 +167,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
       {/* Info */}
       <div className="pt-3 flex flex-col flex-1">
         {!isSoldOut && typeof stock === 'number' && stock > 0 && (
-          <p className="text-[12px] font-semibold text-[hsl(140,65%,30%)] mb-1">
+          <p className="text-[12px] font-semibold text-accent-foreground mb-1">
             {stock} in stock
           </p>
         )}
@@ -182,7 +182,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
           {product.original_price && (
             <span className="text-[12px] text-muted-foreground line-through">{product.original_price.toLocaleString()}.00৳</span>
           )}
-          <span className="text-[15px] font-bold text-[hsl(0,75%,50%)]">{product.price.toLocaleString()}.00৳</span>
+          <span className="text-[15px] font-bold" style={{ color: 'hsl(var(--price-sale))' }}>{product.price.toLocaleString()}.00৳</span>
         </div>
 
         {reviewStats[product.id] && (
