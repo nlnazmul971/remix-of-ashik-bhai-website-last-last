@@ -43,14 +43,14 @@
     --font-display: 'Lora', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
 
-    --announce: 22 95% 55%;
-    --announce-foreground: 0 0% 100%;
+    --announce: 182 39% 60%;
+    --announce-foreground: 200 40% 15%;
 
-    --luxury-surface: 0 0% 98%;
-    --luxury-divider: 0 0% 93%;
-    --luxury-badge: 36 32% 43%;
-    --luxury-badge-text: 0 0% 100%;
-    --luxury-hover: 0 0% 96%;
+    --luxury-surface: 210 17% 98%;
+    --luxury-divider: 200 15% 88%;
+    --luxury-badge: 125 39% 88%;
+    --luxury-badge-text: 145 45% 22%;
+    --luxury-hover: 182 39% 92%;
   }
 }
 
