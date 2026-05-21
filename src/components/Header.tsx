@@ -93,8 +93,12 @@ const Header = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center gap-4 sm:gap-6 h-14 sm:h-20">
                 {/* Mobile menu */}
-                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="sm:hidden w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm shadow-md flex items-center justify-center hover:opacity-80 transition-opacity">
-                  {mobileMenuOpen ? <X size={26} className="text-foreground" /> : <Menu size={26} className="text-foreground" />}
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="sm:hidden w-10 h-10 rounded-full bg-white/15 backdrop-blur-md ring-1 ring-white/30 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] flex items-center justify-center text-white hover:bg-white/25 transition-all"
+                  aria-label="Menu"
+                >
+                  {mobileMenuOpen ? <X size={20} strokeWidth={2.25} /> : <Menu size={20} strokeWidth={2.25} />}
                 </button>
 
                 {/* Logo */}
