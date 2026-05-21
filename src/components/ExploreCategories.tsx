@@ -23,9 +23,9 @@ const items: Item[] = [
 
 const ExploreCategories = () => {
   return (
-    <section className="w-full bg-background py-4 sm:py-8">
+    <section className="w-full bg-background py-2 sm:py-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="text-center text-base sm:text-2xl font-extrabold tracking-[0.15em] uppercase mb-6 sm:mb-10 text-foreground">
+        <h2 className="text-center text-base sm:text-2xl font-extrabold tracking-[0.15em] uppercase mb-3 sm:mb-5 text-foreground">
           Explore Categories
         </h2>
 
@@ -36,13 +36,13 @@ const ExploreCategories = () => {
               to={cat.link}
               className="group flex flex-col items-center text-center"
             >
-              <div className="relative w-full aspect-square flex items-end justify-center">
-                <div className="absolute bottom-[6%] left-1/2 -translate-x-1/2 w-[85%] h-[16%] rounded-[50%] bg-[hsl(200_80%_85%)]" />
+              <div className="relative w-full aspect-[3/4] flex items-end justify-center">
+                <div className="absolute bottom-[6%] left-1/2 -translate-x-1/2 w-[85%] h-[12%] rounded-[50%] bg-[hsl(200_80%_85%)]" />
                 <img
                   src={cat.image}
                   alt={cat.label}
                   loading="lazy"
-                  className="relative w-[88%] h-[88%] object-contain transition-transform duration-500 group-hover:-translate-y-1"
+                  className="relative w-full h-[92%] object-contain transition-transform duration-500 group-hover:-translate-y-1"
                 />
               </div>
               <div className="mt-2 sm:mt-3 text-[11px] sm:text-sm font-semibold text-foreground leading-tight">
