@@ -200,7 +200,7 @@ const Index = () => {
       {!showProducts && <TrendingProducts />}
 
       <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-20 sm:pt-32' : 'pt-10 sm:pt-32'}`}>
-        <div className="text-center mb-2 sm:mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <h2
             key={searchQuery || activeCategory || 'all'}
             className={`luxury-heading tracking-[0.15em] animate-fade-in ${
