@@ -95,7 +95,7 @@ const Header = () => {
                 {/* Mobile menu */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="sm:hidden w-9 h-9 mt-4 rounded-full bg-white/15 backdrop-blur-md ring-1 ring-white/30 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] flex items-center justify-center text-white hover:bg-white/25 transition-all"
+                  className="sm:hidden w-9 h-9 mt-4 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-foreground/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] flex items-center justify-center text-foreground hover:bg-background transition-all"
                   aria-label="Menu"
                 >
                   {mobileMenuOpen ? <X size={18} strokeWidth={2.25} /> : <Menu size={18} strokeWidth={2.25} />}
