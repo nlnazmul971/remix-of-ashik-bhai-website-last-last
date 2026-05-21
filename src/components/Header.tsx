@@ -95,7 +95,7 @@ const Header = () => {
                 {/* Mobile menu */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="sm:hidden w-9 h-9 mt-4 rounded-full bg-background/80 backdrop-blur-md ring-1 ring-foreground/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] flex items-center justify-center text-foreground hover:bg-background transition-all"
+                  className="sm:hidden w-9 h-9 mt-4 rounded-full bg-background/40 backdrop-blur-md ring-1 ring-foreground/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] flex items-center justify-center text-foreground hover:bg-background/60 transition-all"
                   aria-label="Menu"
                 >
                   {mobileMenuOpen ? <X size={18} strokeWidth={2.25} /> : <Menu size={18} strokeWidth={2.25} />}
@@ -151,7 +151,7 @@ const Header = () => {
                   <button
                     data-cart-target
                     onClick={() => setIsCartOpen(true)}
-                    className="sm:p-1.5 w-9 h-9 mt-4 sm:mt-0 sm:w-auto sm:h-auto rounded-full sm:rounded-none bg-background/80 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none ring-1 sm:ring-0 ring-foreground/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] sm:shadow-none flex items-center justify-center text-foreground hover:bg-background sm:hover:bg-transparent transition-all relative"
+                    className="sm:p-1.5 w-9 h-9 mt-4 sm:mt-0 sm:w-auto sm:h-auto rounded-full sm:rounded-none bg-background/40 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none ring-1 sm:ring-0 ring-foreground/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] sm:shadow-none flex items-center justify-center text-foreground hover:bg-background/60 sm:hover:bg-transparent transition-all relative"
                     aria-label="Cart"
                   >
                     <ShoppingBag size={18} strokeWidth={2.25} className="sm:hidden" />
