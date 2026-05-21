@@ -135,11 +135,16 @@ const Header = () => {
                       </span>
                     )}
                   </Link>
-                  <button data-cart-target onClick={() => setIsCartOpen(true)} className="sm:p-1.5 w-10 h-10 sm:w-auto sm:h-auto rounded-full sm:rounded-none bg-white/80 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none shadow-md sm:shadow-none flex items-center justify-center hover:opacity-80 transition-opacity relative">
-                    <ShoppingBag size={26} className="sm:hidden text-foreground" />
+                  <button
+                    data-cart-target
+                    onClick={() => setIsCartOpen(true)}
+                    className="sm:p-1.5 w-10 h-10 sm:w-auto sm:h-auto rounded-full sm:rounded-none bg-white/15 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none ring-1 sm:ring-0 ring-white/30 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] sm:shadow-none flex items-center justify-center text-white sm:text-foreground hover:bg-white/25 sm:hover:bg-transparent transition-all relative"
+                    aria-label="Cart"
+                  >
+                    <ShoppingBag size={20} strokeWidth={2.25} className="sm:hidden" />
                     <ShoppingBag size={20} className="hidden sm:block" />
                     {itemCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-primary text-primary-foreground text-[9px] rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-primary text-primary-foreground text-[10px] font-semibold rounded-full flex items-center justify-center ring-2 ring-white/40 sm:ring-0">
                         {itemCount}
                       </span>
                     )}
