@@ -205,7 +205,7 @@ const Index = () => {
             key={searchQuery || activeCategory || 'all'}
             className={`luxury-heading tracking-[0.15em] animate-fade-in ${
               searchQuery || (activeCategory && activeCategory !== 'All')
-                ? 'text-3xl sm:text-4xl'
+                ? 'text-xl sm:text-2xl'
                 : 'text-2xl sm:text-4xl'
             }`}
           >
