@@ -98,7 +98,7 @@ const Header = () => {
                 </button>
 
                 {/* Logo */}
-                <Link to="/" className="shrink-0 flex items-center relative" aria-label="Home">
+                <Link to="/" className="shrink-0 flex items-center relative mt-4 sm:mt-0" aria-label="Home">
                   <img src={siteLogo} alt="Logo" className="h-16 sm:h-12 w-auto object-contain relative z-10" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
 
