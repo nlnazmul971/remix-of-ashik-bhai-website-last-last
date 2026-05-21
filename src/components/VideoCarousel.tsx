@@ -81,7 +81,7 @@ const VideoCarousel = () => {
                     {/* Thumbnail with custom play button */}
                     <button
                       onClick={() => setPlayingId(id)}
-                      className="relative w-full aspect-video group block overflow-hidden bg-muted"
+                      className="relative w-full aspect-video group block overflow-hidden rounded-t-2xl bg-muted"
                       aria-label={`Play ${v.title}`}
                     >
                       <img
