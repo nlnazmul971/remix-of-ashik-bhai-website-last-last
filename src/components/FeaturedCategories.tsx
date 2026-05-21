@@ -17,7 +17,7 @@ const FeaturedCategories = () => {
   if (items.length === 0) return null;
 
   return (
-    <section className="w-full bg-background py-8 sm:py-12">
+    <section className="w-full bg-background py-4 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <h2 className="text-center text-xl sm:text-2xl font-bold tracking-wide mb-6 sm:mb-8 text-foreground">
           FEATURED CATEGORIES
