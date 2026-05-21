@@ -12,7 +12,7 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import VideoCarousel from '@/components/VideoCarousel';
 import BabyKidsFashion from '@/components/BabyKidsFashion';
-import FeaturedCategories from '@/components/FeaturedCategories';
+import ExploreCategories from '@/components/ExploreCategories';
 import TrendingProducts from '@/components/TrendingProducts';
 import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
@@ -196,7 +196,7 @@ const Index = () => {
       {!showProducts && <Hero />}
       {!showProducts && <VideoCarousel />}
       {!showProducts && <BabyKidsFashion />}
-      {!showProducts && <FeaturedCategories />}
+      {!showProducts && <ExploreCategories />}
       {!showProducts && <TrendingProducts />}
 
       <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-20 sm:pt-32' : 'pt-10 sm:pt-32'}`}>
