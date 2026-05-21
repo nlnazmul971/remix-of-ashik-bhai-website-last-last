@@ -91,18 +91,18 @@ const Header = () => {
         {!scrolled && (
           <div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center gap-4 sm:gap-6 h-14 sm:h-20">
+              <div className="flex items-center gap-4 sm:gap-6 h-14 sm:h-20 relative">
                 {/* Mobile menu */}
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="sm:hidden w-10 h-10 rounded-full bg-white/15 backdrop-blur-md ring-1 ring-white/30 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] flex items-center justify-center text-white hover:bg-white/25 transition-all"
+                  className="sm:hidden w-9 h-9 mt-4 rounded-full bg-white/15 backdrop-blur-md ring-1 ring-white/30 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] flex items-center justify-center text-white hover:bg-white/25 transition-all"
                   aria-label="Menu"
                 >
-                  {mobileMenuOpen ? <X size={20} strokeWidth={2.25} /> : <Menu size={20} strokeWidth={2.25} />}
+                  {mobileMenuOpen ? <X size={18} strokeWidth={2.25} /> : <Menu size={18} strokeWidth={2.25} />}
                 </button>
 
-                {/* Logo */}
-                <Link to="/" className="shrink-0 flex items-center relative mt-4 sm:mt-0" aria-label="Home">
+                {/* Logo - centered on mobile */}
+                <Link to="/" className="shrink-0 flex items-center mt-4 sm:mt-0 absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0" aria-label="Home">
                   <img src={siteLogo} alt="Logo" className="h-16 sm:h-12 w-auto object-contain relative z-10" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
 
@@ -138,13 +138,13 @@ const Header = () => {
                   <button
                     data-cart-target
                     onClick={() => setIsCartOpen(true)}
-                    className="sm:p-1.5 w-10 h-10 sm:w-auto sm:h-auto rounded-full sm:rounded-none bg-white/15 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none ring-1 sm:ring-0 ring-white/30 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] sm:shadow-none flex items-center justify-center text-white sm:text-foreground hover:bg-white/25 sm:hover:bg-transparent transition-all relative"
+                    className="sm:p-1.5 w-9 h-9 mt-4 sm:mt-0 sm:w-auto sm:h-auto rounded-full sm:rounded-none bg-white/15 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none ring-1 sm:ring-0 ring-white/30 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] sm:shadow-none flex items-center justify-center text-white sm:text-foreground hover:bg-white/25 sm:hover:bg-transparent transition-all relative"
                     aria-label="Cart"
                   >
-                    <ShoppingBag size={20} strokeWidth={2.25} className="sm:hidden" />
+                    <ShoppingBag size={18} strokeWidth={2.25} className="sm:hidden" />
                     <ShoppingBag size={20} className="hidden sm:block" />
                     {itemCount > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-primary text-primary-foreground text-[10px] font-semibold rounded-full flex items-center justify-center ring-2 ring-white/40 sm:ring-0">
+                      <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 bg-primary text-primary-foreground text-[9px] font-semibold rounded-full flex items-center justify-center ring-2 ring-white/40 sm:ring-0">
                         {itemCount}
                       </span>
                     )}
