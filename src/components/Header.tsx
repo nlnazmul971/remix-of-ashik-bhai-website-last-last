@@ -103,7 +103,7 @@ const Header = () => {
 
                 {/* Logo - centered on mobile */}
                 <Link to="/" className="shrink-0 flex items-center mt-4 sm:mt-0 absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0" aria-label="Home">
-                  <img src={siteLogo} alt="Logo" className="h-32 sm:h-12 w-auto object-contain relative z-10" loading="eager" fetchPriority={"high" as any} decoding="async" />
+                  <img src={siteLogo} alt="Logo" className="h-40 sm:h-12 w-auto object-contain relative z-10" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
 
                 {/* Search bar - desktop center */}
