@@ -131,8 +131,9 @@ const Header = () => {
                       </span>
                     )}
                   </Link>
-                  <button data-cart-target onClick={() => setIsCartOpen(true)} className="p-1.5 hover:opacity-60 transition-opacity relative">
-                    <ShoppingBag size={20} />
+                  <button data-cart-target onClick={() => setIsCartOpen(true)} className="sm:p-1.5 w-10 h-10 sm:w-auto sm:h-auto rounded-full sm:rounded-none bg-white/80 sm:bg-transparent backdrop-blur-sm sm:backdrop-blur-none shadow-md sm:shadow-none flex items-center justify-center hover:opacity-80 transition-opacity relative">
+                    <ShoppingBag size={26} className="sm:hidden text-foreground" />
+                    <ShoppingBag size={20} className="hidden sm:block" />
                     {itemCount > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-primary text-primary-foreground text-[9px] rounded-full flex items-center justify-center">
                         {itemCount}
