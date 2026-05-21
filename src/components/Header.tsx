@@ -114,8 +114,8 @@ const Header = () => {
                 </Link>
                 <style>{`
                   @media (max-width: 639px) {
-                    .site-logo-link { width: min(285px, calc(100vw - 108px)) !important; min-width: min(285px, calc(100vw - 108px)) !important; }
-                    .site-logo-img { width: min(285px, calc(100vw - 108px)) !important; min-width: min(285px, calc(100vw - 108px)) !important; max-width: none !important; height: auto !important; }
+                    .site-logo-link { width: min(240px, calc(100vw - 108px)) !important; min-width: min(240px, calc(100vw - 108px)) !important; }
+                    .site-logo-img { width: min(240px, calc(100vw - 108px)) !important; min-width: min(240px, calc(100vw - 108px)) !important; max-width: none !important; height: auto !important; }
                   }
                 `}</style>
 
