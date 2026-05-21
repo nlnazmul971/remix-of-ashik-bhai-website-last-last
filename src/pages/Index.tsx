@@ -11,6 +11,7 @@ import {
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import VideoCarousel from '@/components/VideoCarousel';
+import BabyKidsFashion from '@/components/BabyKidsFashion';
 import FeaturedCategories from '@/components/FeaturedCategories';
 import TrendingProducts from '@/components/TrendingProducts';
 import ProductCard from '@/components/ProductCard';
@@ -194,6 +195,7 @@ const Index = () => {
       <CartDrawer />
       {!showProducts && <Hero />}
       {!showProducts && <VideoCarousel />}
+      {!showProducts && <BabyKidsFashion />}
       {!showProducts && <FeaturedCategories />}
       {!showProducts && <TrendingProducts />}
 
