@@ -91,19 +91,70 @@ const Header = () => {
         {!scrolled && (
           <div>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex items-center gap-4 sm:gap-6 h-14 sm:h-20">
-                {/* Mobile menu */}
-                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="sm:hidden p-1.5 hover:opacity-60 transition-opacity">
-                  {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              {/* MOBILE: Shop-for + icons row */}
+              <div className="flex sm:hidden items-center justify-between h-14">
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="flex items-center gap-2"
+                  aria-label="Shop for"
+                >
+                  <Link to="/" className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                    <img src={siteLogo} alt="Logo" className="h-10 w-10 rounded-full object-cover border border-border" loading="eager" />
+                  </Link>
+                  <div className="flex flex-col items-start leading-tight">
+                    <span className="flex items-center gap-1 text-[13px] font-semibold text-foreground">
+                      Shop for <ChevronDown size={14} className="opacity-70" />
+                    </span>
+                    <span className="text-[11px] text-muted-foreground">All</span>
+                  </div>
                 </button>
+                <div className="flex items-center gap-3">
+                  <Link to={profilePath} className="p-1 hover:opacity-60 transition-opacity">
+                    <User size={22} />
+                  </Link>
+                  <Link to="/wishlist" className="p-1 hover:opacity-60 transition-opacity relative">
+                    <Heart size={22} />
+                    {wishlistItems.length > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-foreground text-background text-[9px] rounded-full flex items-center justify-center">
+                        {wishlistItems.length}
+                      </span>
+                    )}
+                  </Link>
+                  <button data-cart-target onClick={() => setIsCartOpen(true)} className="p-1 hover:opacity-60 transition-opacity relative">
+                    <ShoppingBag size={22} />
+                    {itemCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-primary text-primary-foreground text-[9px] rounded-full flex items-center justify-center">
+                        {itemCount}
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </div>
 
-                {/* Logo */}
+              {/* MOBILE: Search + pincode */}
+              <div className="sm:hidden flex items-center gap-3 pb-2">
+                <form onSubmit={handleSearch} className="flex-1">
+                  <div className="flex items-center w-full bg-background border border-border rounded-full overflow-hidden pl-4 pr-1 py-1">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search"
+                      className="flex-1 bg-transparent text-foreground text-sm py-1.5 outline-none placeholder:text-muted-foreground"
+                    />
+                    <button type="submit" className="w-9 h-9 rounded-full bg-[hsl(var(--announce))] text-white flex items-center justify-center shrink-0">
+                      <Search size={16} />
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              {/* DESKTOP: original top bar */}
+              <div className="hidden sm:flex items-center gap-4 sm:gap-6 h-20">
                 <Link to="/" className="shrink-0 flex items-center relative" aria-label="Home">
-                  <img src={siteLogo} alt="Logo" className="h-16 sm:h-12 w-auto object-contain relative z-10" loading="eager" fetchPriority={"high" as any} decoding="async" />
+                  <img src={siteLogo} alt="Logo" className="h-12 w-auto object-contain relative z-10" loading="eager" fetchPriority={"high" as any} decoding="async" />
                 </Link>
-
-                {/* Search bar - desktop center */}
-                <form onSubmit={handleSearch} className="hidden sm:flex flex-1 max-w-2xl mx-auto">
+                <form onSubmit={handleSearch} className="flex flex-1 max-w-2xl mx-auto">
                   <div className="flex items-center w-full bg-primary text-primary-foreground rounded-sm overflow-hidden">
                     <input
                       type="text"
@@ -117,13 +168,11 @@ const Header = () => {
                     </button>
                   </div>
                 </form>
-
-                {/* Right icons */}
-                <div className="flex items-center gap-1 sm:gap-3 ml-auto sm:ml-0">
-                  <Link to={profilePath} className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity">
+                <div className="flex items-center gap-3 ml-auto sm:ml-0">
+                  <Link to={profilePath} className="p-1.5 hover:opacity-60 transition-opacity">
                     <User size={20} />
                   </Link>
-                  <Link to="/wishlist" className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity relative">
+                  <Link to="/wishlist" className="p-1.5 hover:opacity-60 transition-opacity relative">
                     <Heart size={20} />
                     {wishlistItems.length > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-foreground text-background text-[9px] rounded-full flex items-center justify-center">
@@ -155,6 +204,46 @@ const Header = () => {
                   </Link>
                 ))}
               </div>
+
+              {/* MOBILE: circular category row with offer badges */}
+              {navCategories.length > 0 && (
+                <div className="sm:hidden -mx-4 px-4 pb-3">
+                  <div className="flex gap-4 overflow-x-auto scrollbar-hide">
+                    {navCategories.slice(0, 8).map((cat, i) => {
+                      const offers = ['UPTO 60% OFF', 'UPTO 80% OFF', 'FLAT 50% OFF', 'FLAT 28% OFF', 'EXTRA 10% OFF'];
+                      const colors = [
+                        'from-pink-200 to-pink-300',
+                        'from-blue-200 to-blue-300',
+                        'from-amber-200 to-amber-300',
+                        'from-emerald-200 to-emerald-300',
+                        'from-violet-200 to-violet-300',
+                        'from-rose-200 to-rose-300',
+                        'from-sky-200 to-sky-300',
+                        'from-orange-200 to-orange-300',
+                      ];
+                      return (
+                        <Link
+                          key={cat.id}
+                          to={`/?category=${encodeURIComponent(cat.slug)}`}
+                          className="flex flex-col items-center shrink-0 w-[64px]"
+                        >
+                          <div className="relative">
+                            <div className={`w-14 h-14 rounded-full bg-gradient-to-br ${colors[i % colors.length]} border border-border flex items-center justify-center text-foreground/80 text-base font-semibold`}>
+                              {cat.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap bg-[hsl(var(--announce))] text-white text-[7px] font-bold px-1.5 py-[2px] rounded-sm">
+                              {offers[i % offers.length]}
+                            </span>
+                          </div>
+                          <span className="mt-2.5 text-[10px] text-foreground text-center leading-tight line-clamp-2">
+                            {cat.name}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
