@@ -348,61 +348,7 @@ const Index = () => {
 
                 {/* PLP toolbar */}
                 <div className="flex items-center justify-between gap-3 mb-5 sm:mb-6 pb-4 border-b">
-                  <div className="flex items-center gap-3">
-                    {/* Mobile filter trigger */}
-                    <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
-                      <SheetTrigger asChild>
-                        <button className="lg:hidden flex items-center gap-2 px-3 py-2 border border-border text-[11px] tracking-[0.15em] uppercase hover:bg-muted transition">
-                          <SlidersHorizontal size={14} />
-                          <span>Filters</span>
-                          {activeFilterCount > 0 && (
-                            <span className="ml-1 inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-foreground text-background text-[10px]">
-                              {activeFilterCount}
-                            </span>
-                          )}
-                        </button>
-                      </SheetTrigger>
-                      <SheetContent side="left" className="w-[85vw] sm:w-[380px] flex flex-col p-0">
-                        <SheetHeader className="px-6 pt-6 pb-4 border-b">
-                          <SheetTitle className="tracking-[0.2em] text-sm uppercase text-left">Filters</SheetTitle>
-                        </SheetHeader>
-                        <div className="flex-1 overflow-y-auto px-6 py-6">
-                          {filterPanel}
-                        </div>
-                        <div className="border-t p-4">
-                          <button
-                            onClick={() => setFilterOpen(false)}
-                            className="w-full py-3 bg-foreground text-background text-[11px] tracking-[0.2em] uppercase hover:opacity-90 transition"
-                          >
-                            View Results ({filteredProducts.length})
-                          </button>
-                        </div>
-                      </SheetContent>
-                    </Sheet>
-                    <span className="text-xs sm:text-sm text-muted-foreground tracking-wider">
-                      {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
-                    </span>
-                  </div>
-
                   <div className="flex items-center gap-2 sm:gap-3">
-                    {/* Density switcher (desktop only) */}
-                    <div className="hidden lg:flex items-center border border-border">
-                      <button
-                        onClick={() => setGridCols(3)}
-                        aria-label="3 columns"
-                        className={`p-2 transition ${gridCols === 3 ? 'bg-foreground text-background' : 'hover:bg-muted'}`}
-                      >
-                        <Grid2x2 size={14} />
-                      </button>
-                      <button
-                        onClick={() => setGridCols(4)}
-                        aria-label="4 columns"
-                        className={`p-2 transition ${gridCols === 4 ? 'bg-foreground text-background' : 'hover:bg-muted'}`}
-                      >
-                        <Grid3x3 size={14} />
-                      </button>
-                    </div>
-
                     {/* Sort */}
                     <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
                       <SelectTrigger className="w-[140px] sm:w-[180px] h-9 text-xs uppercase tracking-wider rounded-none">
@@ -416,6 +362,27 @@ const Index = () => {
                         <SelectItem value="name-asc">Name: A–Z</SelectItem>
                       </SelectContent>
                     </Select>
+                    <span className="text-xs sm:text-sm text-muted-foreground tracking-wider">
+                      {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
+                    </span>
+                  </div>
+
+                  {/* Density switcher (desktop only) */}
+                  <div className="hidden lg:flex items-center border border-border">
+                    <button
+                      onClick={() => setGridCols(3)}
+                      aria-label="3 columns"
+                      className={`p-2 transition ${gridCols === 3 ? 'bg-foreground text-background' : 'hover:bg-muted'}`}
+                    >
+                      <Grid2x2 size={14} />
+                    </button>
+                    <button
+                      onClick={() => setGridCols(4)}
+                      aria-label="4 columns"
+                      className={`p-2 transition ${gridCols === 4 ? 'bg-foreground text-background' : 'hover:bg-muted'}`}
+                    >
+                      <Grid3x3 size={14} />
+                    </button>
                   </div>
                 </div>
 
