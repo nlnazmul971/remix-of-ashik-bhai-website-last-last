@@ -75,7 +75,7 @@ const VideoCarousel = () => {
                 >
                   <div
                     className={`bg-card rounded-2xl shadow-sm overflow-hidden transition-all duration-500 ${
-                      isActive ? 'opacity-100 scale-100 -translate-y-4 sm:-translate-y-6 shadow-xl' : 'opacity-60 scale-[0.95] translate-y-0'
+                      isActive ? 'opacity-100 scale-100 translate-y-0 shadow-xl' : 'opacity-60 scale-[0.95] translate-y-0'
                     }`}
                   >
                     {/* Thumbnail with custom play button */}
