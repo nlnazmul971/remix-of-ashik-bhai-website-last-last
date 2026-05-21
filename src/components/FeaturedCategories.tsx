@@ -19,28 +19,29 @@ const FeaturedCategories = () => {
   return (
     <section className="w-full bg-background py-4 sm:py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <h2 className="text-center text-xl sm:text-2xl font-bold tracking-wide mb-6 sm:mb-8 text-foreground">
+        <h2 className="text-center text-base sm:text-2xl font-extrabold tracking-[0.15em] uppercase mb-6 sm:mb-10 text-foreground">
           FEATURED CATEGORIES
         </h2>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-4 sm:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-4">
           {items.map((cat, i) => (
             <Link
               key={i}
               to={cat.link || '/'}
               className="group flex flex-col items-center text-center"
             >
-              <div className="w-full aspect-square rounded-xl border-2 border-[hsl(var(--announce))] bg-card overflow-hidden p-2 sm:p-3 transition-transform group-hover:scale-[1.02]">
+              <div className="relative w-full aspect-square flex items-center justify-center">
+                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-[80%] h-[14%] rounded-[50%] bg-[hsl(var(--announce)/0.18)] blur-[1px]" />
                 <img
                   src={cat.image}
                   alt={cat.label}
-                  className="w-full h-full object-contain"
+                  className="relative w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
               </div>
-              <h3 className="mt-3 text-sm sm:text-base font-semibold text-foreground leading-tight">
-                {cat.label}
-              </h3>
+              <div className="mt-2 sm:mt-3 text-[11px] sm:text-sm font-semibold text-foreground leading-tight">
+                {cat.label}<span className="ml-0.5">›</span>
+              </div>
             </Link>
           ))}
         </div>
