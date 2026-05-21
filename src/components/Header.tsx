@@ -169,7 +169,7 @@ const Header = () => {
         />
 
         {/* Category nav */}
-        <nav className="border-b border-border" onMouseLeave={() => !isMobile && setOpenDropdown(null)}>
+        <nav onMouseLeave={() => !isMobile && setOpenDropdown(null)}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center gap-6 sm:gap-12 h-6 sm:h-10 overflow-x-auto sm:overflow-visible">
               {navCategories.map(cat => {
