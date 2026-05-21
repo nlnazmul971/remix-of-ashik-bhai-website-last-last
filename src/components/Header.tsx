@@ -93,8 +93,8 @@ const Header = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center gap-4 sm:gap-6 h-14 sm:h-20">
                 {/* Mobile menu */}
-                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="sm:hidden p-1.5 hover:opacity-60 transition-opacity">
-                  {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="sm:hidden w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm shadow-md flex items-center justify-center hover:opacity-80 transition-opacity">
+                  {mobileMenuOpen ? <X size={26} className="text-foreground" /> : <Menu size={26} className="text-foreground" />}
                 </button>
 
                 {/* Logo */}
