@@ -81,7 +81,7 @@ const VideoCarousel = () => {
                     {/* Thumbnail with custom play button */}
                     <button
                       onClick={() => setPlayingId(id)}
-                      className="relative w-full aspect-video group block overflow-hidden rounded-t-2xl bg-muted"
+                      className="relative w-full aspect-video group block overflow-hidden rounded-2xl bg-muted"
                       aria-label={`Play ${v.title}`}
                     >
                       <img
@@ -101,19 +101,6 @@ const VideoCarousel = () => {
                         </span>
                       </span>
                     </button>
-
-                    {/* Title + date */}
-                    <div className="p-3 sm:p-4 border-t border-border">
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-sm sm:text-base font-semibold leading-snug line-clamp-2 flex-1">
-                          {v.title}
-                        </h3>
-                        <ChevronRight size={18} className="text-muted-foreground shrink-0 mt-0.5" />
-                      </div>
-                      {v.date && (
-                        <p className="text-[11px] sm:text-xs text-muted-foreground mt-1.5">{v.date}</p>
-                      )}
-                    </div>
                   </div>
                 </div>
               );
