@@ -84,7 +84,7 @@ const Header = () => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background ${scrolled ? 'shadow-sm' : ''}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-background shadow-sm' : 'bg-transparent'}`}>
         {!scrolled && <AnnouncementBar />}
         {!scrolled && <TopBar />}
         {/* Top bar - hidden on scroll for both mobile and desktop */}
