@@ -1,17 +1,23 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight, Star, ShoppingCart, Heart } from 'lucide-react';
-import { useProducts } from '@/hooks/useSupabase';
+import { useProducts, useStoreSettings } from '@/hooks/useSupabase';
 import { MOCK_PRODUCTS } from '@/data/mockData';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 
 const NewArrivals = () => {
   const { data: dbProducts = [] } = useProducts();
+  const { data: s = {} } = useStoreSettings();
+  const enabled = s['new_arrivals_enabled'] !== 'false';
+  const eyebrow = s['new_arrivals_eyebrow'] || 'Just In';
+  const title = s['new_arrivals_title'] || 'New Arrivals';
+  const viewAllLink = s['new_arrivals_view_all'] || '/?category=All';
+  const limit = parseInt(s['new_arrivals_limit'] || '6', 10) || 6;
   const source = dbProducts.length > 0 ? dbProducts : MOCK_PRODUCTS;
-  const products = source.slice(0, 6);
+  const products = source.slice(0, limit);
   const { addItem } = useCart();
 
-  if (products.length === 0) return null;
+  if (!enabled || products.length === 0) return null;
 
   return (
     <section className="w-full bg-gradient-to-b from-sky-50/40 to-background py-6 sm:py-10">
@@ -20,19 +26,20 @@ const NewArrivals = () => {
         <div className="flex items-end justify-between mb-4 sm:mb-6 px-1">
           <div>
             <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-sky-600">
-              Just In
+              {eyebrow}
             </p>
             <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 mt-0.5">
-              New Arrivals
+              {title}
             </h2>
           </div>
           <Link
-            to="/?category=All"
+            to={viewAllLink}
             className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-sky-700 hover:text-sky-800 transition"
           >
             View All <ChevronRight size={16} />
           </Link>
         </div>
+
 
         {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-5">

@@ -74,9 +74,42 @@ const AdminHomepage = () => {
         await updateSetting.mutateAsync({ key: 'homepage_featured_categories', value: JSON.stringify(newItems) });
         toast.success('Featured categories updated!');
       }} />
+
+      <BabyKidsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Baby & Kids section updated!');
+      }} />
+
+      <PromoPostersManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Promo posters updated!');
+      }} />
+
+      <NewArrivalsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('New Arrivals section updated!');
+      }} />
+
+      <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Explore Categories updated!');
+      }} />
     </div>
   );
 };
+
 
 type SlideType = { image: string; mobileImage?: string; title: string; topText: string; bottomText: string };
 type PosterType = { image: string; link: string; subtitle: string; title: string };
@@ -713,6 +746,302 @@ const LogoManager = ({ logo, onSave }: { logo: string; onSave: (url: string) => 
             </button>
           )}
         </div>
+      </div>
+    </div>
+  );
+};
+
+// ============= New Section Managers =============
+
+type BabyKidsItem = { label: string; sublabel: string; image: string; link: string };
+
+const BabyKidsManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
+  const [enabled, setEnabled] = useState(settings['baby_kids_enabled'] !== 'false');
+  const [title, setTitle] = useState(settings['baby_kids_title'] || 'Baby & Kids Fashion');
+  const initialRows: BabyKidsItem[][] = (() => {
+    try { return settings['baby_kids_rows'] ? JSON.parse(settings['baby_kids_rows']) : [[], []]; } catch { return [[], []]; }
+  })();
+  const [rows, setRows] = useState<BabyKidsItem[][]>(initialRows);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEnabled(settings['baby_kids_enabled'] !== 'false');
+    setTitle(settings['baby_kids_title'] || 'Baby & Kids Fashion');
+    try { if (settings['baby_kids_rows']) setRows(JSON.parse(settings['baby_kids_rows'])); } catch {}
+  }, [settings['baby_kids_enabled'], settings['baby_kids_title'], settings['baby_kids_rows']]);
+
+  const addRow = () => setRows([...rows, []]);
+  const removeRow = (ri: number) => setRows(rows.filter((_, i) => i !== ri));
+  const addItem = (ri: number) => setRows(rows.map((r, i) => i === ri ? [...r, { label: '', sublabel: '', image: '', link: '' }] : r));
+  const removeItem = (ri: number, ii: number) => setRows(rows.map((r, i) => i === ri ? r.filter((_, j) => j !== ii) : r));
+  const updateItem = (ri: number, ii: number, field: keyof BabyKidsItem, value: string) =>
+    setRows(rows.map((r, i) => i === ri ? r.map((it, j) => j === ii ? { ...it, [field]: value } : it) : r));
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave({
+        baby_kids_enabled: enabled ? 'true' : 'false',
+        baby_kids_title: title,
+        baby_kids_rows: JSON.stringify(rows),
+      });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Baby & Kids Fashion Section</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">{rows.length} row(s) • Each row shows 5 items • Square image (600×600px)</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} /> Enabled
+          </label>
+          <button onClick={addRow} className="luxury-button-outline text-[10px] py-2 px-3">+ Add Row</button>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />} Save
+          </button>
+        </div>
+      </div>
+
+      <div className="space-y-1">
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Section Title</label>
+        <input value={title} onChange={e => setTitle(e.target.value)} className="luxury-input text-xs" placeholder="Baby & Kids Fashion" />
+      </div>
+
+      {rows.map((row, ri) => (
+        <div key={ri} className="border border-border p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-medium">Row {ri + 1} ({row.length} items)</p>
+            <div className="flex gap-2">
+              <button onClick={() => addItem(ri)} className="luxury-button-outline text-[10px] py-1 px-2">+ Item</button>
+              <button onClick={() => removeRow(ri)} className="inline-flex items-center gap-1 text-[10px] text-destructive hover:bg-destructive/10 px-2 py-1">
+                <Trash2 size={11} /> Delete Row
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {row.map((it, ii) => (
+              <div key={ii} className="border border-border p-3 space-y-2 relative">
+                <div className="flex items-center justify-between">
+                  <p className="text-[10px] text-muted-foreground">Item {ii + 1}</p>
+                  <button onClick={() => removeItem(ri, ii)} className="text-destructive hover:bg-destructive/10 p-1"><Trash2 size={11} /></button>
+                </div>
+                <HomepageImageUpload value={it.image} onChange={(url) => updateItem(ri, ii, 'image', url)} folder="baby-kids" />
+                <input value={it.label} onChange={e => updateItem(ri, ii, 'label', e.target.value)} className="luxury-input text-xs" placeholder="Label (e.g. 0 - 6)" />
+                <input value={it.sublabel} onChange={e => updateItem(ri, ii, 'sublabel', e.target.value)} className="luxury-input text-xs" placeholder="Sublabel (e.g. Months)" />
+                <input value={it.link} onChange={e => updateItem(ri, ii, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Girls&sub=0-6-months" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+type PromoPosterItem = { image: string; link: string; alt: string };
+
+const PromoPostersManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
+  const [enabled, setEnabled] = useState(settings['promo_posters_enabled'] !== 'false');
+  const initial: PromoPosterItem[] = (() => {
+    try { return settings['promo_posters_items'] ? JSON.parse(settings['promo_posters_items']) : []; } catch { return []; }
+  })();
+  const [posters, setPosters] = useState<PromoPosterItem[]>(initial);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEnabled(settings['promo_posters_enabled'] !== 'false');
+    try { if (settings['promo_posters_items']) setPosters(JSON.parse(settings['promo_posters_items'])); } catch {}
+  }, [settings['promo_posters_enabled'], settings['promo_posters_items']]);
+
+  const add = () => setPosters([...posters, { image: '', link: '', alt: '' }]);
+  const remove = (i: number) => setPosters(posters.filter((_, idx) => idx !== i));
+  const update = (i: number, field: keyof PromoPosterItem, value: string) =>
+    setPosters(posters.map((p, idx) => idx === i ? { ...p, [field]: value } : p));
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave({
+        promo_posters_enabled: enabled ? 'true' : 'false',
+        promo_posters_items: JSON.stringify(posters),
+      });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Promo Posters (Below Baby & Kids)</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">{posters.length} poster(s) • 3:4 portrait image (800×1000px)</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} /> Enabled
+          </label>
+          <button onClick={add} className="luxury-button-outline text-[10px] py-2 px-3">+ Add Poster</button>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />} Save
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {posters.map((p, i) => (
+          <div key={i} className="border border-border p-4 space-y-3 relative">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground font-medium">Poster {i + 1}</p>
+              <button onClick={() => remove(i)} className="inline-flex items-center gap-1 text-[10px] text-destructive hover:bg-destructive/10 px-2 py-1">
+                <Trash2 size={12} /> Delete
+              </button>
+            </div>
+            <HomepageImageUpload value={p.image} onChange={(url) => update(i, 'image', url)} folder="promo-poster" />
+            <input value={p.alt} onChange={e => update(i, 'alt', e.target.value)} className="luxury-input text-xs" placeholder="Alt text (e.g. Boys Collection)" />
+            <input value={p.link} onChange={e => update(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Boys" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const NewArrivalsManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
+  const [enabled, setEnabled] = useState(settings['new_arrivals_enabled'] !== 'false');
+  const [eyebrow, setEyebrow] = useState(settings['new_arrivals_eyebrow'] || 'Just In');
+  const [title, setTitle] = useState(settings['new_arrivals_title'] || 'New Arrivals');
+  const [viewAll, setViewAll] = useState(settings['new_arrivals_view_all'] || '/?category=All');
+  const [limit, setLimit] = useState(settings['new_arrivals_limit'] || '6');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEnabled(settings['new_arrivals_enabled'] !== 'false');
+    setEyebrow(settings['new_arrivals_eyebrow'] || 'Just In');
+    setTitle(settings['new_arrivals_title'] || 'New Arrivals');
+    setViewAll(settings['new_arrivals_view_all'] || '/?category=All');
+    setLimit(settings['new_arrivals_limit'] || '6');
+  }, [settings['new_arrivals_enabled'], settings['new_arrivals_eyebrow'], settings['new_arrivals_title'], settings['new_arrivals_view_all'], settings['new_arrivals_limit']]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave({
+        new_arrivals_enabled: enabled ? 'true' : 'false',
+        new_arrivals_eyebrow: eyebrow,
+        new_arrivals_title: title,
+        new_arrivals_view_all: viewAll,
+        new_arrivals_limit: limit,
+      });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">New Arrivals Section</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">Products auto-load from your product catalog. Edit heading & limit here.</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} /> Enabled
+          </label>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />} Save
+          </button>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-1">
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Eyebrow (small label)</label>
+          <input value={eyebrow} onChange={e => setEyebrow(e.target.value)} className="luxury-input text-xs" placeholder="Just In" />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Title</label>
+          <input value={title} onChange={e => setTitle(e.target.value)} className="luxury-input text-xs" placeholder="New Arrivals" />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">View All Link</label>
+          <input value={viewAll} onChange={e => setViewAll(e.target.value)} className="luxury-input text-xs" placeholder="/?category=All" />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Number of Products</label>
+          <input type="number" min={1} max={24} value={limit} onChange={e => setLimit(e.target.value)} className="luxury-input text-xs" placeholder="6" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+type ExploreCatItem = { label: string; image: string; link: string };
+
+const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
+  const [enabled, setEnabled] = useState(settings['explore_cats_enabled'] !== 'false');
+  const [title, setTitle] = useState(settings['explore_cats_title'] || 'Explore Categories');
+  const initial: ExploreCatItem[] = (() => {
+    try { return settings['explore_cats_items'] ? JSON.parse(settings['explore_cats_items']) : []; } catch { return []; }
+  })();
+  const [items, setItems] = useState<ExploreCatItem[]>(initial);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEnabled(settings['explore_cats_enabled'] !== 'false');
+    setTitle(settings['explore_cats_title'] || 'Explore Categories');
+    try { if (settings['explore_cats_items']) setItems(JSON.parse(settings['explore_cats_items'])); } catch {}
+  }, [settings['explore_cats_enabled'], settings['explore_cats_title'], settings['explore_cats_items']]);
+
+  const add = () => setItems([...items, { label: '', image: '', link: '' }]);
+  const remove = (i: number) => setItems(items.filter((_, idx) => idx !== i));
+  const update = (i: number, field: keyof ExploreCatItem, value: string) =>
+    setItems(items.map((it, idx) => idx === i ? { ...it, [field]: value } : it));
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave({
+        explore_cats_enabled: enabled ? 'true' : 'false',
+        explore_cats_title: title,
+        explore_cats_items: JSON.stringify(items),
+      });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Explore Categories Section</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">{items.length} categor(ies) • Grid of 4 columns • Portrait image recommended</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} /> Enabled
+          </label>
+          <button onClick={add} className="luxury-button-outline text-[10px] py-2 px-3">+ Add Category</button>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />} Save
+          </button>
+        </div>
+      </div>
+      <div className="space-y-1">
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Section Title</label>
+        <input value={title} onChange={e => setTitle(e.target.value)} className="luxury-input text-xs" placeholder="Explore Categories" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {items.map((it, i) => (
+          <div key={i} className="border border-border p-3 space-y-2 relative">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-muted-foreground">Category {i + 1}</p>
+              <button onClick={() => remove(i)} className="text-destructive hover:bg-destructive/10 p-1"><Trash2 size={11} /></button>
+            </div>
+            <HomepageImageUpload value={it.image} onChange={(url) => update(i, 'image', url)} folder="explore-category" />
+            <input value={it.label} onChange={e => update(i, 'label', e.target.value)} className="luxury-input text-xs" placeholder="Footwear" />
+            <input value={it.link} onChange={e => update(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Footwear" />
+          </div>
+        ))}
       </div>
     </div>
   );
