@@ -909,12 +909,76 @@ const PromoPostersManager = ({ settings, onSave }: { settings: Record<string, an
   );
 };
 
+const ProductPicker = ({ selectedIds, onChange }: { selectedIds: string[]; onChange: (ids: string[]) => void }) => {
+  const { data: products = [] } = useProducts();
+  const [q, setQ] = useState('');
+  const results = useMemo(() => {
+    const ql = q.trim().toLowerCase();
+    if (!ql) return [];
+    return (products as any[])
+      .filter((p: any) => !selectedIds.includes(p.id))
+      .filter((p: any) =>
+        (p.name || '').toLowerCase().includes(ql) ||
+        (p.sku || '').toLowerCase().includes(ql) ||
+        (p.category || '').toLowerCase().includes(ql)
+      )
+      .slice(0, 8);
+  }, [q, products, selectedIds]);
+  const selectedProducts = (products as any[]).filter((p: any) => selectedIds.includes(p.id));
+
+  return (
+    <div className="space-y-2">
+      <div className="relative">
+        <input
+          value={q}
+          onChange={e => setQ(e.target.value)}
+          className="luxury-input text-xs"
+          placeholder="Search products by name, SKU, category…"
+        />
+        {results.length > 0 && (
+          <div className="absolute z-20 left-0 right-0 mt-1 bg-background border border-border max-h-64 overflow-y-auto shadow-lg">
+            {results.map((p: any) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => { onChange([...selectedIds, p.id]); setQ(''); }}
+                className="w-full flex items-center gap-2 p-2 hover:bg-muted/50 text-left"
+              >
+                <img src={p.image_url} alt="" className="w-8 h-8 object-cover bg-muted" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">{p.name}</p>
+                  <p className="text-[10px] text-muted-foreground">৳{p.price} · {p.category}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      {selectedProducts.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {selectedProducts.map((p: any) => (
+            <span key={p.id} className="inline-flex items-center gap-1.5 px-2 py-1 bg-muted/40 border border-border text-[11px]">
+              <img src={p.image_url} alt="" className="w-4 h-4 object-cover" />
+              <span className="truncate max-w-[140px]">{p.name}</span>
+              <button type="button" onClick={() => onChange(selectedIds.filter(id => id !== p.id))} className="hover:text-destructive"><X size={10} /></button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const NewArrivalsManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
   const [enabled, setEnabled] = useState(settings['new_arrivals_enabled'] !== 'false');
   const [eyebrow, setEyebrow] = useState(settings['new_arrivals_eyebrow'] || 'Just In');
   const [title, setTitle] = useState(settings['new_arrivals_title'] || 'New Arrivals');
   const [viewAll, setViewAll] = useState(settings['new_arrivals_view_all'] || '/?category=All');
   const [limit, setLimit] = useState(settings['new_arrivals_limit'] || '6');
+  const initialIds: string[] = (() => {
+    try { return settings['new_arrivals_product_ids'] ? JSON.parse(settings['new_arrivals_product_ids']) : []; } catch { return []; }
+  })();
+  const [productIds, setProductIds] = useState<string[]>(initialIds);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -923,7 +987,8 @@ const NewArrivalsManager = ({ settings, onSave }: { settings: Record<string, any
     setTitle(settings['new_arrivals_title'] || 'New Arrivals');
     setViewAll(settings['new_arrivals_view_all'] || '/?category=All');
     setLimit(settings['new_arrivals_limit'] || '6');
-  }, [settings['new_arrivals_enabled'], settings['new_arrivals_eyebrow'], settings['new_arrivals_title'], settings['new_arrivals_view_all'], settings['new_arrivals_limit']]);
+    try { if (settings['new_arrivals_product_ids']) setProductIds(JSON.parse(settings['new_arrivals_product_ids'])); } catch {}
+  }, [settings['new_arrivals_enabled'], settings['new_arrivals_eyebrow'], settings['new_arrivals_title'], settings['new_arrivals_view_all'], settings['new_arrivals_limit'], settings['new_arrivals_product_ids']]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -934,6 +999,7 @@ const NewArrivalsManager = ({ settings, onSave }: { settings: Record<string, any
         new_arrivals_title: title,
         new_arrivals_view_all: viewAll,
         new_arrivals_limit: limit,
+        new_arrivals_product_ids: JSON.stringify(productIds),
       });
     } finally { setSaving(false); }
   };
@@ -943,7 +1009,7 @@ const NewArrivalsManager = ({ settings, onSave }: { settings: Record<string, any
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-medium tracking-wider uppercase">New Arrivals Section</h3>
-          <p className="text-[10px] text-muted-foreground mt-1">Products auto-load from your product catalog. Edit heading & limit here.</p>
+          <p className="text-[10px] text-muted-foreground mt-1">Pick specific products via search, or leave empty to auto-load latest.</p>
         </div>
         <div className="flex gap-2 items-center">
           <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
@@ -968,15 +1034,19 @@ const NewArrivalsManager = ({ settings, onSave }: { settings: Record<string, any
           <input value={viewAll} onChange={e => setViewAll(e.target.value)} className="luxury-input text-xs" placeholder="/?category=All" />
         </div>
         <div className="space-y-1">
-          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Number of Products</label>
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Number of Products (auto mode)</label>
           <input type="number" min={1} max={24} value={limit} onChange={e => setLimit(e.target.value)} className="luxury-input text-xs" placeholder="6" />
         </div>
+      </div>
+      <div className="space-y-1.5 pt-2 border-t border-border">
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Hand-picked Products ({productIds.length})</label>
+        <ProductPicker selectedIds={productIds} onChange={setProductIds} />
       </div>
     </div>
   );
 };
 
-type ExploreCatItem = { label: string; image: string; link: string };
+type ExploreCatItem = { label: string; image: string; link: string; productIds?: string[] };
 
 const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
   const [enabled, setEnabled] = useState(settings['explore_cats_enabled'] !== 'false');
@@ -993,9 +1063,9 @@ const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<strin
     try { if (settings['explore_cats_items']) setItems(JSON.parse(settings['explore_cats_items'])); } catch {}
   }, [settings['explore_cats_enabled'], settings['explore_cats_title'], settings['explore_cats_items']]);
 
-  const add = () => setItems([...items, { label: '', image: '', link: '' }]);
+  const add = () => setItems([...items, { label: '', image: '', link: '', productIds: [] }]);
   const remove = (i: number) => setItems(items.filter((_, idx) => idx !== i));
-  const update = (i: number, field: keyof ExploreCatItem, value: string) =>
+  const update = (i: number, field: keyof ExploreCatItem, value: any) =>
     setItems(items.map((it, idx) => idx === i ? { ...it, [field]: value } : it));
 
   const handleSave = async () => {
@@ -1014,7 +1084,7 @@ const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<strin
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-sm font-medium tracking-wider uppercase">Explore Categories Section</h3>
-          <p className="text-[10px] text-muted-foreground mt-1">{items.length} categor(ies) • Grid of 4 columns • Portrait image recommended</p>
+          <p className="text-[10px] text-muted-foreground mt-1">{items.length} categor(ies) • Each can have hand-picked products</p>
         </div>
         <div className="flex gap-2 items-center">
           <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
@@ -1030,7 +1100,7 @@ const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<strin
         <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Section Title</label>
         <input value={title} onChange={e => setTitle(e.target.value)} className="luxury-input text-xs" placeholder="Explore Categories" />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {items.map((it, i) => (
           <div key={i} className="border border-border p-3 space-y-2 relative">
             <div className="flex items-center justify-between">
@@ -1040,6 +1110,10 @@ const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<strin
             <HomepageImageUpload value={it.image} onChange={(url) => update(i, 'image', url)} folder="explore-category" />
             <input value={it.label} onChange={e => update(i, 'label', e.target.value)} className="luxury-input text-xs" placeholder="Footwear" />
             <input value={it.link} onChange={e => update(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Footwear" />
+            <div className="pt-2 border-t border-border space-y-1">
+              <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Products ({(it.productIds || []).length})</label>
+              <ProductPicker selectedIds={it.productIds || []} onChange={(ids) => update(i, 'productIds', ids)} />
+            </div>
           </div>
         ))}
       </div>
@@ -1048,3 +1122,4 @@ const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<strin
 };
 
 export default AdminHomepage;
+
