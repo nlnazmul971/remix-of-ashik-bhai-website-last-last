@@ -865,7 +865,7 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
           </Section>
 
           {/* Section: Sizes & Stock */}
-          <Section title="Sizes & Stock" subtitle="Select available sizes and per-size inventory">
+          <Section title="Sizes & Stock" subtitle="Select preset or type any custom size (e.g. 28, 30, Free, 6-12M)">
             <div className="flex flex-wrap gap-2">
               {['XS', 'S', 'M', 'L', 'XL', 'XXL', '2XL', '3XL'].map(size => (
                 <button
@@ -882,6 +882,25 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
                   {size}
                 </button>
               ))}
+              {form.sizes.filter(s => !['XS','S','M','L','XL','XXL','2XL','3XL'].includes(s)).map(size => (
+                <span key={size} className="inline-flex items-center gap-1.5 min-w-[44px] px-3 py-2 text-xs uppercase tracking-widest bg-foreground text-background border border-foreground">
+                  {size}
+                  <button type="button" onClick={() => setForm({ ...form, sizes: form.sizes.filter(s => s !== size) })} className="hover:opacity-70"><X size={11} /></button>
+                </span>
+              ))}
+              <input
+                type="text"
+                placeholder="+ Custom size, press Enter"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const v = (e.currentTarget.value || '').trim();
+                    if (v && !form.sizes.includes(v)) setForm({ ...form, sizes: [...form.sizes, v] });
+                    e.currentTarget.value = '';
+                  }
+                }}
+                className="px-3 py-2 text-xs border border-dashed border-border bg-transparent outline-none focus:border-foreground/60 placeholder:text-muted-foreground/60 min-w-[180px]"
+              />
             </div>
             {form.sizes.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4">
