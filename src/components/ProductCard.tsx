@@ -68,7 +68,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
   };
 
   return (
-    <div className="group animate-fade-in bg-white rounded-lg border border-border/60 p-3 flex flex-col h-full">
+    <div className="group animate-fade-in bg-white rounded-none border border-border/60 flex flex-col h-full">
       <Link to={`/product/${product.id}`} className="block">
         <div
           ref={imageRef}
@@ -83,7 +83,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
             alt={product.name}
             width={600}
             height={600}
-            className={`absolute inset-0 w-full h-full object-contain transition-all duration-500 ease-in-out ${
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-in-out ${
               isHovered && hoverImage ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
             loading={priority ? 'eager' : 'lazy'}
