@@ -418,7 +418,7 @@ const Index = () => {
 
         {/* Category Banners (3 horizontal banners) — each with 2 rows of products */}
         {!showProducts && categoryBanners.length > 0 && (
-          <section className="mt-16 sm:mt-24 space-y-12 sm:space-y-16">
+          <section className="mt-8 sm:mt-12 space-y-4 sm:space-y-6">
             {categoryBanners.slice(0, 3).map((b: any, i) => {
               // If admin picked specific products, use them; else auto-pull from link category
               let catProducts: typeof allProducts = [];
@@ -497,7 +497,7 @@ const Index = () => {
 
         {/* Fancy Posters */}
         {!showProducts && (
-          <section className="mt-20 sm:mt-28">
+          <section className="mt-6 sm:mt-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {posters.map((poster: any, i: number) => (
                 <Link key={i} to={poster.link || '/'} className="relative group overflow-hidden cursor-pointer block">
