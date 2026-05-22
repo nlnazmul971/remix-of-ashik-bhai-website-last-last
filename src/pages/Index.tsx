@@ -437,7 +437,7 @@ const Index = () => {
               }
 
               return (
-                <div key={i} className="space-y-5 sm:space-y-6">
+                <div key={i} className="space-y-2 sm:space-y-3">
                   <Link
                     to={b.link || '/'}
                     className="relative block overflow-hidden group aspect-[16/6] sm:aspect-[16/5] rounded-lg"
@@ -465,7 +465,7 @@ const Index = () => {
                           <div className="w-full aspect-square rounded-xl border border-border bg-card overflow-hidden p-2 sm:p-3 transition-transform group-hover:scale-[1.03]">
                             <img src={s.image} alt={s.label} className="w-full h-full object-contain" loading="lazy" />
                           </div>
-                          <h4 className="mt-2 sm:mt-3 text-[11px] sm:text-sm font-semibold uppercase tracking-wide text-foreground leading-tight">
+                          <h4 className="mt-1 sm:mt-2 text-[11px] sm:text-sm font-semibold uppercase tracking-wide text-foreground leading-tight">
                             {s.label}
                           </h4>
                         </Link>
@@ -475,13 +475,13 @@ const Index = () => {
 
                   {catProducts.length > 0 && (
                     <>
-                      <div className="flex items-center justify-between pt-2">
+                      <div className="flex items-center justify-between pt-1">
                         <h4 className="text-sm sm:text-base font-semibold tracking-wide uppercase">{b.label}</h4>
                         <Link to={b.link || '/'} className="text-xs sm:text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
                           View all <ChevronRight size={14} />
                         </Link>
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
                         {catProducts.slice(0, 5).map((product) => (
                           <PrettyProductCard key={product.id} product={product} />
                         ))}
