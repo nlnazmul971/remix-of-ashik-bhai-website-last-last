@@ -30,7 +30,7 @@ const PromoPosters = () => {
                 src={p.image}
                 alt={p.alt}
                 loading="lazy"
-                className="w-full h-auto aspect-[16/9] object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-auto aspect-[3/4] object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </Link>
           ))}
