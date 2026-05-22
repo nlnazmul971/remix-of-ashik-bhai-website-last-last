@@ -501,7 +501,7 @@ const ProductDetail = () => {
 
             {/* Size Chart Section - Updated for better data handling */}
             {product.size_chart && (
-              <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border">
+              <div className="mt-6 sm:mt-8 pt-4 sm:pt-6">
                 <h3 className="luxury-heading text-base sm:text-lg tracking-[0.1em] mb-3 sm:mb-4">Size Chart</h3>
                 <div className="overflow-x-auto">
                   {(() => {
