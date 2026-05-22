@@ -304,21 +304,7 @@ const Index = () => {
           );
 
           if (!showProducts) {
-            return (
-              <>
-                {productsGrid}
-                {hasMoreHome && (
-                  <div className="flex justify-center mt-10 sm:mt-14">
-                    <Link
-                      to="/?category=All"
-                      className="inline-flex items-center gap-2 px-8 py-3 border border-foreground text-[11px] tracking-[0.25em] uppercase hover:bg-foreground hover:text-background transition"
-                    >
-                      View All Products
-                    </Link>
-                  </div>
-                )}
-              </>
-            );
+            return null;
           }
 
           // Breadcrumb label
