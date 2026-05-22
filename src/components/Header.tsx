@@ -135,17 +135,29 @@ const Header = () => {
                   </div>
                 </form>
 
-                {/* Right icons - mobile only */}
-                <div className="flex sm:hidden items-center gap-1 ml-auto">
+                {/* Right icons */}
+                <div className="flex items-center gap-1 sm:gap-3 ml-auto sm:ml-0">
+                  <Link to={profilePath} className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity">
+                    <User size={20} />
+                  </Link>
+                  <Link to="/wishlist" className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity relative">
+                    <Heart size={20} />
+                    {wishlistItems.length > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-foreground text-background text-[9px] rounded-full flex items-center justify-center">
+                        {wishlistItems.length}
+                      </span>
+                    )}
+                  </Link>
                   <button
                     data-cart-target
                     onClick={() => setIsCartOpen(true)}
-                    className="w-9 h-9 mt-4 rounded-full bg-background/40 backdrop-blur-md ring-1 ring-foreground/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] flex items-center justify-center text-foreground hover:bg-background/60 transition-all relative"
+                    className="sm:p-1.5 w-9 h-9 mt-4 sm:mt-0 sm:w-auto sm:h-auto rounded-full sm:rounded-none bg-background/40 sm:bg-transparent backdrop-blur-md sm:backdrop-blur-none ring-1 sm:ring-0 ring-foreground/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.25)] sm:shadow-none flex items-center justify-center text-foreground hover:bg-background/60 sm:hover:bg-transparent transition-all relative"
                     aria-label="Cart"
                   >
-                    <ShoppingBag size={18} strokeWidth={2.25} />
+                    <ShoppingBag size={18} strokeWidth={2.25} className="sm:hidden" />
+                    <ShoppingBag size={20} className="hidden sm:block" />
                     {itemCount > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 bg-primary text-primary-foreground text-[9px] font-semibold rounded-full flex items-center justify-center ring-2 ring-background">
+                      <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] px-1 bg-primary text-primary-foreground text-[9px] font-semibold rounded-full flex items-center justify-center ring-2 ring-background sm:ring-0">
                         {itemCount}
                       </span>
                     )}
@@ -153,8 +165,6 @@ const Header = () => {
                 </div>
               </div>
             </div>
-            {/* PC white shade below header */}
-            <div className="hidden sm:block h-2 bg-background/40 backdrop-blur-md ring-1 ring-foreground/10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)]" />
           </div>
         )}
 
