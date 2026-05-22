@@ -204,7 +204,7 @@ const Index = () => {
       {!showProducts && <ExploreCategories />}
       {!showProducts && <TrendingProducts />}
 
-      <main className={`max-w-full mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-20 sm:pt-32' : 'pt-2 sm:pt-6'}`}>
+      <main className={`max-w-full mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-32 sm:pt-40' : 'pt-2 sm:pt-6'}`}>
         {(searchQuery || (activeCategory && activeCategory !== 'All') || activeSub) && (
           <div className="text-center mb-6 sm:mb-8">
             <h2
@@ -300,7 +300,7 @@ const Index = () => {
             <p className="text-center text-muted-foreground py-20">No products found.</p>
           ) : (
             <div className={showProducts ? plpGridClass : `grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-4`}>
-              {pagedProducts.map((product, idx) => <ProductCard key={product.id} product={product} reviewStats={reviewStats} hoverImageUrl={hoverImageMap[product.id]} isSoldOut={soldOutMap[product.id] || false} priority={idx < 4} />)}
+              {pagedProducts.map((product) => <PrettyProductCard key={product.id} product={product} />)}
             </div>
           );
 
