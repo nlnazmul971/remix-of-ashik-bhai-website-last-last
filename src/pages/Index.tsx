@@ -300,7 +300,7 @@ const Index = () => {
             <p className="text-center text-muted-foreground py-20">No products found.</p>
           ) : (
             <div className={showProducts ? plpGridClass : `grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 lg:grid-cols-4`}>
-              {pagedProducts.map((product, idx) => <ProductCard key={product.id} product={product} reviewStats={reviewStats} hoverImageUrl={hoverImageMap[product.id]} isSoldOut={soldOutMap[product.id] || false} priority={idx < 4} />)}
+              {pagedProducts.map((product) => <PrettyProductCard key={product.id} product={product} />)}
             </div>
           );
 
