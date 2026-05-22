@@ -13,8 +13,12 @@ const NewArrivals = () => {
   const title = s['new_arrivals_title'] || 'New Arrivals';
   const viewAllLink = s['new_arrivals_view_all'] || '/?category=All';
   const limit = parseInt(s['new_arrivals_limit'] || '6', 10) || 6;
+  let pickedIds: string[] = [];
+  try { if (s['new_arrivals_product_ids']) pickedIds = JSON.parse(s['new_arrivals_product_ids']); } catch {}
   const source = dbProducts.length > 0 ? dbProducts : MOCK_PRODUCTS;
-  const products = source.slice(0, limit);
+  const products = pickedIds.length > 0
+    ? pickedIds.map(id => (source as any[]).find(p => p.id === id)).filter(Boolean)
+    : source.slice(0, limit);
   const { addItem } = useCart();
 
   if (!enabled || products.length === 0) return null;
