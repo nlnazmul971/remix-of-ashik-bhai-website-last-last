@@ -1046,3 +1046,5 @@ const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<strin
     </div>
   );
 };
+
+export default AdminHomepage;
