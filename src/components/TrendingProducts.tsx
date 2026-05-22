@@ -14,12 +14,12 @@ const TrendingProducts = () => {
   if (products.length === 0) return null;
 
   return (
-    <section className="w-full bg-gradient-to-b from-amber-50/40 to-background py-6 sm:py-10">
+    <section className="w-full bg-gradient-to-b from-sky-50/40 to-background py-6 sm:py-10">
       <div className="max-w-7xl mx-auto px-3 sm:px-6">
         {/* Header */}
         <div className="flex items-end justify-between mb-4 sm:mb-6 px-1">
           <div>
-            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-pink-500">
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-sky-600">
               Hot Picks
             </p>
             <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 mt-0.5">
@@ -28,7 +28,7 @@ const TrendingProducts = () => {
           </div>
           <Link
             to="/?category=All"
-            className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-pink-600 hover:text-pink-700 transition"
+            className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-sky-700 hover:text-sky-800 transition"
           >
             View All <ChevronRight size={16} />
           </Link>
@@ -49,9 +49,9 @@ const TrendingProducts = () => {
             return (
               <div
                 key={p.id}
-                className="group relative bg-white rounded-2xl ring-1 ring-gray-100 hover:ring-pink-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
+                className="group relative bg-white rounded-2xl ring-1 ring-gray-100 hover:ring-sky-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
               >
-                <div className="relative bg-gradient-to-br from-amber-50 via-white to-pink-50/40">
+                <div className="relative bg-gradient-to-br from-sky-50 via-white to-sky-50/40">
                   <span
                     className={`absolute top-2.5 left-2.5 z-10 ${badgeClass} text-[9px] sm:text-[10px] font-extrabold tracking-wider px-2 py-1 rounded-md uppercase`}
                   >
@@ -80,13 +80,13 @@ const TrendingProducts = () => {
 
                 <div className="p-2 sm:p-3 flex-1 flex flex-col">
                   <Link to={`/product/${p.id}`}>
-                    <h3 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-pink-600 transition">
+                    <h3 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-sky-700 transition">
                       {p.name}
                     </h3>
                   </Link>
 
                   <div className="mt-1 flex items-baseline gap-1.5 flex-wrap">
-                    <span className="text-base sm:text-xl font-extrabold text-pink-500">
+                    <span className="text-base sm:text-xl font-extrabold text-sky-600">
                       ৳{p.price}
                     </span>
                     {hasDiscount && (
@@ -115,7 +115,7 @@ const TrendingProducts = () => {
                         toast.error('Could not add');
                       }
                     }}
-                    className="mt-1.5 w-full bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-bold uppercase tracking-wide py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
+                    className="mt-1.5 w-full bg-[#C9A96E] hover:bg-[#B8985D] text-white text-xs sm:text-sm font-bold uppercase tracking-wide py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
                   >
                     <ShoppingCart size={14} />
                     <span>Add to Cart</span>
