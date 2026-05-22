@@ -70,10 +70,8 @@ const AdminHomepage = () => {
         toast.success('Videos updated!');
       }} />
 
-      <FeaturedCategoriesManager items={featCats} onSave={async (newItems) => {
-        await updateSetting.mutateAsync({ key: 'homepage_featured_categories', value: JSON.stringify(newItems) });
-        toast.success('Featured categories updated!');
-      }} />
+
+
 
       <BabyKidsManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
