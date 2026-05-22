@@ -53,8 +53,8 @@
     --font-display: 'Lora', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
 
-    /* Announcement bar — coral pop */
-    --announce: 14 100% 62%;
+    /* Announcement bar — teal (brand) */
+    --announce: 173 80% 32%;
     --announce-foreground: 0 0% 100%;
 
     --luxury-surface: 0 0% 100%;
