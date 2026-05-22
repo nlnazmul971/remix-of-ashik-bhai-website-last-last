@@ -17,6 +17,7 @@ import PromoPosters from '@/components/PromoPosters';
 import NewArrivals from '@/components/NewArrivals';
 import TrendingProducts from '@/components/TrendingProducts';
 import ProductCard from '@/components/ProductCard';
+import PrettyProductCard from '@/components/PrettyProductCard';
 import Footer from '@/components/Footer';
 
 import CartDrawer from '@/components/CartDrawer';
