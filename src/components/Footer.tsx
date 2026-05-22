@@ -55,8 +55,8 @@ const Footer = () => {
 
         {/* Newsletter */}
         <div className="mb-7 sm:mb-9 max-w-xl">
-          <h3 className="font-['Cormorant_Garamond',serif] text-lg sm:text-xl font-medium tracking-tight mb-1.5 italic text-foreground">The {brandName.charAt(0) + brandName.slice(1).toLowerCase()} Edit</h3>
           <p className="text-[10px] text-muted-foreground leading-relaxed mb-3 uppercase tracking-[0.1em]">Subscribe for exclusive collection access.</p>
+
           <form onSubmit={handleNewsletter} className="flex border-b border-border pb-1.5">
             <input
               type="email"
