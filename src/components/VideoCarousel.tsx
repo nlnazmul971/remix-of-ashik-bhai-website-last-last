@@ -60,7 +60,7 @@ const VideoCarousel = () => {
   if (videos.length === 0) return null;
 
   return (
-    <section className="w-full bg-background pt-6 sm:pt-10 pb-2 sm:pb-6">
+    <section className="w-full bg-background pt-0 sm:pt-2 pb-2 sm:pb-6">
       <div className="relative max-w-7xl mx-auto">
         <div className="overflow-hidden pt-2 sm:pt-4" ref={emblaRef}>
           <div className="flex">
