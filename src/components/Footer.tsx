@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail, Truck, RotateCcw, Headphones, ShieldCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import { useStoreSettings } from '@/hooks/useSupabase';
 import { supabase } from '@/integrations/supabase/client';
