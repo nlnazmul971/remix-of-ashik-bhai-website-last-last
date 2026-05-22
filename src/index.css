@@ -13,28 +13,28 @@
     --popover: 0 0% 100%;
     --popover-foreground: 200 25% 12%;
 
-    /* Primary = deep teal (matches teal-600 used in product cards) */
-    --primary: 173 80% 32%;
+    /* Primary = soft teal */
+    --primary: 178 45% 55%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary = soft teal tint */
-    --secondary: 173 55% 94%;
-    --secondary-foreground: 173 80% 22%;
+    /* Secondary = pale teal tint */
+    --secondary: 178 50% 94%;
+    --secondary-foreground: 178 45% 28%;
 
     --muted: 200 16% 96%;
     --muted-foreground: 200 12% 42%;
 
-    /* Accent = coral (matches #ff6a3d CTA color) */
-    --accent: 14 100% 62%;
+    /* Accent = soft coral */
+    --accent: 14 85% 72%;
     --accent-foreground: 0 0% 100%;
 
     --message: 142 50% 40%;
     --message-foreground: 0 0% 100%;
-    --destructive: 0 75% 55%;
+    --destructive: 0 70% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 200 15% 90%;
     --input: 200 15% 90%;
-    --ring: 173 80% 32%;
+    --ring: 178 45% 55%;
     --radius: 8px;
 
     --price-sale: 173 80% 32%;
