@@ -17,11 +17,11 @@ const PrettyProductCard = ({ product: p, badgeLabel, badgeClass }: Props) => {
     : 0;
 
   return (
-    <div className="group relative bg-white rounded-2xl ring-1 ring-gray-100 hover:ring-sky-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
-      <div className="relative bg-gradient-to-br from-sky-50 via-white to-sky-50/40">
+    <div className="group relative bg-white rounded-none ring-1 ring-gray-100 hover:ring-sky-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
+      <div className="relative bg-white">
         {badgeLabel && (
           <span
-            className={`absolute top-2.5 left-2.5 z-10 ${badgeClass || 'bg-sky-100 text-sky-700'} text-[9px] sm:text-[10px] font-extrabold tracking-wider px-2 py-1 rounded-md uppercase`}
+            className={`absolute top-0 left-0 z-10 ${badgeClass || 'bg-sky-100 text-sky-700'} text-[9px] sm:text-[10px] font-extrabold tracking-wider px-2 py-1 rounded-none uppercase`}
           >
             {badgeLabel}
           </span>
@@ -39,10 +39,11 @@ const PrettyProductCard = ({ product: p, badgeLabel, badgeClass }: Props) => {
             src={p.image_url}
             alt={p.name}
             loading="lazy"
-            className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           />
         </Link>
       </div>
+
 
       <div className="p-2 sm:p-3 flex-1 flex flex-col">
         <Link to={`/product/${p.id}`}>
