@@ -204,25 +204,21 @@ const Index = () => {
       {!showProducts && <TrendingProducts />}
 
       <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-20 sm:pt-32' : 'pt-10 sm:pt-32'}`}>
-        <div className="text-center mb-6 sm:mb-8">
-          <h2
-            key={searchQuery || activeCategory || 'all'}
-            className={`luxury-heading tracking-[0.15em] animate-fade-in ${
-              searchQuery || (activeCategory && activeCategory !== 'All')
-                ? 'text-xl sm:text-2xl'
-                : 'text-2xl sm:text-4xl'
-            }`}
-          >
-            {searchQuery
-              ? `Search: "${searchQuery}"`
-              : activeSub
-              ? activeSub.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-              : activeCategory && activeCategory !== 'All'
-              ? activeCategory
-              : 'Our Collection'}
-          </h2>
-          <div className="w-12 h-px bg-foreground mx-auto mt-2 sm:mt-4 animate-fade-in" />
-        </div>
+        {(searchQuery || (activeCategory && activeCategory !== 'All') || activeSub) && (
+          <div className="text-center mb-6 sm:mb-8">
+            <h2
+              key={searchQuery || activeCategory || 'all'}
+              className="luxury-heading tracking-[0.15em] animate-fade-in text-xl sm:text-2xl"
+            >
+              {searchQuery
+                ? `Search: "${searchQuery}"`
+                : activeSub
+                ? activeSub.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+                : activeCategory}
+            </h2>
+            <div className="w-12 h-px bg-foreground mx-auto mt-2 sm:mt-4 animate-fade-in" />
+          </div>
+        )}
         {(() => {
           const filterPanel = (
             <div className="space-y-8">
