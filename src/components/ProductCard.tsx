@@ -165,7 +165,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
       </Link>
 
       {/* Info */}
-      <div className="pt-3 flex flex-col flex-1">
+      <div className="p-3 flex flex-col flex-1">
         {!isSoldOut && typeof stock === 'number' && stock > 0 && (
           <p className="text-[12px] font-semibold text-accent-foreground mb-1">
             {stock} in stock
