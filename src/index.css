@@ -6,63 +6,63 @@
 
 @layer base {
   :root {
-    /* Classic Baby Care — Warm, Soft & Cozy */
-    --background: 48 100% 96%;       /* Soft Ivory #FFFBEB */
-    --foreground: 222 47% 14%;
+    /* Clean Milk White + Soft Pastel Blue + Muted Gold */
+    --background: 210 17% 98%;        /* #F8F9FA */
+    --foreground: 210 24% 16%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 14%;
+    --card-foreground: 210 24% 16%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 14%;
+    --popover-foreground: 210 24% 16%;
 
-    /* Primary = Soft Pink #EC4899 */
-    --primary: 330 81% 60%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary = Soft Pastel Blue #A8DADC */
+    --primary: 182 39% 76%;
+    --primary-foreground: 200 40% 18%;
 
-    /* Secondary = Baby Blue #3B82F6 (used for secondary surfaces / tags) */
-    --secondary: 217 91% 95%;
-    --secondary-foreground: 217 91% 35%;
+    /* Secondary = lighter pastel blue tint */
+    --secondary: 182 45% 92%;
+    --secondary-foreground: 200 40% 22%;
 
-    --muted: 48 60% 94%;
-    --muted-foreground: 220 12% 42%;
+    --muted: 210 16% 95%;
+    --muted-foreground: 210 10% 42%;
 
-    /* Accent / CTA = Warm Amber/Honey #F59E0B */
-    --accent: 38 92% 50%;
+    /* Accent / CTA = Muted Gold */
+    --accent: 38 45% 60%;
     --accent-foreground: 0 0% 100%;
 
     --message: 142 50% 40%;
     --message-foreground: 0 0% 100%;
     --destructive: 0 70% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 40 30% 88%;
-    --input: 40 30% 88%;
-    --ring: 330 81% 60%;
+    --border: 210 14% 89%;
+    --input: 210 14% 89%;
+    --ring: 182 39% 70%;
     --radius: 10px;
 
-    --price-sale: 330 81% 50%;
-    --promo: 38 92% 50%;
+    --price-sale: 38 45% 45%;
+    --promo: 38 45% 60%;
     --promo-foreground: 0 0% 100%;
 
-    --sidebar-background: 48 100% 97%;
-    --sidebar-foreground: 222 30% 22%;
-    --sidebar-primary: 330 81% 60%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 217 91% 95%;
-    --sidebar-accent-foreground: 217 91% 35%;
-    --sidebar-border: 40 30% 88%;
-    --sidebar-ring: 330 81% 60%;
+    --sidebar-background: 210 17% 98%;
+    --sidebar-foreground: 210 24% 20%;
+    --sidebar-primary: 182 39% 76%;
+    --sidebar-primary-foreground: 200 40% 18%;
+    --sidebar-accent: 182 45% 92%;
+    --sidebar-accent-foreground: 200 40% 22%;
+    --sidebar-border: 210 14% 89%;
+    --sidebar-ring: 182 39% 70%;
 
     --font-display: 'Lora', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
 
-    /* Announcement bar — baby blue */
-    --announce: 217 91% 60%;
-    --announce-foreground: 0 0% 100%;
+    /* Announcement bar — pastel blue */
+    --announce: 182 39% 76%;
+    --announce-foreground: 200 40% 18%;
 
-    --luxury-surface: 48 100% 96%;
-    --luxury-divider: 40 30% 88%;
-    --luxury-badge: 330 81% 95%;
-    --luxury-badge-text: 330 81% 40%;
-    --luxury-hover: 330 81% 96%;
+    --luxury-surface: 210 17% 98%;
+    --luxury-divider: 210 14% 89%;
+    --luxury-badge: 182 45% 92%;
+    --luxury-badge-text: 200 40% 22%;
+    --luxury-hover: 182 45% 94%;
   }
 }
 
