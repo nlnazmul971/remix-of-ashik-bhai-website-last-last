@@ -71,7 +71,7 @@ const PrettyProductCard = ({ product: p, badgeLabel, badgeClass }: Props) => {
               toast.error('Could not add');
             }
           }}
-          className="mt-1.5 w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs sm:text-sm font-bold uppercase tracking-wide py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
+          className="mt-1.5 w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground text-[10px] sm:text-xs font-bold uppercase tracking-wide py-1 sm:py-1.5 rounded-md shadow-sm hover:shadow-md transition flex items-center justify-center gap-1.5"
         >
           <ShoppingCart size={14} />
           <span>Add to Cart</span>
