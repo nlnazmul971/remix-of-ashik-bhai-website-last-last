@@ -679,7 +679,7 @@ const BannerSubItemsEditor = ({ items, onChange }: { items: SubItem[]; onChange:
   );
 };
 
-export default AdminHomepage;
+
 
 const LogoManager = ({ logo, onSave }: { logo: string; onSave: (url: string) => Promise<void> }) => {
   const [current, setCurrent] = useState(logo);
@@ -1046,3 +1046,5 @@ const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<strin
     </div>
   );
 };
+
+export default AdminHomepage;
