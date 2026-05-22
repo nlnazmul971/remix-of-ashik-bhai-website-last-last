@@ -42,7 +42,7 @@ const NewArrivals = () => {
               return (
                 <div
                   key={p.id}
-                  className="relative bg-white rounded-lg border border-gray-200 overflow-hidden flex flex-col"
+                  className="relative bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden flex flex-col"
                 >
                   {hasDiscount && (
                     <div className="absolute top-0 left-0 z-10 bg-[#1ea672] text-white text-[10px] sm:text-xs font-bold px-1.5 py-1 rounded-br-xl leading-tight text-center min-w-[34px]">
