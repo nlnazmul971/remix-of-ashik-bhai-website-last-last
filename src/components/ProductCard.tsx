@@ -204,7 +204,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
         <button
           onClick={isSoldOut ? handleWishlist : handleOpenSizes}
           disabled={isSoldOut && isInWishlist(product.id)}
-          className={`mt-3 w-full py-2.5 rounded-md text-[14px] font-semibold transition ${
+          className={`mt-3 w-full py-2.5 rounded-none text-[14px] font-semibold transition ${
             isSoldOut
               ? 'bg-foreground/60 hover:bg-foreground/70 text-background'
               : 'bg-accent text-accent-foreground hover:bg-accent/80 border border-accent-foreground/10'
