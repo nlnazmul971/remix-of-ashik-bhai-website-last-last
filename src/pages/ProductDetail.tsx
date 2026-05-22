@@ -402,7 +402,7 @@ const ProductDetail = () => {
                   href={messageLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-5 h-11 bg-[hsl(140,65%,30%)] hover:bg-[hsl(140,65%,25%)] text-white text-[14px] font-semibold rounded mb-3 transition"
+                  className="inline-flex items-center justify-center gap-2 px-5 h-11 bg-primary hover:bg-primary/90 text-primary-foreground text-[14px] font-semibold rounded mb-3 transition"
                 >
                   Order on WhatsApp
                 </a>
