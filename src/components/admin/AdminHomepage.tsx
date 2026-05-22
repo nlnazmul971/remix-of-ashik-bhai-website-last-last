@@ -74,9 +74,38 @@ const AdminHomepage = () => {
         await updateSetting.mutateAsync({ key: 'homepage_featured_categories', value: JSON.stringify(newItems) });
         toast.success('Featured categories updated!');
       }} />
+
+      <BabyKidsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Baby & Kids section updated!');
+      }} />
+
+      <PromoPostersManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Promo posters updated!');
+      }} />
+
+      <NewArrivalsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('New Arrivals section updated!');
+      }} />
+
+      <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Explore Categories updated!');
+      }} />
     </div>
   );
 };
+
 
 type SlideType = { image: string; mobileImage?: string; title: string; topText: string; bottomText: string };
 type PosterType = { image: string; link: string; subtitle: string; title: string };
