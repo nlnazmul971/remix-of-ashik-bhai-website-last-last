@@ -37,7 +37,7 @@ const ExploreCategories = () => {
               className="group flex flex-col items-center text-center"
             >
               <div className="relative w-full aspect-[3/4] flex items-end justify-center">
-                <div className="absolute bottom-[6%] left-1/2 -translate-x-1/2 w-[85%] h-[12%] rounded-[50%] bg-[hsl(200_80%_85%)]" />
+                
                 <img
                   src={cat.image}
                   alt={cat.label}
