@@ -18,7 +18,7 @@ import NewArrivals from '@/components/NewArrivals';
 import TrendingProducts from '@/components/TrendingProducts';
 import ProductCard from '@/components/ProductCard';
 import Footer from '@/components/Footer';
-import IconBoxRow from '@/components/IconBoxRow';
+
 import CartDrawer from '@/components/CartDrawer';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import SEO from '@/components/SEO';
