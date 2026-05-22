@@ -533,7 +533,7 @@ const ProductDetail = () => {
               </div>
             )}
 
-            <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-border">
+            <div className="mt-8 sm:mt-10 pt-6 sm:pt-8">
               <h3 className="luxury-heading text-base sm:text-lg tracking-[0.1em] mb-4 sm:mb-6">Reviews ({reviews.length})</h3>
               
               <ReviewForm productId={product.id} />
