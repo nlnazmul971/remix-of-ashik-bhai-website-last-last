@@ -155,7 +155,6 @@ const Header = () => {
             </div>
             {/* PC white shade below header */}
             <div className="hidden sm:block h-2 bg-background/40 backdrop-blur-md ring-1 ring-foreground/10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)]" />
-            </div>
           </div>
         )}
 
