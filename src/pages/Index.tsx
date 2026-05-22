@@ -17,6 +17,7 @@ import PromoPosters from '@/components/PromoPosters';
 import NewArrivals from '@/components/NewArrivals';
 import TrendingProducts from '@/components/TrendingProducts';
 import ProductCard from '@/components/ProductCard';
+import PrettyProductCard from '@/components/PrettyProductCard';
 import Footer from '@/components/Footer';
 
 import CartDrawer from '@/components/CartDrawer';
@@ -481,15 +482,8 @@ const Index = () => {
                         </Link>
                       </div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
-                        {catProducts.slice(0, 5).map((product, idx) => (
-                          <ProductCard
-                            key={product.id}
-                            product={product}
-                            reviewStats={reviewStats}
-                            hoverImageUrl={hoverImageMap[product.id]}
-                            isSoldOut={soldOutMap[product.id] || false}
-                            priority={idx < 2}
-                          />
+                        {catProducts.slice(0, 5).map((product) => (
+                          <PrettyProductCard key={product.id} product={product} />
                         ))}
                       </div>
                     </>
