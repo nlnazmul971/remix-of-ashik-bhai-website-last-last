@@ -442,7 +442,7 @@ const ProductDetail = () => {
                 <button
                   onClick={handleBuyNow}
                   disabled={currentSizeAvailable <= 0}
-                  className="w-full h-12 bg-background hover:bg-muted text-foreground border border-border text-[13px] font-medium tracking-[0.3em] uppercase rounded-none transition disabled:opacity-40 mb-4"
+                  className="w-full h-12 bg-muted/40 hover:bg-muted/70 text-foreground border border-border text-[13px] font-medium tracking-[0.3em] uppercase rounded-none transition disabled:opacity-40 mb-4"
                 >
                   Buy Now
                 </button>
