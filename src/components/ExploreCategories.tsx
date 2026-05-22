@@ -24,15 +24,26 @@ const defaultItems: Item[] = [
 ];
 
 const ExploreCategories = () => {
+  const { data: s = {} } = useStoreSettings();
+  const enabled = s['explore_cats_enabled'] !== 'false';
+  const title = s['explore_cats_title'] || 'Explore Categories';
+  let items: Item[] = defaultItems;
+  try {
+    if (s['explore_cats_items']) items = JSON.parse(s['explore_cats_items']);
+  } catch {}
+
+  if (!enabled || items.length === 0) return null;
+
   return (
     <section className="w-full bg-background py-1 sm:py-2">
       <div className="max-w-full mx-auto px-4 sm:px-6">
         <h2 className="text-center text-base sm:text-2xl font-extrabold tracking-[0.15em] uppercase mb-1 sm:mb-2 text-foreground">
-          Explore Categories
+          {title}
         </h2>
 
         <div className="grid grid-cols-4 gap-3 sm:gap-6">
           {items.map((cat) => (
+
             <Link
               key={cat.label}
               to={cat.link}
