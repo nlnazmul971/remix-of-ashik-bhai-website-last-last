@@ -19,7 +19,7 @@ const NewArrivals = () => {
         {/* Header */}
         <div className="flex items-end justify-between mb-4 sm:mb-6 px-1">
           <div>
-            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-teal-600">
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-teal-500">
               Just In
             </p>
             <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 mt-0.5">
@@ -28,7 +28,7 @@ const NewArrivals = () => {
           </div>
           <Link
             to="/?category=All"
-            className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-teal-700 hover:text-teal-800 transition"
+            className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-teal-600 hover:text-teal-700 transition"
           >
             View All <ChevronRight size={16} />
           </Link>
@@ -50,7 +50,7 @@ const NewArrivals = () => {
             return (
               <div
                 key={p.id}
-                className="group relative bg-white rounded-2xl ring-1 ring-gray-100 hover:ring-teal-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
+                className="group relative bg-white rounded-2xl ring-1 ring-gray-100 hover:ring-teal-200 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col"
               >
                 {/* Image area with soft tinted bg */}
                 <div className="relative bg-gradient-to-br from-sky-50 via-white to-rose-50/40">
@@ -86,14 +86,14 @@ const NewArrivals = () => {
                 <div className="p-2 sm:p-3 flex-1 flex flex-col">
                   {/* Title */}
                   <Link to={`/product/${p.id}`}>
-                    <h3 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-teal-700 transition">
+                    <h3 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-teal-600 transition">
                       {p.name}
                     </h3>
                   </Link>
 
                   {/* Price */}
                   <div className="mt-1 flex items-baseline gap-1.5 flex-wrap">
-                    <span className="text-base sm:text-xl font-extrabold text-teal-600">
+                    <span className="text-base sm:text-xl font-extrabold text-teal-500">
                       ৳{p.price}
                     </span>
                     {hasDiscount && (
@@ -123,7 +123,7 @@ const NewArrivals = () => {
                         toast.error('Could not add');
                       }
                     }}
-                    className="mt-1.5 w-full bg-[#ff6a3d] hover:bg-[#e85a2f] text-white text-xs sm:text-sm font-bold uppercase tracking-wide py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
+                    className="mt-1.5 w-full bg-[#ff8a65] hover:bg-[#ff7043] text-white text-xs sm:text-sm font-bold uppercase tracking-wide py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
                   >
                     <ShoppingCart size={14} />
                     <span>Add to Cart</span>
