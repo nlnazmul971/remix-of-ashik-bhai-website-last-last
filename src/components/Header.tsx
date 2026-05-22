@@ -90,7 +90,7 @@ const Header = () => {
         {/* Top bar - hidden on scroll for both mobile and desktop */}
         {!scrolled && (
           <div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center gap-4 sm:gap-6 h-14 sm:h-20 relative">
                 {/* Mobile menu */}
                 <button
@@ -179,7 +179,7 @@ const Header = () => {
 
         {/* Category nav */}
         <nav onMouseLeave={() => !isMobile && setOpenDropdown(null)}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-center gap-6 sm:gap-12 h-6 sm:h-10 overflow-x-auto sm:overflow-visible">
               {navCategories.map(cat => {
                 const subs = subcategories.filter(s => s.parent_category === cat.slug);

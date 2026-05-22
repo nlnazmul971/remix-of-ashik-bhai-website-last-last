@@ -204,7 +204,7 @@ const Index = () => {
       {!showProducts && <ExploreCategories />}
       {!showProducts && <TrendingProducts />}
 
-      <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-20 sm:pt-32' : 'pt-10 sm:pt-32'}`}>
+      <main className={`max-w-full mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-20 sm:pt-32' : 'pt-10 sm:pt-32'}`}>
         {(searchQuery || (activeCategory && activeCategory !== 'All') || activeSub) && (
           <div className="text-center mb-6 sm:mb-8">
             <h2

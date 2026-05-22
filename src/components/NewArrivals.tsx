@@ -15,7 +15,7 @@ const NewArrivals = () => {
 
   return (
     <section className="w-full bg-gradient-to-b from-sky-50/40 to-background py-6 sm:py-10">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6">
+      <div className="max-w-full mx-auto px-3 sm:px-6">
         {/* Header */}
         <div className="flex items-end justify-between mb-4 sm:mb-6 px-1">
           <div>

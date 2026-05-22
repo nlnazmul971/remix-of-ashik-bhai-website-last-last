@@ -17,7 +17,7 @@ const Wishlist = () => {
     <div className="min-h-screen bg-background">
       <SEO title="Your Wishlist" description="Your saved favorites at HIGHLIGHTS." path="/wishlist" noIndex />
       <Header /><CartDrawer />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">
+      <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">
         <h1 className="luxury-heading text-3xl tracking-[0.15em] text-center mb-12">Wishlist</h1>
         {items.length === 0 ? (
           <div className="text-center py-20">

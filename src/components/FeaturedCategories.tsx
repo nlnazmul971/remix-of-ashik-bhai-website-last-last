@@ -18,7 +18,7 @@ const FeaturedCategories = () => {
 
   return (
     <section className="w-full bg-background py-4 sm:py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="max-w-full mx-auto px-4 sm:px-6">
         <h2 className="text-center text-base sm:text-2xl font-extrabold tracking-[0.15em] uppercase mb-6 sm:mb-10 text-foreground">
           FEATURED CATEGORIES
         </h2>
