@@ -68,7 +68,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
   };
 
   return (
-    <div className="group animate-fade-in bg-white rounded-lg border border-border/60 p-3 flex flex-col h-full">
+    <div className="group animate-fade-in bg-white rounded-none border border-border/60 flex flex-col h-full">
       <Link to={`/product/${product.id}`} className="block">
         <div
           ref={imageRef}
@@ -83,7 +83,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
             alt={product.name}
             width={600}
             height={600}
-            className={`absolute inset-0 w-full h-full object-contain transition-all duration-500 ease-in-out ${
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-in-out ${
               isHovered && hoverImage ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}
             loading={priority ? 'eager' : 'lazy'}
@@ -96,7 +96,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
               alt={`${product.name} alternate`}
               width={600}
               height={600}
-              className="absolute inset-0 w-full h-full object-contain transition-all duration-500"
+              className="absolute inset-0 w-full h-full object-cover transition-all duration-500"
               loading="lazy"
               decoding="async"
             />
@@ -165,7 +165,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
       </Link>
 
       {/* Info */}
-      <div className="pt-3 flex flex-col flex-1">
+      <div className="p-3 flex flex-col flex-1">
         {!isSoldOut && typeof stock === 'number' && stock > 0 && (
           <p className="text-[12px] font-semibold text-accent-foreground mb-1">
             {stock} in stock
@@ -204,7 +204,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
         <button
           onClick={isSoldOut ? handleWishlist : handleOpenSizes}
           disabled={isSoldOut && isInWishlist(product.id)}
-          className={`mt-3 w-full py-2.5 rounded-md text-[14px] font-semibold transition ${
+          className={`mt-3 w-full py-2.5 rounded-none text-[14px] font-semibold transition ${
             isSoldOut
               ? 'bg-foreground/60 hover:bg-foreground/70 text-background'
               : 'bg-accent text-accent-foreground hover:bg-accent/80 border border-accent-foreground/10'
