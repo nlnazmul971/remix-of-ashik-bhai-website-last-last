@@ -488,7 +488,7 @@ const ProductDetail = () => {
               <button
                 type="button"
                 onClick={() => setShowMobileDesc(v => !v)}
-                className="w-full flex items-center justify-between py-3 border-y border-border text-[11px] tracking-[0.15em] uppercase"
+                className="w-full flex items-center justify-between py-3 text-[11px] tracking-[0.15em] uppercase"
                 aria-expanded={showMobileDesc}
               >
                 <span>Description</span>
