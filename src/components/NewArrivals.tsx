@@ -83,32 +83,16 @@ const NewArrivals = () => {
                 </div>
 
                 {/* Body */}
-                <div className="p-3 sm:p-4 flex-1 flex flex-col">
-                  {/* Brand */}
-                  <p className="text-[10px] sm:text-[11px] uppercase tracking-wider text-gray-400 font-semibold">
-                    {(p as any).brand || 'Brand'}
-                  </p>
-
+                <div className="p-2 sm:p-3 flex-1 flex flex-col">
                   {/* Title */}
                   <Link to={`/product/${p.id}`}>
-                    <h3 className="mt-0.5 text-xs sm:text-sm font-bold text-gray-900 leading-snug line-clamp-2 min-h-[2.4em] hover:text-teal-700 transition">
+                    <h3 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-teal-700 transition">
                       {p.name}
                     </h3>
                   </Link>
 
-                  {/* Rating */}
-                  <div className="mt-1.5 flex items-center gap-1">
-                    <div className="flex items-center gap-0.5 bg-green-50 px-1.5 py-0.5 rounded">
-                      <Star size={10} className="fill-green-600 text-green-600" />
-                      <span className="text-[10px] font-bold text-green-700">
-                        {rating}
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-gray-400">(120 reviews)</span>
-                  </div>
-
                   {/* Price */}
-                  <div className="mt-2 flex items-baseline gap-1.5 flex-wrap">
+                  <div className="mt-1 flex items-baseline gap-1.5 flex-wrap">
                     <span className="text-base sm:text-xl font-extrabold text-teal-600">
                       ৳{p.price}
                     </span>
@@ -139,7 +123,7 @@ const NewArrivals = () => {
                         toast.error('Could not add');
                       }
                     }}
-                    className="mt-3 w-full bg-[#ff6a3d] hover:bg-[#e85a2f] text-white text-xs sm:text-sm font-bold uppercase tracking-wide py-2 sm:py-2.5 rounded-xl shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
+                    className="mt-1.5 w-full bg-[#ff6a3d] hover:bg-[#e85a2f] text-white text-xs sm:text-sm font-bold uppercase tracking-wide py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
                   >
                     <ShoppingCart size={14} />
                     <span>Add to Cart</span>
