@@ -5,7 +5,7 @@ import SEO from '@/components/SEO';
 
 const PrivacyPolicy = () => (
   <div className="min-h-screen bg-background">
-    <SEO title="Privacy Policy" description="How HIGHLIGHTS collects, uses and protects your personal information." path="/privacy-policy" />
+    <SEO title="Privacy Policy" description="How TWINKLE collects, uses and protects your personal information." path="/privacy-policy" />
     <Header />
     <CartDrawer />
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">
@@ -14,7 +14,7 @@ const PrivacyPolicy = () => (
 
       <div className="space-y-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
         <p>
-          At <strong className="text-foreground">HIGHLIGHTS</strong>, we are committed to protecting the privacy of our customers. This Privacy Policy outlines how we collect, use, and safeguard your personal information.
+          At <strong className="text-foreground">TWINKLE</strong>, we are committed to protecting the privacy of our customers. This Privacy Policy outlines how we collect, use, and safeguard your personal information.
         </p>
 
         <h2 className="text-foreground font-medium text-lg tracking-wide mt-8">Information We Collect</h2>

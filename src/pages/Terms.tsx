@@ -5,7 +5,7 @@ import SEO from '@/components/SEO';
 
 const Terms = () => (
   <div className="min-h-screen bg-background">
-    <SEO title="Terms & Conditions" description="Terms and conditions for shopping at HIGHLIGHTS — orders, payments, returns and more." path="/terms" />
+    <SEO title="Terms & Conditions" description="Terms and conditions for shopping at TWINKLE — orders, payments, returns and more." path="/terms" />
     <Header />
     <CartDrawer />
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">
@@ -14,7 +14,7 @@ const Terms = () => (
 
       <div className="space-y-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
         <p>
-          By accessing and using the <strong className="text-foreground">HIGHLIGHTS</strong> website, you agree to the following terms and conditions.
+          By accessing and using the <strong className="text-foreground">TWINKLE</strong> website, you agree to the following terms and conditions.
         </p>
 
         <h2 className="text-foreground font-medium text-lg tracking-wide mt-8">Orders & Payments</h2>
@@ -40,12 +40,12 @@ const Terms = () => (
 
         <h2 className="text-foreground font-medium text-lg tracking-wide mt-8">Intellectual Property</h2>
         <p>
-          All content on this website — including logos, images, text, and designs — is the property of HIGHLIGHTS and may not be used without written permission.
+          All content on this website — including logos, images, text, and designs — is the property of TWINKLE and may not be used without written permission.
         </p>
 
         <h2 className="text-foreground font-medium text-lg tracking-wide mt-8">Changes to Terms</h2>
         <p>
-          HIGHLIGHTS reserves the right to update these terms at any time. Continued use of the website constitutes acceptance of the updated terms.
+          TWINKLE reserves the right to update these terms at any time. Continued use of the website constitutes acceptance of the updated terms.
         </p>
       </div>
     </main>

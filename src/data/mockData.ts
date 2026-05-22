@@ -40,7 +40,7 @@ export const MOCK_HOMEPAGE_VIDEOS = [
   },
   {
     youtubeId: '3JZ_D3ELwOQ',
-    title: 'Customer Stories — Why They Love HIGHLIGHTS',
+    title: 'Customer Stories — Why They Love TWINKLE',
     date: '08/01/2026',
   },
   {
@@ -118,7 +118,7 @@ const mk = (
   stock: 25,
   featured: true,
   is_new_drop: isNew,
-  brand: 'HIGHLIGHTS',
+  brand: 'TWINKLE',
   sku: `MOCK-${id}`,
   size_chart: [],
   created_at: now,

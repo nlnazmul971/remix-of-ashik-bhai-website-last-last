@@ -5,7 +5,7 @@ import SEO from '@/components/SEO';
 
 const ShippingPolicy = () => (
   <div className="min-h-screen bg-background">
-    <SEO title="Shipping Policy" description="HIGHLIGHTS delivers across Bangladesh — delivery timeframes, charges and courier partners." path="/shipping-policy" />
+    <SEO title="Shipping Policy" description="TWINKLE delivers across Bangladesh — delivery timeframes, charges and courier partners." path="/shipping-policy" />
     <Header />
     <CartDrawer />
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">
@@ -14,7 +14,7 @@ const ShippingPolicy = () => (
 
       <div className="space-y-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
         <p>
-          <strong className="text-foreground">HIGHLIGHTS</strong> delivers across Bangladesh. We partner with trusted courier services to ensure your order reaches you safely and on time.
+          <strong className="text-foreground">TWINKLE</strong> delivers across Bangladesh. We partner with trusted courier services to ensure your order reaches you safely and on time.
         </p>
 
         <h2 className="text-foreground font-medium text-lg tracking-wide mt-8">Delivery Timeframes</h2>

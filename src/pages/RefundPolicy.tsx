@@ -5,7 +5,7 @@ import SEO from '@/components/SEO';
 
 const RefundPolicy = () => (
   <div className="min-h-screen bg-background">
-    <SEO title="Refund & Return Policy" description="Refund and return policy at HIGHLIGHTS — eligibility, process and timelines for returning your order." path="/refund-policy" />
+    <SEO title="Refund & Return Policy" description="Refund and return policy at TWINKLE — eligibility, process and timelines for returning your order." path="/refund-policy" />
     <Header />
     <CartDrawer />
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">
@@ -14,7 +14,7 @@ const RefundPolicy = () => (
 
       <div className="space-y-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
         <p>
-          At <strong className="text-foreground">HIGHLIGHTS</strong>, customer satisfaction is our priority. If you're not happy with your purchase, we're here to help.
+          At <strong className="text-foreground">TWINKLE</strong>, customer satisfaction is our priority. If you're not happy with your purchase, we're here to help.
         </p>
 
         <h2 className="text-foreground font-medium text-lg tracking-wide mt-8">Return Eligibility</h2>

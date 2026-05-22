@@ -526,7 +526,7 @@ const AdminOrders = () => {
   const openInvoiceEditor = (order: any) => {
     const items = Array.isArray(order.items) ? order.items : [];
     setInvoiceData({
-      brandName: 'HIGHLIGHTS',
+      brandName: 'TWINKLE',
       brandSub: 'www.highlightsbd.shop',
       orderId: order.id.slice(0, 8),
       date: new Date(order.created_at).toLocaleDateString(),
@@ -1180,7 +1180,7 @@ const AdminOrders = () => {
                       `ডেলিভারি ঠিকানা:\n` +
                       `${addressBlock}\n\n` +
                       (trackingLine ? `ট্র্যাকিং:\n${trackingLine}\n\n` : '') +
-                      `ধন্যবাদ আমাদের সাথে থাকার জন্য। — HIGHLIGHTS, Premium Men's Fashion`
+                      `ধন্যবাদ আমাদের সাথে থাকার জন্য। — TWINKLE, Premium Men's Fashion`
                     );
                     let phone = (selectedOrder.customer_phone || '').replace(/\D/g, '');
                     if (phone.startsWith('880')) phone = phone.slice(3);
