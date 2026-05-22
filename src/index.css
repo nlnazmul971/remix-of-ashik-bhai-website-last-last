@@ -37,31 +37,31 @@
     --ring: 178 45% 55%;
     --radius: 8px;
 
-    --price-sale: 173 80% 32%;
-    --promo: 14 100% 62%;
+    --price-sale: 178 45% 45%;
+    --promo: 14 85% 72%;
     --promo-foreground: 0 0% 100%;
 
     --sidebar-background: 0 0% 99%;
     --sidebar-foreground: 200 20% 20%;
-    --sidebar-primary: 173 80% 32%;
+    --sidebar-primary: 178 45% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 173 55% 94%;
-    --sidebar-accent-foreground: 173 80% 22%;
+    --sidebar-accent: 178 50% 94%;
+    --sidebar-accent-foreground: 178 45% 28%;
     --sidebar-border: 200 15% 90%;
-    --sidebar-ring: 173 80% 32%;
+    --sidebar-ring: 178 45% 55%;
 
     --font-display: 'Lora', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
 
-    /* Announcement bar — teal (brand) */
-    --announce: 173 80% 32%;
+    /* Announcement bar — soft teal */
+    --announce: 178 45% 55%;
     --announce-foreground: 0 0% 100%;
 
     --luxury-surface: 0 0% 100%;
     --luxury-divider: 200 15% 90%;
-    --luxury-badge: 173 55% 94%;
-    --luxury-badge-text: 173 80% 22%;
-    --luxury-hover: 173 55% 94%;
+    --luxury-badge: 178 50% 94%;
+    --luxury-badge-text: 178 45% 28%;
+    --luxury-hover: 178 50% 94%;
   }
 }
 
