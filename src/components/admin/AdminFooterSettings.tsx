@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { useStoreSettings, useUpdateStoreSetting } from '@/hooks/useSupabase';
 
 const FOOTER_FIELDS = [
-  { key: 'footer_brand_name', label: 'Brand Name', placeholder: 'HIGHLIGHTS' },
+  { key: 'footer_brand_name', label: 'Brand Name', placeholder: 'TWINKLE' },
   { key: 'footer_address', label: 'Address', placeholder: 'Your store address' },
   { key: 'footer_phone', label: 'Phone', placeholder: '+880 1234 567890' },
   { key: 'footer_email', label: 'Email', placeholder: 'info@example.com' },
@@ -12,7 +12,7 @@ const FOOTER_FIELDS = [
   { key: 'footer_instagram', label: 'Instagram URL', placeholder: 'https://instagram.com/...' },
   { key: 'footer_messenger', label: 'Messenger Link', placeholder: 'https://m.me/yourpage' },
   { key: 'footer_whatsapp', label: 'WhatsApp Link', placeholder: 'https://wa.me/8801XXXXXXXXX' },
-  { key: 'footer_copyright', label: 'Copyright Text', placeholder: '© 2026 HIGHLIGHTS. All rights reserved.' },
+  { key: 'footer_copyright', label: 'Copyright Text', placeholder: '© 2026 TWINKLE. All rights reserved.' },
   { key: 'product_message_link', label: 'Product Page "Message Now" Link', placeholder: 'https://m.me/yourpage' },
 ];
 

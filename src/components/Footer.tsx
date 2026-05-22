@@ -10,10 +10,10 @@ const Footer = () => {
   const [subscribing, setSubscribing] = useState(false);
   const { data: s } = useStoreSettings();
 
-  const brandName = s?.footer_brand_name || 'HIGHLIGHTS';
+  const brandName = s?.footer_brand_name || 'TWINKLE';
   const address = s?.footer_address || 'HOUSE 12, ROAD 5, SECTOR 3, UTTARA, DHAKA';
   const phone = s?.footer_phone || '+880 1234 567890';
-  const footerEmail = s?.footer_email || 'INFO@HIGHLIGHTS.COM';
+  const footerEmail = s?.footer_email || 'INFO@TWINKLE.COM';
   const facebookUrl = s?.footer_facebook || '#';
   const instagramUrl = s?.footer_instagram || '#';
   const messengerUrl = s?.footer_messenger || '';

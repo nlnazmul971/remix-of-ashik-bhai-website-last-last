@@ -11,8 +11,8 @@ type Props = {
 };
 
 const SEO = ({ title, description, path = "/", image = "/logo.png", type = "website", noIndex, jsonLd }: Props) => {
-  const fullTitle = title.includes("HIGHLIGHTS") ? title : `${title} | HIGHLIGHTS`;
-  const desc = description || "HIGHLIGHTS (highlightsbd) — Bangladeshi unisex clothing brand. Shop shirts, t-shirts, pants & everyday wear with cash on delivery across BD.";
+  const fullTitle = title.includes("TWINKLE") ? title : `${title} | TWINKLE`;
+  const desc = description || "TWINKLE (highlightsbd) — Bangladeshi unisex clothing brand. Shop shirts, t-shirts, pants & everyday wear with cash on delivery across BD.";
   const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
   return (

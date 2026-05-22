@@ -42,7 +42,7 @@ const CustomPage = () => {
     <>
       <SEO
         title={page.title || page.slug}
-        description={`${page.title || page.slug} — collection at HIGHLIGHTS.`}
+        description={`${page.title || page.slug} — collection at TWINKLE.`}
         path={`/page/${page.slug}`}
         image={page.banner_url}
       />

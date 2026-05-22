@@ -8,7 +8,7 @@ const Contact = () => (
   <div className="min-h-screen bg-background">
     <SEO
       title="Contact Us"
-      description="Get in touch with HIGHLIGHTS — premium men's fashion in Bangladesh. Questions, orders, support: we'd love to hear from you."
+      description="Get in touch with TWINKLE — premium men's fashion in Bangladesh. Questions, orders, support: we'd love to hear from you."
       path="/contact"
     />
     <Header />

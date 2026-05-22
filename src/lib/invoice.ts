@@ -31,7 +31,7 @@ export type InvoiceOverrides = {
   extraLines?: string[];
 };
 
-const BRAND_NAME = 'HIGHLIGHTS';
+const BRAND_NAME = 'TWINKLE';
 const BRAND_WEBSITE = 'www.highlightsbd.shop';
 const BRAND_ADDRESS = 'Mirpur Section - 6, Block - A, Lane - 2, Dhaka 1216';
 const BRAND_PHONE = '+8801338918891';

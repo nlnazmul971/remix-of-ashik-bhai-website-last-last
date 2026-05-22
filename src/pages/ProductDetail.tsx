@@ -261,7 +261,7 @@ const ProductDetail = () => {
     image: [productImg],
     description: product.description,
     sku: product.sku || product.id,
-    brand: { "@type": "Brand", name: product.brand || "HIGHLIGHTS" },
+    brand: { "@type": "Brand", name: product.brand || "TWINKLE" },
     category: product.category,
     offers: {
       "@type": "Offer",
@@ -293,7 +293,7 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <SEO
         title={product.name}
-        description={(product.description || `Shop ${product.name} from HIGHLIGHTS — premium men's fashion in Bangladesh.`).slice(0, 155)}
+        description={(product.description || `Shop ${product.name} from TWINKLE — premium men's fashion in Bangladesh.`).slice(0, 155)}
         path={`/product/${product.id}`}
         image={productImg}
         type="product"

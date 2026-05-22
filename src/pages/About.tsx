@@ -7,7 +7,7 @@ const About = () => (
   <div className="min-h-screen bg-background">
     <SEO
       title="About Us"
-      description="HIGHLIGHTS is a Bangladesh-based premium men's fashion brand crafting timeless, comfortable clothing for the modern gentleman."
+      description="TWINKLE is a Bangladesh-based premium men's fashion brand crafting timeless, comfortable clothing for the modern gentleman."
       path="/about"
     />
     <Header />
@@ -18,19 +18,19 @@ const About = () => (
 
       <div className="space-y-6 text-sm sm:text-base text-muted-foreground leading-relaxed">
         <p>
-          Welcome to <strong className="text-foreground">HIGHLIGHTS</strong> — a contemporary clothing brand rooted in Bangladesh, dedicated to delivering premium-quality fashion for the modern individual.
+          Welcome to <strong className="text-foreground">TWINKLE</strong> — a contemporary clothing brand rooted in Bangladesh, dedicated to delivering premium-quality fashion for the modern individual.
         </p>
         <p>
           Founded with a passion for style and craftsmanship, we curate collections that blend timeless elegance with current trends. Every piece is thoughtfully designed and crafted using high-quality fabrics to ensure comfort, durability, and a perfect fit.
         </p>
         <p>
-          Our mission is simple: to make you look and feel your best. Whether it's everyday essentials or statement pieces, HIGHLIGHTS offers a versatile range of menswear including shirts, t-shirts, polos, panjabis, jackets, and more.
+          Our mission is simple: to make you look and feel your best. Whether it's everyday essentials or statement pieces, TWINKLE offers a versatile range of menswear including shirts, t-shirts, polos, panjabis, jackets, and more.
         </p>
         <p>
           We believe fashion should be accessible, and that quality should never be compromised. With a commitment to exceptional customer service and fast nationwide delivery, we strive to create a seamless shopping experience from start to finish.
         </p>
         <p className="text-foreground font-medium">
-          HIGHLIGHTS — Where Style Meets Substance.
+          TWINKLE — Where Style Meets Substance.
         </p>
       </div>
     </main>
