@@ -442,7 +442,7 @@ const ProductDetail = () => {
                 <button
                   onClick={handleBuyNow}
                   disabled={currentSizeAvailable <= 0}
-                  className="w-full h-12 bg-background hover:bg-muted text-foreground border border-border text-[13px] font-medium tracking-[0.3em] uppercase rounded-none transition disabled:opacity-40 mb-4"
+                  className="w-full h-12 bg-muted/40 hover:bg-muted/70 text-foreground border border-border text-[13px] font-medium tracking-[0.3em] uppercase rounded-none transition disabled:opacity-40 mb-4"
                 >
                   Buy Now
                 </button>
@@ -458,16 +458,6 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                {/* WhatsApp contact line */}
-                <div className="flex items-start gap-2 py-3 border-t border-border text-[13px]">
-                  <Check size={16} className="text-[hsl(140,65%,30%)] mt-0.5 shrink-0" />
-                  <p className="text-foreground">
-                    যে কোন পণ্য অর্ডার করতে: কল বা WhatsApp করুন:{' '}
-                    {storeSettings?.contact_phone && (
-                      <span className="font-semibold">{storeSettings.contact_phone}</span>
-                    )}
-                  </p>
-                </div>
 
                 {/* Categories */}
                 <div className="py-3 border-t border-border text-[13px]">
@@ -543,7 +533,7 @@ const ProductDetail = () => {
               </div>
             )}
 
-            <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-border">
+            <div className="mt-8 sm:mt-10 pt-6 sm:pt-8">
               <h3 className="luxury-heading text-base sm:text-lg tracking-[0.1em] mb-4 sm:mb-6">Reviews ({reviews.length})</h3>
               
               <ReviewForm productId={product.id} />
