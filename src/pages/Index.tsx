@@ -521,7 +521,7 @@ const Index = () => {
         )}
 
       </main>
-      <IconBoxRow />
+      
       <Footer />
     </div>
   );
