@@ -518,29 +518,6 @@ const Index = () => {
           </section>
         )}
 
-        {/* NEW DROPS section */}
-        {!showProducts && newDrops.length > 0 && (
-          <section className="mt-20 sm:mt-28">
-            <div className="text-center mb-8 sm:mb-10">
-              <h2 className="luxury-heading text-2xl sm:text-3xl tracking-[0.2em]">NEW DROPS</h2>
-              <div className="w-12 h-px bg-foreground mx-auto mt-3 sm:mt-4" />
-              <p className="text-[11px] sm:text-xs text-muted-foreground mt-3 tracking-wider uppercase">Just landed — fresh arrivals</p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-              {newDrops.map((product, idx) => (
-                <ProductCard key={product.id} product={product} reviewStats={reviewStats} hoverImageUrl={hoverImageMap[product.id]} isSoldOut={soldOutMap[product.id] || false} priority={idx < 2} />
-              ))}
-            </div>
-            <div className="flex justify-center mt-8">
-              <Link
-                to="/?category=New Dropped"
-                className="inline-flex items-center gap-2 px-8 py-3 border border-foreground text-[11px] tracking-[0.25em] uppercase hover:bg-foreground hover:text-background transition"
-              >
-                View All New Drops
-              </Link>
-            </div>
-          </section>
-        )}
 
         {/* Fancy Posters */}
         {!showProducts && (
