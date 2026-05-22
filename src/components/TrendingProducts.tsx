@@ -115,7 +115,7 @@ const TrendingProducts = () => {
                         toast.error('Could not add');
                       }
                     }}
-                    className="mt-1.5 w-full bg-[#C9A96E] hover:bg-[#B8985D] text-white text-xs sm:text-sm font-bold uppercase tracking-wide py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
+                    className="mt-1.5 w-full bg-secondary hover:bg-secondary/80 text-secondary-foreground text-xs sm:text-sm font-bold uppercase tracking-wide py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md transition flex items-center justify-center gap-2"
                   >
                     <ShoppingCart size={14} />
                     <span>Add to Cart</span>

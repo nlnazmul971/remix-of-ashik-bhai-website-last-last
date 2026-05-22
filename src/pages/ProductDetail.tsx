@@ -432,7 +432,7 @@ const ProductDetail = () => {
                       handleAddToCart();
                     }}
                     disabled={currentSizeAvailable <= 0}
-                    className="flex-1 h-11 bg-[#C9A96E] hover:bg-[#B8985D] text-white text-[14px] font-semibold rounded transition disabled:opacity-40"
+                    className="flex-1 h-11 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-[14px] font-semibold rounded transition disabled:opacity-40"
                   >
                     Add to cart
                   </button>
