@@ -106,7 +106,7 @@ const Header = () => {
                   <img
                     src={siteLogo}
                     alt="Logo"
-                    className="site-logo-img block max-w-none h-auto sm:h-12 sm:w-auto object-contain relative z-10"
+                    className="site-logo-img block max-w-none h-auto sm:h-20 sm:w-auto object-contain relative z-10"
                     loading="eager"
                     fetchPriority={"high" as any}
                     decoding="async"
