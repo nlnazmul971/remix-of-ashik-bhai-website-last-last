@@ -61,7 +61,7 @@ const VideoCarousel = () => {
 
   return (
     <section className="w-full bg-background pt-0 sm:pt-2 pb-2 sm:pb-6">
-      <div className="relative max-w-7xl mx-auto">
+      <div className="relative max-w-full mx-auto">
         <div className="overflow-hidden pt-2 sm:pt-4" ref={emblaRef}>
           <div className="flex">
             {videos.map((v, i) => {

@@ -206,7 +206,7 @@ const ProductDetail = () => {
   if (isLoading) return (
     <div className="min-h-screen bg-background">
       <Header /><CartDrawer />
-      <div className="pt-36 sm:pt-44 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="pt-36 sm:pt-44 max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12">
           <div className="aspect-[3/4] bg-muted animate-pulse" />
           <div className="space-y-4 py-4">
@@ -300,7 +300,7 @@ const ProductDetail = () => {
         jsonLd={[productJsonLd, breadcrumbJsonLd]}
       />
       <Header /><CartDrawer />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-20 sm:pb-8">
+      <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-20 sm:pb-8">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-[12px] text-muted-foreground mb-4 sm:mb-6">
           <Link to="/" className="hover:text-foreground transition-colors">🏠 Home</Link>

@@ -390,7 +390,7 @@ const Checkout = () => {
 
       {/* Slim header with centered logo + cart */}
       <header className="border-b border-border bg-background">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-5 flex items-center justify-between">
+        <div className="max-w-full mx-auto px-4 sm:px-8 py-5 flex items-center justify-between">
           <div className="w-8" />
           <button type="button" onClick={() => navigate('/')} className="flex items-center justify-center" aria-label="Home">
             <img src={siteLogo} alt="Logo" className="h-12 w-auto object-contain" />

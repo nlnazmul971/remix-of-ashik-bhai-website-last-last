@@ -47,7 +47,7 @@ const CustomPage = () => {
         image={page.banner_url}
       />
       <Header />
-      <main className="pt-28 sm:pt-36 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="pt-28 sm:pt-36 pb-12 max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         {page.title && <h1 className="luxury-heading text-2xl sm:text-3xl text-center mb-6">{page.title}</h1>}
         <img src={page.banner_url} alt={page.title || page.slug} className="w-full h-auto" />
 

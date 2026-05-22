@@ -9,7 +9,7 @@ const items = [
 
 const IconBoxRow = () => (
   <section className="border-t border-border mt-20 sm:mt-28">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+    <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-6">
         {items.map(({ icon: Icon, title, desc }) => (
           <div key={title} className="flex items-start gap-3 sm:gap-4">

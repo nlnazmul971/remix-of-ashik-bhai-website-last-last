@@ -9,7 +9,7 @@ const TopBar = () => {
 
   return (
     <div className="hidden sm:block border-b border-border bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-start gap-6 h-9 text-[12px] text-muted-foreground">
           <a href={`mailto:${email}`} className="flex items-center gap-1.5 hover:text-foreground transition-colors">
             <Mail size={13} />
