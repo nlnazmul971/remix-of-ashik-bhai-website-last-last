@@ -104,11 +104,11 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
 
           {/* Discount square badge top-left */}
           {isSoldOut ? (
-            <span className="absolute top-0 left-0 text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 text-destructive-foreground bg-destructive rounded">
+            <span className="absolute top-0 left-0 text-[10px] tracking-wider uppercase font-semibold px-2.5 py-1 text-destructive-foreground bg-destructive rounded-none">
               Sold Out
             </span>
           ) : discountPercent ? (
-            <span className="absolute top-0 left-0 min-w-[42px] h-[26px] px-2 rounded bg-destructive text-destructive-foreground flex items-center justify-center text-[12px] font-semibold">
+            <span className="absolute top-0 left-0 min-w-[42px] h-[26px] px-2 rounded-none bg-destructive text-destructive-foreground flex items-center justify-center text-[12px] font-semibold">
               {discountPercent}%
             </span>
           ) : null}
