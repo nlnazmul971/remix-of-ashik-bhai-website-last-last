@@ -418,7 +418,7 @@ const Index = () => {
 
         {/* Category Banners (3 horizontal banners) — each with 2 rows of products */}
         {!showProducts && categoryBanners.length > 0 && (
-          <section className="mt-4 sm:mt-8 space-y-2 sm:space-y-3">
+          <section className="mt-4 sm:mt-8 space-y-6 sm:space-y-8">
             {categoryBanners.slice(0, 3).map((b: any, i) => {
               // If admin picked specific products, use them; else auto-pull from link category
               let catProducts: typeof allProducts = [];
