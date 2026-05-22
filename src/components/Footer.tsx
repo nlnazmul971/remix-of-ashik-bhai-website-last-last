@@ -52,20 +52,6 @@ const Footer = () => {
   return (
     <footer className="border-t border-border mt-20 pb-[120px] sm:pb-0">
       <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-12">
-        {/* Trust badges */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 pb-5 sm:pb-8 mb-5 sm:mb-8 border-b border-border">
-          {trustItems.map(({ icon: Icon, title, desc }) => (
-            <div key={title} className="flex items-center gap-2 sm:gap-3">
-              <div className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-secondary flex items-center justify-center text-primary">
-                <Icon size={15} strokeWidth={1.5} />
-              </div>
-              <div className="min-w-0">
-                <h4 className="text-[11px] sm:text-xs font-medium text-foreground leading-tight">{title}</h4>
-                <p className="text-[10px] sm:text-[11px] text-muted-foreground leading-snug truncate">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
 
         {/* Top section - Brand + Contact */}
         <div className="mb-4 sm:mb-10">
@@ -109,7 +95,23 @@ const Footer = () => {
               </a>
             )}
           </div>
+
+          {/* Trust badges - below social */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-6">
+            {trustItems.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex items-center gap-2 sm:gap-3">
+                <div className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-secondary flex items-center justify-center text-primary">
+                  <Icon size={15} strokeWidth={1.5} />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="text-[11px] sm:text-xs font-medium text-foreground leading-tight">{title}</h4>
+                  <p className="text-[10px] sm:text-[11px] text-muted-foreground leading-snug truncate">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
+
 
         {/* Links + Newsletter */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-8 mb-4 sm:mb-10">
