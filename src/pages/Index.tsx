@@ -497,7 +497,7 @@ const Index = () => {
 
         {/* Fancy Posters */}
         {!showProducts && (
-          <section className="mt-20 sm:mt-28">
+          <section className="mt-6 sm:mt-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {posters.map((poster: any, i: number) => (
                 <Link key={i} to={poster.link || '/'} className="relative group overflow-hidden cursor-pointer block">
