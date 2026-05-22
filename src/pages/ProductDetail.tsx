@@ -477,35 +477,6 @@ const ProductDetail = () => {
                   </Link>
                 </div>
 
-                {/* Social share circles */}
-                <div className="flex items-center gap-2 py-3 border-t border-border">
-                  {[
-                    { Icon: Facebook, color: 'hsl(220,90%,55%)', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` },
-                    { Icon: Twitter, color: 'hsl(200,90%,55%)', href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&text=${encodeURIComponent(product.name)}` },
-                    { Icon: Linkedin, color: 'hsl(210,90%,40%)', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}` },
-                  ].map(({ Icon, color, href }, i) => (
-                    <a
-                      key={i}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-full border-2 flex items-center justify-center transition hover:scale-110"
-                      style={{ borderColor: color, color }}
-                    >
-                      <Icon size={14} />
-                    </a>
-                  ))}
-                  <a
-                    href={messageLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-9 h-9 rounded-full border-2 flex items-center justify-center transition hover:scale-110"
-                    style={{ borderColor: 'hsl(140,65%,40%)', color: 'hsl(140,65%,40%)' }}
-                    aria-label="WhatsApp"
-                  >
-                    <Send size={13} />
-                  </a>
-                </div>
 
                 {currentSizeAvailable > 0 && currentSizeAvailable <= 5 && (
                   <p className="text-[11px] text-destructive mt-2">Only {currentSizeAvailable} left in stock</p>
