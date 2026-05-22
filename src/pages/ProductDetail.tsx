@@ -458,16 +458,6 @@ const ProductDetail = () => {
                   </button>
                 </div>
 
-                {/* WhatsApp contact line */}
-                <div className="flex items-start gap-2 py-3 border-t border-border text-[13px]">
-                  <Check size={16} className="text-[hsl(140,65%,30%)] mt-0.5 shrink-0" />
-                  <p className="text-foreground">
-                    যে কোন পণ্য অর্ডার করতে: কল বা WhatsApp করুন:{' '}
-                    {storeSettings?.contact_phone && (
-                      <span className="font-semibold">{storeSettings.contact_phone}</span>
-                    )}
-                  </p>
-                </div>
 
                 {/* Categories */}
                 <div className="py-3 border-t border-border text-[13px]">
