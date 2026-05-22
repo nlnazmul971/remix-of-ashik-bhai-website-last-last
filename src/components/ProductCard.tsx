@@ -96,7 +96,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
               alt={`${product.name} alternate`}
               width={600}
               height={600}
-              className="absolute inset-0 w-full h-full object-contain transition-all duration-500"
+              className="absolute inset-0 w-full h-full object-cover transition-all duration-500"
               loading="lazy"
               decoding="async"
             />
