@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useStoreSettings } from '@/hooks/useSupabase';
 
 type Item = { label: string; image: string; link: string };
 
-const items: Item[] = [
+const defaultItems: Item[] = [
+
   { label: 'Footwear', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80', link: '/?category=Footwear' },
   { label: 'Accessories', image: 'https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=400&q=80', link: '/?category=Accessories' },
   { label: 'Disney & Marvel', image: 'https://images.unsplash.com/photo-1608889476561-6242cfdbf622?w=400&q=80', link: '/?category=Disney' },
