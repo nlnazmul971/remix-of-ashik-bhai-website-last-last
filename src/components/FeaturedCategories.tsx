@@ -31,7 +31,7 @@ const FeaturedCategories = () => {
               className="group flex flex-col items-center text-center"
             >
               <div className="relative w-full aspect-square flex items-center justify-center">
-                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-[80%] h-[14%] rounded-[50%] bg-[hsl(var(--announce)/0.18)] blur-[1px]" />
+                
                 <img
                   src={cat.image}
                   alt={cat.label}
