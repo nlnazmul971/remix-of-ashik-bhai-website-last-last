@@ -402,7 +402,7 @@ const ProductDetail = () => {
                   href={messageLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-5 h-11 bg-[hsl(140,65%,30%)] hover:bg-[hsl(140,65%,25%)] text-white text-[14px] font-semibold rounded mb-3 transition"
+                  className="inline-flex items-center justify-center gap-2 px-5 h-11 bg-primary hover:bg-primary/90 text-primary-foreground text-[14px] font-semibold rounded mb-3 transition"
                 >
                   Order on WhatsApp
                 </a>
@@ -432,7 +432,7 @@ const ProductDetail = () => {
                       handleAddToCart();
                     }}
                     disabled={currentSizeAvailable <= 0}
-                    className="flex-1 h-11 bg-[hsl(140,65%,30%)] hover:bg-[hsl(140,65%,25%)] text-white text-[14px] font-semibold rounded transition disabled:opacity-40"
+                    className="flex-1 h-11 bg-[#C9A96E] hover:bg-[#B8985D] text-white text-[14px] font-semibold rounded transition disabled:opacity-40"
                   >
                     Add to cart
                   </button>
@@ -442,7 +442,7 @@ const ProductDetail = () => {
                 <button
                   onClick={handleBuyNow}
                   disabled={currentSizeAvailable <= 0}
-                  className="w-full h-12 bg-[hsl(0,75%,52%)] hover:bg-[hsl(0,75%,46%)] text-white text-[15px] font-semibold rounded transition disabled:opacity-40 mb-4"
+                  className="w-full h-12 bg-foreground hover:bg-foreground/90 text-background text-[15px] font-semibold rounded transition disabled:opacity-40 mb-4"
                 >
                   Buy Now
                 </button>
