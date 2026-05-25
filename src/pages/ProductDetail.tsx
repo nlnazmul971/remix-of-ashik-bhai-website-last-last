@@ -305,7 +305,7 @@ const ProductDetail = () => {
       acceptedAnswer: { "@type": "Answer", text: f.a },
     })),
   } : null;
-  const allLd = [productJsonLd, breadcrumbJsonLd];
+  const allLd: any[] = [productJsonLd, breadcrumbJsonLd];
   if (faqJsonLd) allLd.push(faqJsonLd);
   if (customSchema) allLd.push(customSchema);
 
