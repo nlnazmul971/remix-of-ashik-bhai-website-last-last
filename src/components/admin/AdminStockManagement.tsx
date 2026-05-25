@@ -136,6 +136,13 @@ const AdminStockManagement = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {filteredProducts.map((p: any) => {
           const stocks = stockByProduct[p.id] || [];
+          const productSizes = Array.isArray(p.sizes) ? p.sizes.filter(Boolean) : [];
+          const displayStocks = productSizes.length
+            ? productSizes.map((size: string) => {
+                const match = stocks.find(s => String(s.size).trim().toLowerCase() === String(size).trim().toLowerCase());
+                return { id: match?.id || `${p.id}-${size}`, size, available: match ? getAvailable(match) : 0 };
+              })
+            : stocks.map(s => ({ id: s.id, size: s.size || '—', available: getAvailable(s) }));
           const total = stocks.reduce((sum, s) => sum + getAvailable(s), 0);
           const isOut = total <= 0 && stocks.length > 0;
           const isLow = total > 0 && total < 10;
@@ -169,19 +176,18 @@ const AdminStockManagement = () => {
               </div>
 
               <div className="flex flex-wrap gap-1.5 mt-4">
-                {stocks.length === 0 ? (
+                {displayStocks.length === 0 ? (
                   <span className="text-[10px] text-muted-foreground italic tracking-wide">No stock configured — click to set up</span>
                 ) : (
-                  stocks.map(s => {
-                    const avail = getAvailable(s);
+                  displayStocks.map(s => {
                     return (
                       <span
                         key={s.id}
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold tracking-wider uppercase border rounded-full ${pillTone(avail)}`}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold tracking-wider uppercase border rounded-full ${pillTone(s.available)}`}
                       >
                         <span>{s.size || '—'}</span>
                         <span className="opacity-50">·</span>
-                        <span className="font-normal">{avail}</span>
+                        <span className="font-normal">{s.available}</span>
                       </span>
                     );
                   })
