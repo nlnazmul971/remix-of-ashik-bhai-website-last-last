@@ -1,5 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { useStoreSettings } from "@/hooks/useSupabase";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { localeMap, LANGUAGES } from "@/lib/translations";
 
 type Props = {
   title?: string;
@@ -20,6 +22,7 @@ const stripTrailing = (s: string) => s.replace(/\/+$/, "");
 
 const SEO = ({ title, description, path = "/", image, type = "website", noIndex, keywords, jsonLd }: Props) => {
   const { data: s = {} } = useStoreSettings();
+  const { lang } = useLanguage();
 
   // All defaults sourced from admin settings — no hardcoded brand identity.
   const brand = s["seo_brand_name"] || "Baby Store";
@@ -30,7 +33,7 @@ const SEO = ({ title, description, path = "/", image, type = "website", noIndex,
   const defaultImage = s["seo_og_image"] || "";
   const twitterHandle = s["seo_twitter_handle"] || "";
   const baseUrl = stripTrailing(s["seo_base_url"] || "");
-  const locale = s["seo_locale"] || "en_US";
+  const locale = localeMap[lang] || s["seo_locale"] || "en_US";
   const robotsSetting = s["seo_robots"] || "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 
   // Per-path overrides: { "/about": { title, description, keywords, image, noIndex } }
@@ -59,11 +62,15 @@ const SEO = ({ title, description, path = "/", image, type = "website", noIndex,
   }
 
   return (
-    <Helmet>
+    <Helmet htmlAttributes={{ lang }}>
       <title>{finalTitle}</title>
       {finalDesc && <meta name="description" content={finalDesc} />}
       {finalKeywords && <meta name="keywords" content={finalKeywords} />}
       <link rel="canonical" href={absUrl} />
+      {baseUrl && LANGUAGES.map((l) => (
+        <link key={l.code} rel="alternate" hrefLang={l.code} href={`${baseUrl}${path}?lang=${l.code}`} />
+      ))}
+      {baseUrl && <link rel="alternate" hrefLang="x-default" href={absUrl} />}
       <meta name="robots" content={finalNoIndex ? "noindex, nofollow" : robotsSetting} />
 
       <meta property="og:type" content={type} />
