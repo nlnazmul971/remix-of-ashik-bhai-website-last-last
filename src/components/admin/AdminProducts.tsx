@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useProducts, useDeleteProduct, useUpdateProduct, useCreateProduct, useProductImages, useAddProductImage, useDeleteProductImage, useAllSizeStock } from '@/hooks/useSupabase';
 import { Product, getProductImage } from '@/data/products';
-import { Edit, Trash2, Plus, Search, X, Upload, Image as ImageIcon, Copy, Check } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, X, Upload, Image as ImageIcon, Copy, Check, Sparkles, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -1066,5 +1066,87 @@ const Field = ({ label, children, className = '' }: { label: string; children: R
     {children}
   </div>
 );
+
+const AiGenButton = ({ kind, form, onResult }: { kind: 'title' | 'description' | 'keywords' | 'faq'; form: any; onResult: (v: any) => void }) => {
+  const [loading, setLoading] = useState(false);
+  const run = async () => {
+    if (!form.name) { toast.error('Enter product name first'); return; }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-seo-generator', {
+        body: {
+          kind,
+          product: {
+            name: form.name,
+            category: form.category,
+            brand: form.brand,
+            price: form.price,
+            description: form.description,
+          },
+          focusKeyword: form.seo_focus_keyword,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      onResult((data as any).result);
+      toast.success('Generated');
+    } catch (e: any) {
+      toast.error('AI failed: ' + (e.message || e));
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={run}
+      disabled={loading}
+      title="Generate with AI"
+      className="shrink-0 h-9 px-2.5 inline-flex items-center gap-1 border border-border rounded text-xs hover:bg-muted disabled:opacity-50"
+    >
+      {loading ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+      AI
+    </button>
+  );
+};
+
+const FaqEditor = ({ form, setForm }: { form: any; setForm: (v: any) => void }) => {
+  const faq: Array<{ q: string; a: string }> = Array.isArray(form.seo_faq) ? form.seo_faq : [];
+  const update = (next: any[]) => setForm({ ...form, seo_faq: next });
+  return (
+    <div className="space-y-2">
+      {faq.map((f, i) => (
+        <div key={i} className="border border-border rounded p-2 space-y-1.5 bg-muted/20">
+          <input
+            value={f.q}
+            onChange={e => update(faq.map((x, j) => j === i ? { ...x, q: e.target.value } : x))}
+            placeholder="Question"
+            className="luxury-input text-xs"
+          />
+          <textarea
+            value={f.a}
+            onChange={e => update(faq.map((x, j) => j === i ? { ...x, a: e.target.value } : x))}
+            placeholder="Answer"
+            className="luxury-input text-xs min-h-[50px]"
+          />
+          <button type="button" onClick={() => update(faq.filter((_, j) => j !== i))} className="text-[10px] text-destructive">Remove</button>
+        </div>
+      ))}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => update([...faq, { q: '', a: '' }])}
+          className="text-xs px-3 py-1.5 border border-dashed border-border rounded hover:bg-muted"
+        >
+          + Add FAQ
+        </button>
+        <AiGenButton kind="faq" form={form} onResult={(v) => update(Array.isArray(v) ? v : faq)} />
+      </div>
+    </div>
+  );
+};
+
+export default AdminProducts;
+
 
 export default AdminProducts;
