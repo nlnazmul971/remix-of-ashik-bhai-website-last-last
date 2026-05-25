@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, Layers, FileImage, Megaphone, Truck, Wallet } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, Layers, FileImage, Megaphone, Truck, Wallet, Search } from 'lucide-react';
 import adminLogo from '@/assets/admin-logo.png';
 import {
   Sidebar,
@@ -59,6 +59,7 @@ const menuGroups = [
       { title: 'Delivery Charge', key: 'delivery-charge', icon: Truck },
       { title: 'Payment Methods', key: 'payment-methods', icon: Wallet },
       { title: 'API', key: 'api', icon: Plug },
+      { title: 'SEO', key: 'seo', icon: Search },
       { title: 'Trash', key: 'trash', icon: Trash2 },
       { title: 'Settings', key: 'settings', icon: Settings },
     ],

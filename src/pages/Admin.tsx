@@ -31,6 +31,7 @@ import AdminDeliveredItems from '@/components/admin/AdminDeliveredItems';
 import AdminSubcategories from '@/components/admin/AdminHeaderCategories';
 import AdminCustomPages from '@/components/admin/AdminCustomPages';
 import AdminPopups from '@/components/admin/AdminPopups';
+import AdminSEO from '@/components/admin/AdminSEO';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import OrderTracker from '@/components/OrderTracker';
 
@@ -150,6 +151,7 @@ const Admin = () => {
             {activeTab === 'delivery-charge' && <AdminDeliveryCharge />}
             {activeTab === 'payment-methods' && <AdminPaymentMethods />}
             {activeTab === 'api' && <AdminAPI />}
+            {activeTab === 'seo' && <AdminSEO />}
           </main>
         </div>
       </div>
