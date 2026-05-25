@@ -253,7 +253,15 @@ const ProductDetail = () => {
     window.location.href = '/checkout';
   };
 
-  const productImg = getProductImage(product.image_url);
+  const productImg = (product as any).seo_og_image || getProductImage(product.image_url);
+  const seoTitle = (product as any).seo_title || product.name;
+  const seoDescription = (product as any).seo_description || (product.description || product.name).slice(0, 155);
+  const seoKeywords = (product as any).seo_keywords || undefined;
+  const seoSlug = (product as any).seo_slug;
+  const productPath = seoSlug ? `/product/${seoSlug}` : `/product/${product.id}`;
+  const seoFaq: Array<{ q: string; a: string }> = Array.isArray((product as any).seo_faq) ? (product as any).seo_faq : [];
+  const customSchema = (product as any).seo_schema;
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -261,11 +269,11 @@ const ProductDetail = () => {
     image: [productImg],
     description: product.description,
     sku: product.sku || product.id,
-    brand: { "@type": "Brand", name: product.brand || "TWINKLE" },
+    brand: { "@type": "Brand", name: product.brand || "Baby Store" },
     category: product.category,
     offers: {
       "@type": "Offer",
-      url: `/product/${product.id}`,
+      url: productPath,
       priceCurrency: "BDT",
       price: product.price,
       availability: allSoldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
@@ -285,20 +293,35 @@ const ProductDetail = () => {
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: "/" },
       { "@type": "ListItem", position: 2, name: product.category, item: `/?category=${product.category}` },
-      { "@type": "ListItem", position: 3, name: product.name, item: `/product/${product.id}` },
+      { "@type": "ListItem", position: 3, name: product.name, item: productPath },
     ],
   };
+  const faqJsonLd = seoFaq.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: seoFaq.filter(f => f.q && f.a).map(f => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  } : null;
+  const allLd = [productJsonLd, breadcrumbJsonLd];
+  if (faqJsonLd) allLd.push(faqJsonLd);
+  if (customSchema) allLd.push(customSchema);
 
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title={product.name}
-        description={(product.description || product.name).slice(0, 155)}
-        path={`/product/${product.id}`}
+        title={seoTitle}
+        description={seoDescription}
+        path={productPath}
         image={productImg}
         type="product"
-        jsonLd={[productJsonLd, breadcrumbJsonLd]}
+        keywords={seoKeywords}
+        noIndex={(product as any).seo_no_index}
+        jsonLd={allLd}
       />
+
       <Header /><CartDrawer />
       <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-20 sm:pb-8">
         {/* Breadcrumb */}
