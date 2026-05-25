@@ -6,7 +6,6 @@ import ImageUpload from './ImageUpload';
 import PromoPopupPreview from './PromoPopupPreview';
 import CheckoutPromoPopup from '../CheckoutPromoPopup';
 import OrderConfirmedPopup from '../OrderConfirmedPopup';
-import SpinWheelPopup, { DEFAULT_SPIN_SEGMENTS, SpinSegment } from '../SpinWheelPopup';
 
 const AdminPopups = () => {
   const { data: storeSettings } = useStoreSettings();
