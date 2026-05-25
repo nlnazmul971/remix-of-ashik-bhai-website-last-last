@@ -104,6 +104,14 @@ const AdminHomepage = () => {
         }
         toast.success('Explore Categories updated!');
       }} />
+
+      <CategoriesPopupManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Categories Popup updated!');
+      }} />
     </div>
   );
 };
@@ -1119,5 +1127,84 @@ const ExploreCategoriesManager = ({ settings, onSave }: { settings: Record<strin
   );
 };
 
-export default AdminHomepage;
 
+type PopupCatItem = { label: string; image: string; link: string };
+
+const CategoriesPopupManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
+  const [title, setTitle] = useState(settings['categories_popup_title'] || 'Shop by Category');
+  const initial: PopupCatItem[] = (() => {
+    try { return settings['categories_popup_items'] ? JSON.parse(settings['categories_popup_items']) : []; } catch { return []; }
+  })();
+  const [items, setItems] = useState<PopupCatItem[]>(initial);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setTitle(settings['categories_popup_title'] || 'Shop by Category');
+    try { if (settings['categories_popup_items']) setItems(JSON.parse(settings['categories_popup_items'])); } catch {}
+  }, [settings['categories_popup_title'], settings['categories_popup_items']]);
+
+  const add = () => setItems([...items, { label: '', image: '', link: '' }]);
+  const remove = (i: number) => setItems(items.filter((_, idx) => idx !== i));
+  const update = (i: number, field: keyof PopupCatItem, value: any) =>
+    setItems(items.map((it, idx) => idx === i ? { ...it, [field]: value } : it));
+
+  const importFromExplore = () => {
+    try {
+      if (settings['explore_cats_items']) {
+        const parsed = JSON.parse(settings['explore_cats_items']);
+        if (Array.isArray(parsed)) {
+          setItems(parsed.map((p: any) => ({ label: p.label || '', image: p.image || '', link: p.link || '' })));
+          toast.success('Imported from Explore Categories');
+        }
+      }
+    } catch {}
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave({
+        categories_popup_title: title,
+        categories_popup_items: JSON.stringify(items),
+      });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Categories Popup (Mobile Bottom Nav)</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">{items.length} categor(ies) • Shown when user taps Categories button</p>
+        </div>
+        <div className="flex gap-2 items-center flex-wrap">
+          <button onClick={importFromExplore} className="luxury-button-outline text-[10px] py-2 px-3">Import from Explore</button>
+          <button onClick={add} className="luxury-button-outline text-[10px] py-2 px-3">+ Add Category</button>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />} Save
+          </button>
+        </div>
+      </div>
+      <div className="space-y-1">
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Popup Title</label>
+        <input value={title} onChange={e => setTitle(e.target.value)} className="luxury-input text-xs" placeholder="Shop by Category" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {items.map((it, i) => (
+          <div key={i} className="border border-border p-3 space-y-2 relative">
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] text-muted-foreground">Category {i + 1}</p>
+              <button onClick={() => remove(i)} className="text-destructive hover:bg-destructive/10 p-1"><Trash2 size={11} /></button>
+            </div>
+            <HomepageImageUpload value={it.image} onChange={(url) => update(i, 'image', url)} folder="popup-category" />
+            <input value={it.label} onChange={e => update(i, 'label', e.target.value)} className="luxury-input text-xs" placeholder="Label (e.g. Footwear)" />
+            <input value={it.link} onChange={e => update(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Footwear" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+
+export default AdminHomepage;

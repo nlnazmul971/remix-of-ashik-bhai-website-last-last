@@ -5,11 +5,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useSupabase';
 import { useWishlist } from '@/contexts/WishlistContext';
 import SearchOverlay from '@/components/SearchOverlay';
+import CategoriesPopup from '@/components/CategoriesPopup';
 
 const MobileBottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { user } = useAuth();
   const { data: role } = useUserRole(user?.uid);
@@ -86,7 +88,7 @@ const MobileBottomNav = () => {
           <Item icon={Search} label="Search" onClick={() => setSearchOpen(true)} />
           <Item icon={Heart} label="Wishlist" to="/wishlist" active={isWishlist} badge={wishlistItems.length} />
           <Item icon={User} label="Account" to={profilePath} active={isProfile} />
-          <Item icon={LayoutGrid} label="Categories" to="/?view=categories" />
+          <Item icon={LayoutGrid} label="Categories" onClick={() => setCategoriesOpen(true)} active={categoriesOpen} />
         </div>
       </nav>
 
@@ -97,6 +99,8 @@ const MobileBottomNav = () => {
         setQuery={setSearchQuery}
         onSubmit={handleSearch}
       />
+
+      <CategoriesPopup open={categoriesOpen} onClose={() => setCategoriesOpen(false)} />
     </>
   );
 };
