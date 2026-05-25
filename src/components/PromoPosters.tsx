@@ -21,7 +21,7 @@ const PromoPosters = () => {
   return (
     <section className="w-full bg-background py-3 sm:py-6">
       <div className="max-w-full mx-auto px-4 sm:px-6">
-        <div className={`grid gap-3 sm:gap-5 ${posters.length === 1 ? 'grid-cols-1' : posters.length >= 3 ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4' : 'grid-cols-2 lg:grid-cols-3'}`}>
+        <div className={`grid gap-3 sm:gap-5 xl:gap-4 ${posters.length === 1 ? 'grid-cols-1' : posters.length >= 3 ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5' : 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}`}>
           {posters.map((p, i) => (
             <Link
               key={i}

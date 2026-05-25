@@ -46,7 +46,7 @@ const NewArrivals = () => {
 
 
         {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-5 xl:gap-4">
           {products.map((p, idx) => {
             const hasDiscount = p.original_price && p.original_price > p.price;
             const discountPct = hasDiscount
