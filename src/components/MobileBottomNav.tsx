@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useUserRole } from '@/hooks/useSupabase';
 import { useWishlist } from '@/contexts/WishlistContext';
 import SearchOverlay from '@/components/SearchOverlay';
+import CategoriesPopup from '@/components/CategoriesPopup';
 
 const MobileBottomNav = () => {
   const location = useLocation();
