@@ -294,11 +294,8 @@ const TabBtn = ({ active, onClick, icon, children }: any) => (
   </button>
 );
 
-const AiBtn = ({ label, loading, onClick }: { label: string; loading: boolean; onClick: () => void }) => (
-  <button type="button" onClick={onClick} disabled={loading} className="shrink-0 inline-flex items-center gap-1 px-2 py-1.5 text-[10px] uppercase tracking-widest border border-border hover:bg-muted disabled:opacity-50">
-    {loading ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />} {label}
-  </button>
-);
+
+
 
 // generic CRUD for blog_categories / blog_authors
 const SimpleList = ({ table, rows, reload, columns }: { table: 'blog_categories' | 'blog_authors'; rows: any[]; reload: () => void; columns: string[] }) => {
