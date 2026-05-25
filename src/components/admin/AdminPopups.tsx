@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Save, Plus, Trash2 } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { useStoreSettings, useUpdateStoreSetting } from '@/hooks/useSupabase';
 import ImageUpload from './ImageUpload';
