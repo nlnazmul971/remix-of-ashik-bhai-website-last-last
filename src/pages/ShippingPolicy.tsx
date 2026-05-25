@@ -5,7 +5,7 @@ import SEO from '@/components/SEO';
 
 const ShippingPolicy = () => (
   <div className="min-h-screen bg-background">
-    <SEO title="Shipping Policy" description="TWINKLE delivers across Bangladesh — delivery timeframes, charges and courier partners." path="/shipping-policy" />
+    <SEO title="Shipping Policy" path="/shipping-policy" />
     <Header />
     <CartDrawer />
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">

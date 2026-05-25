@@ -6,11 +6,7 @@ import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
 const Contact = () => (
   <div className="min-h-screen bg-background">
-    <SEO
-      title="Contact Us"
-      description="Get in touch with TWINKLE — premium men's fashion in Bangladesh. Questions, orders, support: we'd love to hear from you."
-      path="/contact"
-    />
+    <SEO path="/contact" title="Contact Us" />
     <Header />
     <CartDrawer />
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">

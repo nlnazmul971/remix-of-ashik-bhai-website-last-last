@@ -5,11 +5,7 @@ import SEO from '@/components/SEO';
 
 const About = () => (
   <div className="min-h-screen bg-background">
-    <SEO
-      title="About Us"
-      description="TWINKLE is a Bangladesh-based premium men's fashion brand crafting timeless, comfortable clothing for the modern gentleman."
-      path="/about"
-    />
+    <SEO path="/about" title="About Us" />
     <Header />
     <CartDrawer />
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">

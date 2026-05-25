@@ -385,7 +385,7 @@ const Checkout = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="Checkout" description="Complete your order — secure checkout with cash on delivery available." path="/checkout" noIndex />
+      <SEO title="Checkout" path="/checkout" noIndex />
       <CartDrawer />
 
       {/* Slim header with centered logo + cart */}

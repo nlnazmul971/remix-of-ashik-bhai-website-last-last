@@ -15,7 +15,7 @@ const Wishlist = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="Your Wishlist" description="Your saved favorites at TWINKLE." path="/wishlist" noIndex />
+      <SEO title="Your Wishlist" path="/wishlist" noIndex />
       <Header /><CartDrawer />
       <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">
         <h1 className="luxury-heading text-3xl tracking-[0.15em] text-center mb-12">Wishlist</h1>
