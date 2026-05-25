@@ -116,31 +116,7 @@ const AdminLandingPages = () => {
     setEditing({ ...editing, blocks: editing.blocks.filter((_, k) => k !== i) });
   };
 
-  const aiGenerate = async () => {
-    if (!aiTopic.trim()) return;
-    setAiLoading(true);
-    const { data, error } = await supabase.functions.invoke('ai-landing-page', { body: { topic: aiTopic } });
-    setAiLoading(false);
-    if (error || !data || data.error) {
-      toast.error(data?.error || error?.message || 'AI failed');
-      return;
-    }
-    setEditing({
-      id: '',
-      slug: data.slug || slugify(aiTopic),
-      title: data.title || aiTopic,
-      description: data.description || '',
-      blocks: data.blocks || [],
-      status: 'draft',
-      seo_title: data.seo_title,
-      seo_description: data.seo_description,
-      seo_keywords: data.seo_keywords,
-      seo_focus_keyword: data.seo_focus_keyword,
-    });
-    setAiOpen(false);
-    setAiTopic('');
-    toast.success('Landing page generated. Review and save.');
-  };
+
 
   if (editing) {
     return (
