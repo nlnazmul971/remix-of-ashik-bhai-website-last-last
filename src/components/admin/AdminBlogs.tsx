@@ -179,28 +179,16 @@ const AdminBlogs = () => {
             </select>
           </div>
           <div className="sm:col-span-3">
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-xs text-muted-foreground">Tags (comma separated)</label>
-              <AiBtn label="AI Tags" loading={aiBusy === 'tags'} onClick={() => ai('tags')} />
-            </div>
+            <label className="text-xs text-muted-foreground block mb-1">Tags (comma separated)</label>
             <input value={editing.tags.join(', ')} onChange={e => setEditing({ ...editing, tags: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} className="w-full px-3 py-2 text-sm border border-border bg-background" />
           </div>
         </section>
 
         <section className="space-y-3 border border-border p-4">
           <h3 className="text-xs uppercase tracking-widest text-muted-foreground">SEO</h3>
-          <div className="flex gap-2">
-            <input value={editing.seo_title || ''} onChange={e => setEditing({ ...editing, seo_title: e.target.value })} placeholder="Meta title (50–60 chars)" className="flex-1 px-3 py-2 text-sm border border-border bg-background" />
-            <AiBtn label="AI" loading={aiBusy === 'meta-title'} onClick={() => ai('meta-title')} />
-          </div>
-          <div className="flex gap-2">
-            <textarea value={editing.seo_description || ''} onChange={e => setEditing({ ...editing, seo_description: e.target.value })} placeholder="Meta description (140–155)" rows={2} className="flex-1 px-3 py-2 text-sm border border-border bg-background resize-y" />
-            <AiBtn label="AI" loading={aiBusy === 'meta-description'} onClick={() => ai('meta-description')} />
-          </div>
-          <div className="flex gap-2">
-            <input value={editing.seo_keywords || ''} onChange={e => setEditing({ ...editing, seo_keywords: e.target.value })} placeholder="keyword1, keyword2, ..." className="flex-1 px-3 py-2 text-sm border border-border bg-background" />
-            <AiBtn label="AI" loading={aiBusy === 'keywords'} onClick={() => ai('keywords')} />
-          </div>
+          <input value={editing.seo_title || ''} onChange={e => setEditing({ ...editing, seo_title: e.target.value })} placeholder="Meta title (50–60 chars)" className="w-full px-3 py-2 text-sm border border-border bg-background" />
+          <textarea value={editing.seo_description || ''} onChange={e => setEditing({ ...editing, seo_description: e.target.value })} placeholder="Meta description (140–155)" rows={2} className="w-full px-3 py-2 text-sm border border-border bg-background resize-y" />
+          <input value={editing.seo_keywords || ''} onChange={e => setEditing({ ...editing, seo_keywords: e.target.value })} placeholder="keyword1, keyword2, ..." className="w-full px-3 py-2 text-sm border border-border bg-background" />
           <div className="grid sm:grid-cols-2 gap-2">
             <input value={editing.seo_canonical || ''} onChange={e => setEditing({ ...editing, seo_canonical: e.target.value })} placeholder="Canonical URL (override)" className="px-3 py-2 text-sm border border-border bg-background" />
             <input value={editing.seo_og_image || ''} onChange={e => setEditing({ ...editing, seo_og_image: e.target.value })} placeholder="Social image URL (override)" className="px-3 py-2 text-sm border border-border bg-background" />
@@ -213,10 +201,7 @@ const AdminBlogs = () => {
         <section className="space-y-3 border border-border p-4">
           <div className="flex items-center justify-between">
             <h3 className="text-xs uppercase tracking-widest text-muted-foreground">FAQ (for FAQPage schema)</h3>
-            <div className="flex gap-2">
-              <AiBtn label="AI FAQ" loading={aiBusy === 'faq'} onClick={() => ai('faq')} />
-              <button onClick={() => setEditing({ ...editing, faq: [...editing.faq, { q: '', a: '' }] })} className="px-2 py-1 text-[10px] uppercase tracking-widest border border-border hover:bg-muted">+ Add</button>
-            </div>
+            <button onClick={() => setEditing({ ...editing, faq: [...editing.faq, { q: '', a: '' }] })} className="px-2 py-1 text-[10px] uppercase tracking-widest border border-border hover:bg-muted">+ Add</button>
           </div>
           {editing.faq.map((f, i) => (
             <div key={i} className="grid sm:grid-cols-[1fr_2fr_auto] gap-2 items-start">
