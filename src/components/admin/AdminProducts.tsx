@@ -1092,7 +1092,7 @@ const FaqEditor = ({ form, setForm }: { form: any; setForm: (v: any) => void }) 
           <button type="button" onClick={() => update(faq.filter((_, j) => j !== i))} className="text-[10px] text-destructive">Remove</button>
         </div>
       ))}
-      <div className="flex gap-2">
+      <div>
         <button
           type="button"
           onClick={() => update([...faq, { q: '', a: '' }])}
@@ -1100,7 +1100,6 @@ const FaqEditor = ({ form, setForm }: { form: any; setForm: (v: any) => void }) 
         >
           + Add FAQ
         </button>
-        <AiGenButton kind="faq" form={form} onResult={(v) => update(Array.isArray(v) ? v : faq)} />
       </div>
     </div>
   );
