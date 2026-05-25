@@ -104,6 +104,14 @@ const AdminHomepage = () => {
         }
         toast.success('Explore Categories updated!');
       }} />
+
+      <CategoriesPopupManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Categories Popup updated!');
+      }} />
     </div>
   );
 };
