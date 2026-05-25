@@ -88,7 +88,7 @@ const MobileBottomNav = () => {
           <Item icon={Search} label="Search" onClick={() => setSearchOpen(true)} />
           <Item icon={Heart} label="Wishlist" to="/wishlist" active={isWishlist} badge={wishlistItems.length} />
           <Item icon={User} label="Account" to={profilePath} active={isProfile} />
-          <Item icon={LayoutGrid} label="Categories" to="/?view=categories" />
+          <Item icon={LayoutGrid} label="Categories" onClick={() => setCategoriesOpen(true)} active={categoriesOpen} />
         </div>
       </nav>
 
@@ -99,6 +99,8 @@ const MobileBottomNav = () => {
         setQuery={setSearchQuery}
         onSubmit={handleSearch}
       />
+
+      <CategoriesPopup open={categoriesOpen} onClose={() => setCategoriesOpen(false)} />
     </>
   );
 };
