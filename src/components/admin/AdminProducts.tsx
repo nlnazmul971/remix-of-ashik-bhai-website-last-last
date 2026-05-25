@@ -1067,48 +1067,8 @@ const Field = ({ label, children, className = '' }: { label: string; children: R
   </div>
 );
 
-const AiGenButton = ({ kind, form, onResult }: { kind: 'title' | 'description' | 'keywords' | 'faq'; form: any; onResult: (v: any) => void }) => {
-  const [loading, setLoading] = useState(false);
-  const run = async () => {
-    if (!form.name) { toast.error('Enter product name first'); return; }
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('ai-seo-generator', {
-        body: {
-          kind,
-          product: {
-            name: form.name,
-            category: form.category,
-            brand: form.brand,
-            price: form.price,
-            description: form.description,
-          },
-          focusKeyword: form.seo_focus_keyword,
-        },
-      });
-      if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
-      onResult((data as any).result);
-      toast.success('Generated');
-    } catch (e: any) {
-      toast.error('AI failed: ' + (e.message || e));
-    } finally {
-      setLoading(false);
-    }
-  };
-  return (
-    <button
-      type="button"
-      onClick={run}
-      disabled={loading}
-      title="Generate with AI"
-      className="shrink-0 h-9 px-2.5 inline-flex items-center gap-1 border border-border rounded text-xs hover:bg-muted disabled:opacity-50"
-    >
-      {loading ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
-      AI
-    </button>
-  );
-};
+
+
 
 const FaqEditor = ({ form, setForm }: { form: any; setForm: (v: any) => void }) => {
   const faq: Array<{ q: string; a: string }> = Array.isArray(form.seo_faq) ? form.seo_faq : [];
