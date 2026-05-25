@@ -138,9 +138,6 @@ const AdminSEOAudit = () => {
           <button onClick={scan} disabled={scanning} className="px-3 py-1.5 text-xs border border-border hover:bg-muted flex items-center gap-1 disabled:opacity-50">
             {scanning ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />} Rescan
           </button>
-          <button onClick={bulkFix} disabled={bulkBusy || !fixable.length} className="px-3 py-1.5 text-xs bg-foreground text-background hover:bg-foreground/90 flex items-center gap-1 disabled:opacity-50">
-            {bulkBusy ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />} AI Bulk Fix ({fixable.length})
-          </button>
         </div>
       </div>
 
@@ -153,33 +150,21 @@ const AdminSEOAudit = () => {
             <CheckCircle2 className="text-emerald-500" /> No issues match this filter.
           </div>
         )}
-        {filtered.map(i => {
-          const fixableHere = ['missing-seo-title', 'bad-seo-title-length', 'fk-not-in-title', 'missing-seo-description', 'bad-seo-description-length', 'missing-keywords', 'missing-focus-keyword', 'missing-excerpt'].includes(i.code);
-          return (
-            <div key={i.id} className="p-3 flex items-start gap-3">
-              <div className={`mt-0.5 shrink-0 ${i.severity === 'critical' ? 'text-red-500' : i.severity === 'warning' ? 'text-amber-500' : 'text-muted-foreground'}`}>
-                <AlertTriangle size={14} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{i.entity}</span>
-                  <span className="text-sm font-medium truncate">{i.title}</span>
-                  <a href={i.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground"><ExternalLink size={11} /></a>
-                </div>
-                <p className="text-xs text-muted-foreground mt-0.5">{i.message}</p>
-              </div>
-              {fixableHere && (
-                <button
-                  onClick={() => aiFixOne(i)}
-                  disabled={!!fixingId}
-                  className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-widest border border-border hover:bg-muted disabled:opacity-50"
-                >
-                  {fixingId === i.id ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />} AI Fix
-                </button>
-              )}
+        {filtered.map(i => (
+          <div key={i.id} className="p-3 flex items-start gap-3">
+            <div className={`mt-0.5 shrink-0 ${i.severity === 'critical' ? 'text-red-500' : i.severity === 'warning' ? 'text-amber-500' : 'text-muted-foreground'}`}>
+              <AlertTriangle size={14} />
             </div>
-          );
-        })}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{i.entity}</span>
+                <span className="text-sm font-medium truncate">{i.title}</span>
+                <a href={i.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground"><ExternalLink size={11} /></a>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">{i.message}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
