@@ -134,23 +134,18 @@ const AdminBlogs = () => {
 
         <section className="space-y-3 border border-border p-4">
           <h3 className="text-xs uppercase tracking-widest text-muted-foreground">Content</h3>
-          <div className="flex gap-2">
-            <input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value, slug: editing.slug || slugify(e.target.value) })} placeholder="Post title" className="flex-1 px-3 py-2 text-sm border border-border bg-background" />
-            <AiBtn label="AI Title" loading={aiBusy === 'title'} onClick={() => ai('title')} />
+          <div>
+            <input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value, slug: editing.slug || slugify(e.target.value) })} placeholder="Post title" className="w-full px-3 py-2 text-sm border border-border bg-background" />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <input value={editing.slug} onChange={e => setEditing({ ...editing, slug: slugify(e.target.value) })} placeholder="slug-here" className="px-3 py-2 text-sm border border-border bg-background font-mono" />
             <input value={editing.seo_focus_keyword || ''} onChange={e => setEditing({ ...editing, seo_focus_keyword: e.target.value })} placeholder="Focus keyword" className="px-3 py-2 text-sm border border-border bg-background" />
           </div>
-          <div className="flex gap-2">
-            <textarea value={editing.excerpt} onChange={e => setEditing({ ...editing, excerpt: e.target.value })} placeholder="Short excerpt (140–160 chars)" rows={2} className="flex-1 px-3 py-2 text-sm border border-border bg-background resize-y" />
-            <AiBtn label="AI Excerpt" loading={aiBusy === 'excerpt'} onClick={() => ai('excerpt')} />
+          <div>
+            <textarea value={editing.excerpt} onChange={e => setEditing({ ...editing, excerpt: e.target.value })} placeholder="Short excerpt (140–160 chars)" rows={2} className="w-full px-3 py-2 text-sm border border-border bg-background resize-y" />
           </div>
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-xs text-muted-foreground">Content (HTML)</label>
-              <AiBtn label="Generate Full Article" loading={aiBusy === 'full-article'} onClick={() => ai('full-article')} />
-            </div>
+            <label className="text-xs text-muted-foreground block mb-1">Content (HTML)</label>
             <textarea value={editing.content} onChange={e => setEditing({ ...editing, content: e.target.value })} placeholder="<p>...</p>" rows={18} className="w-full px-3 py-2 text-sm border border-border bg-background font-mono resize-y" />
             <p className="text-[10px] text-muted-foreground mt-1">≈ {calcReadingTime(editing.content)} min read</p>
           </div>
