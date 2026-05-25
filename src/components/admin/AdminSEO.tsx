@@ -145,7 +145,7 @@ const AdminSEO = () => {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-24">
-      <div className="flex items-start justify-between gap-4 sticky top-14 z-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 bg-background/95 backdrop-blur border-b border-border">
+      <div className="flex items-start justify-between gap-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-3 bg-background/95 backdrop-blur border-b border-border">
         <div>
           <h1 className="text-lg font-bold tracking-tight">SEO Settings</h1>
           <p className="text-xs text-muted-foreground mt-0.5">Google search rules, social cards & per-page overrides — applies sitewide.</p>
