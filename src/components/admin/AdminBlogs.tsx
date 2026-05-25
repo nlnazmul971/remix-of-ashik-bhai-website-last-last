@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Plus, Edit2, Trash2, Sparkles, Loader2, Save, X, Eye, MessageSquare, FolderTree, UserCircle2 } from 'lucide-react';
+import { Plus, Edit2, Trash2, Loader2, Save, X, Eye, MessageSquare, FolderTree, UserCircle2 } from 'lucide-react';
 import ImageUpload from './ImageUpload';
 import { slugify, calcReadingTime } from '@/lib/blogHelpers';
 import { useStoreSettings } from '@/hooks/useSupabase';
@@ -45,7 +45,6 @@ const empty = (): Blog => ({
 
 const AdminBlogs = () => {
   const { data: settings = {} } = useStoreSettings();
-  const brand = settings['seo_brand_name'] || 'Baby Store';
 
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [cats, setCats] = useState<Cat[]>([]);
@@ -54,7 +53,6 @@ const AdminBlogs = () => {
   const [tab, setTab] = useState<'posts' | 'categories' | 'authors' | 'comments'>('posts');
   const [editing, setEditing] = useState<Blog | null>(null);
   const [busy, setBusy] = useState(false);
-  const [aiBusy, setAiBusy] = useState<string>('');
 
   const load = async () => {
     const [b, c, a, cm] = await Promise.all([
@@ -118,41 +116,7 @@ const AdminBlogs = () => {
     if (error) toast.error(error.message); else { toast.success('Deleted'); load(); }
   };
 
-  const ai = async (kind: string, field?: keyof Blog) => {
-    if (!editing) return;
-    setAiBusy(kind);
-    try {
-      const { data, error } = await supabase.functions.invoke('ai-blog-writer', {
-        body: {
-          kind,
-          topic: editing.title,
-          title: editing.title,
-          focusKeyword: editing.seo_focus_keyword || editing.title,
-          brand,
-          content: editing.content,
-        },
-      });
-      if (error) throw error;
-      const r = data?.result;
-      if (r === undefined) { toast.error('No result'); return; }
-      const upd: any = { ...editing };
-      if (kind === 'full-article') upd.content = r;
-      else if (kind === 'title') upd.title = r;
-      else if (kind === 'excerpt') upd.excerpt = r;
-      else if (kind === 'meta-title') upd.seo_title = r;
-      else if (kind === 'meta-description') upd.seo_description = r;
-      else if (kind === 'keywords') upd.seo_keywords = r;
-      else if (kind === 'tags' && Array.isArray(r)) upd.tags = r;
-      else if (kind === 'faq' && Array.isArray(r)) upd.faq = r;
-      else if (field) upd[field] = r;
-      setEditing(upd);
-      toast.success('AI generated ✓');
-    } catch (e: any) {
-      toast.error(e.message || 'AI failed');
-    } finally {
-      setAiBusy('');
-    }
-  };
+
 
   // ---- editor ----
   if (editing) {
@@ -170,23 +134,18 @@ const AdminBlogs = () => {
 
         <section className="space-y-3 border border-border p-4">
           <h3 className="text-xs uppercase tracking-widest text-muted-foreground">Content</h3>
-          <div className="flex gap-2">
-            <input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value, slug: editing.slug || slugify(e.target.value) })} placeholder="Post title" className="flex-1 px-3 py-2 text-sm border border-border bg-background" />
-            <AiBtn label="AI Title" loading={aiBusy === 'title'} onClick={() => ai('title')} />
+          <div>
+            <input value={editing.title} onChange={e => setEditing({ ...editing, title: e.target.value, slug: editing.slug || slugify(e.target.value) })} placeholder="Post title" className="w-full px-3 py-2 text-sm border border-border bg-background" />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <input value={editing.slug} onChange={e => setEditing({ ...editing, slug: slugify(e.target.value) })} placeholder="slug-here" className="px-3 py-2 text-sm border border-border bg-background font-mono" />
             <input value={editing.seo_focus_keyword || ''} onChange={e => setEditing({ ...editing, seo_focus_keyword: e.target.value })} placeholder="Focus keyword" className="px-3 py-2 text-sm border border-border bg-background" />
           </div>
-          <div className="flex gap-2">
-            <textarea value={editing.excerpt} onChange={e => setEditing({ ...editing, excerpt: e.target.value })} placeholder="Short excerpt (140–160 chars)" rows={2} className="flex-1 px-3 py-2 text-sm border border-border bg-background resize-y" />
-            <AiBtn label="AI Excerpt" loading={aiBusy === 'excerpt'} onClick={() => ai('excerpt')} />
+          <div>
+            <textarea value={editing.excerpt} onChange={e => setEditing({ ...editing, excerpt: e.target.value })} placeholder="Short excerpt (140–160 chars)" rows={2} className="w-full px-3 py-2 text-sm border border-border bg-background resize-y" />
           </div>
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-xs text-muted-foreground">Content (HTML)</label>
-              <AiBtn label="Generate Full Article" loading={aiBusy === 'full-article'} onClick={() => ai('full-article')} />
-            </div>
+            <label className="text-xs text-muted-foreground block mb-1">Content (HTML)</label>
             <textarea value={editing.content} onChange={e => setEditing({ ...editing, content: e.target.value })} placeholder="<p>...</p>" rows={18} className="w-full px-3 py-2 text-sm border border-border bg-background font-mono resize-y" />
             <p className="text-[10px] text-muted-foreground mt-1">≈ {calcReadingTime(editing.content)} min read</p>
           </div>
@@ -220,28 +179,16 @@ const AdminBlogs = () => {
             </select>
           </div>
           <div className="sm:col-span-3">
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-xs text-muted-foreground">Tags (comma separated)</label>
-              <AiBtn label="AI Tags" loading={aiBusy === 'tags'} onClick={() => ai('tags')} />
-            </div>
+            <label className="text-xs text-muted-foreground block mb-1">Tags (comma separated)</label>
             <input value={editing.tags.join(', ')} onChange={e => setEditing({ ...editing, tags: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })} className="w-full px-3 py-2 text-sm border border-border bg-background" />
           </div>
         </section>
 
         <section className="space-y-3 border border-border p-4">
           <h3 className="text-xs uppercase tracking-widest text-muted-foreground">SEO</h3>
-          <div className="flex gap-2">
-            <input value={editing.seo_title || ''} onChange={e => setEditing({ ...editing, seo_title: e.target.value })} placeholder="Meta title (50–60 chars)" className="flex-1 px-3 py-2 text-sm border border-border bg-background" />
-            <AiBtn label="AI" loading={aiBusy === 'meta-title'} onClick={() => ai('meta-title')} />
-          </div>
-          <div className="flex gap-2">
-            <textarea value={editing.seo_description || ''} onChange={e => setEditing({ ...editing, seo_description: e.target.value })} placeholder="Meta description (140–155)" rows={2} className="flex-1 px-3 py-2 text-sm border border-border bg-background resize-y" />
-            <AiBtn label="AI" loading={aiBusy === 'meta-description'} onClick={() => ai('meta-description')} />
-          </div>
-          <div className="flex gap-2">
-            <input value={editing.seo_keywords || ''} onChange={e => setEditing({ ...editing, seo_keywords: e.target.value })} placeholder="keyword1, keyword2, ..." className="flex-1 px-3 py-2 text-sm border border-border bg-background" />
-            <AiBtn label="AI" loading={aiBusy === 'keywords'} onClick={() => ai('keywords')} />
-          </div>
+          <input value={editing.seo_title || ''} onChange={e => setEditing({ ...editing, seo_title: e.target.value })} placeholder="Meta title (50–60 chars)" className="w-full px-3 py-2 text-sm border border-border bg-background" />
+          <textarea value={editing.seo_description || ''} onChange={e => setEditing({ ...editing, seo_description: e.target.value })} placeholder="Meta description (140–155)" rows={2} className="w-full px-3 py-2 text-sm border border-border bg-background resize-y" />
+          <input value={editing.seo_keywords || ''} onChange={e => setEditing({ ...editing, seo_keywords: e.target.value })} placeholder="keyword1, keyword2, ..." className="w-full px-3 py-2 text-sm border border-border bg-background" />
           <div className="grid sm:grid-cols-2 gap-2">
             <input value={editing.seo_canonical || ''} onChange={e => setEditing({ ...editing, seo_canonical: e.target.value })} placeholder="Canonical URL (override)" className="px-3 py-2 text-sm border border-border bg-background" />
             <input value={editing.seo_og_image || ''} onChange={e => setEditing({ ...editing, seo_og_image: e.target.value })} placeholder="Social image URL (override)" className="px-3 py-2 text-sm border border-border bg-background" />
@@ -254,10 +201,7 @@ const AdminBlogs = () => {
         <section className="space-y-3 border border-border p-4">
           <div className="flex items-center justify-between">
             <h3 className="text-xs uppercase tracking-widest text-muted-foreground">FAQ (for FAQPage schema)</h3>
-            <div className="flex gap-2">
-              <AiBtn label="AI FAQ" loading={aiBusy === 'faq'} onClick={() => ai('faq')} />
-              <button onClick={() => setEditing({ ...editing, faq: [...editing.faq, { q: '', a: '' }] })} className="px-2 py-1 text-[10px] uppercase tracking-widest border border-border hover:bg-muted">+ Add</button>
-            </div>
+            <button onClick={() => setEditing({ ...editing, faq: [...editing.faq, { q: '', a: '' }] })} className="px-2 py-1 text-[10px] uppercase tracking-widest border border-border hover:bg-muted">+ Add</button>
           </div>
           {editing.faq.map((f, i) => (
             <div key={i} className="grid sm:grid-cols-[1fr_2fr_auto] gap-2 items-start">
@@ -350,11 +294,8 @@ const TabBtn = ({ active, onClick, icon, children }: any) => (
   </button>
 );
 
-const AiBtn = ({ label, loading, onClick }: { label: string; loading: boolean; onClick: () => void }) => (
-  <button type="button" onClick={onClick} disabled={loading} className="shrink-0 inline-flex items-center gap-1 px-2 py-1.5 text-[10px] uppercase tracking-widest border border-border hover:bg-muted disabled:opacity-50">
-    {loading ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />} {label}
-  </button>
-);
+
+
 
 // generic CRUD for blog_categories / blog_authors
 const SimpleList = ({ table, rows, reload, columns }: { table: 'blog_categories' | 'blog_authors'; rows: any[]; reload: () => void; columns: string[] }) => {

@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Loader2, AlertTriangle, CheckCircle2, Sparkles, RefreshCw, ExternalLink, Filter } from 'lucide-react';
-import { useStoreSettings } from '@/hooks/useSupabase';
+import { Loader2, AlertTriangle, CheckCircle2, RefreshCw, ExternalLink, Filter } from 'lucide-react';
 
 type Issue = {
   id: string;
@@ -19,15 +18,10 @@ type Issue = {
 const sevOrder = { critical: 0, warning: 1, info: 2 } as const;
 
 const AdminSEOAudit = () => {
-  const { data: settings = {} } = useStoreSettings();
-  const brand = settings['seo_brand_name'] || 'Baby Store';
-
   const [scanning, setScanning] = useState(false);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info'>('all');
   const [entityFilter, setEntityFilter] = useState<'all' | 'product' | 'blog' | 'page'>('all');
-  const [fixingId, setFixingId] = useState<string>('');
-  const [bulkBusy, setBulkBusy] = useState(false);
   const [stats, setStats] = useState({ products: 0, blogs: 0, pages: 0 });
 
   const scan = async () => {
@@ -104,74 +98,11 @@ const AdminSEOAudit = () => {
 
   useEffect(() => { scan(); }, []);
 
-  const aiFixOne = async (issue: Issue) => {
-    setFixingId(issue.id);
-    try {
-      if (issue.entity === 'product') {
-        const { data: pr } = await supabase.from('products').select('*').eq('id', issue.entityId).maybeSingle();
-        if (!pr) throw new Error('Product not found');
-        const patch: any = {};
-        const calls: { kind: string; field: string }[] = [];
-        if (['missing-seo-title', 'bad-seo-title-length', 'fk-not-in-title'].includes(issue.code)) calls.push({ kind: 'title', field: 'seo_title' });
-        if (['missing-seo-description', 'bad-seo-description-length'].includes(issue.code)) calls.push({ kind: 'description', field: 'seo_description' });
-        if (issue.code === 'missing-keywords') calls.push({ kind: 'keywords', field: 'seo_keywords' });
-        if (issue.code === 'missing-focus-keyword') { patch.seo_focus_keyword = pr.name; }
-        for (const c of calls) {
-          const { data, error } = await supabase.functions.invoke('ai-seo-generator', {
-            body: { kind: c.kind, product: pr, brand, focusKeyword: pr.seo_focus_keyword || pr.name },
-          });
-          if (error) throw error;
-          if (data?.result) patch[c.field] = data.result;
-        }
-        if (Object.keys(patch).length) await supabase.from('products').update(patch).eq('id', issue.entityId);
-      } else if (issue.entity === 'blog') {
-        const { data: bl } = await supabase.from('blogs').select('*').eq('id', issue.entityId).maybeSingle();
-        if (!bl) throw new Error('Blog not found');
-        const patch: any = {};
-        const calls: { kind: string; field: string }[] = [];
-        if (['missing-seo-title', 'bad-seo-title-length'].includes(issue.code)) calls.push({ kind: 'meta-title', field: 'seo_title' });
-        if (issue.code === 'missing-seo-description') calls.push({ kind: 'meta-description', field: 'seo_description' });
-        if (issue.code === 'missing-excerpt') calls.push({ kind: 'excerpt', field: 'excerpt' });
-        if (issue.code === 'missing-focus-keyword') patch.seo_focus_keyword = bl.title;
-        for (const c of calls) {
-          const { data, error } = await supabase.functions.invoke('ai-blog-writer', {
-            body: { kind: c.kind, title: bl.title, topic: bl.title, focusKeyword: bl.seo_focus_keyword || bl.title, brand, content: bl.content },
-          });
-          if (error) throw error;
-          if (data?.result) patch[c.field] = data.result;
-        }
-        if (Object.keys(patch).length) await supabase.from('blogs').update(patch).eq('id', issue.entityId);
-      }
-      toast.success('Fixed ✓');
-      setIssues(prev => prev.filter(x => x.id !== issue.id));
-    } catch (e: any) {
-      toast.error(e.message || 'Fix failed');
-    } finally {
-      setFixingId('');
-    }
-  };
-
   const filtered = useMemo(() => issues.filter(i =>
     (filter === 'all' || i.severity === filter) &&
     (entityFilter === 'all' || i.entity === entityFilter)
   ), [issues, filter, entityFilter]);
 
-  const fixable = filtered.filter(i =>
-    ['missing-seo-title', 'bad-seo-title-length', 'fk-not-in-title', 'missing-seo-description', 'bad-seo-description-length', 'missing-keywords', 'missing-focus-keyword', 'missing-excerpt'].includes(i.code)
-  );
-
-  const bulkFix = async () => {
-    if (!fixable.length) return;
-    if (!confirm(`AI-fix ${fixable.length} issue${fixable.length === 1 ? '' : 's'}? This may take a minute.`)) return;
-    setBulkBusy(true);
-    let ok = 0; let fail = 0;
-    for (const i of fixable.slice(0, 30)) {
-      try { await aiFixOne(i); ok++; } catch { fail++; }
-    }
-    setBulkBusy(false);
-    toast.success(`Bulk fix done: ${ok} fixed${fail ? `, ${fail} failed` : ''}`);
-    scan();
-  };
 
   const counts = useMemo(() => ({
     critical: issues.filter(i => i.severity === 'critical').length,
@@ -207,9 +138,6 @@ const AdminSEOAudit = () => {
           <button onClick={scan} disabled={scanning} className="px-3 py-1.5 text-xs border border-border hover:bg-muted flex items-center gap-1 disabled:opacity-50">
             {scanning ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />} Rescan
           </button>
-          <button onClick={bulkFix} disabled={bulkBusy || !fixable.length} className="px-3 py-1.5 text-xs bg-foreground text-background hover:bg-foreground/90 flex items-center gap-1 disabled:opacity-50">
-            {bulkBusy ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />} AI Bulk Fix ({fixable.length})
-          </button>
         </div>
       </div>
 
@@ -222,33 +150,21 @@ const AdminSEOAudit = () => {
             <CheckCircle2 className="text-emerald-500" /> No issues match this filter.
           </div>
         )}
-        {filtered.map(i => {
-          const fixableHere = ['missing-seo-title', 'bad-seo-title-length', 'fk-not-in-title', 'missing-seo-description', 'bad-seo-description-length', 'missing-keywords', 'missing-focus-keyword', 'missing-excerpt'].includes(i.code);
-          return (
-            <div key={i.id} className="p-3 flex items-start gap-3">
-              <div className={`mt-0.5 shrink-0 ${i.severity === 'critical' ? 'text-red-500' : i.severity === 'warning' ? 'text-amber-500' : 'text-muted-foreground'}`}>
-                <AlertTriangle size={14} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{i.entity}</span>
-                  <span className="text-sm font-medium truncate">{i.title}</span>
-                  <a href={i.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground"><ExternalLink size={11} /></a>
-                </div>
-                <p className="text-xs text-muted-foreground mt-0.5">{i.message}</p>
-              </div>
-              {fixableHere && (
-                <button
-                  onClick={() => aiFixOne(i)}
-                  disabled={!!fixingId}
-                  className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 text-[10px] uppercase tracking-widest border border-border hover:bg-muted disabled:opacity-50"
-                >
-                  {fixingId === i.id ? <Loader2 size={10} className="animate-spin" /> : <Sparkles size={10} />} AI Fix
-                </button>
-              )}
+        {filtered.map(i => (
+          <div key={i.id} className="p-3 flex items-start gap-3">
+            <div className={`mt-0.5 shrink-0 ${i.severity === 'critical' ? 'text-red-500' : i.severity === 'warning' ? 'text-amber-500' : 'text-muted-foreground'}`}>
+              <AlertTriangle size={14} />
             </div>
-          );
-        })}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{i.entity}</span>
+                <span className="text-sm font-medium truncate">{i.title}</span>
+                <a href={i.url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-foreground"><ExternalLink size={11} /></a>
+              </div>
+              <p className="text-xs text-muted-foreground mt-0.5">{i.message}</p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

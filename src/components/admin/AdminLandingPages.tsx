@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink, Sparkles, Edit, Save, Eye } from 'lucide-react';
+import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink, Edit, Save, Eye } from 'lucide-react';
 import { BLOCK_TYPES } from '@/components/landing/LandingBlocks';
 
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -36,9 +36,6 @@ const empty: Page = { id: '', slug: '', title: '', description: '', blocks: [], 
 const AdminLandingPages = () => {
   const [pages, setPages] = useState<Page[]>([]);
   const [editing, setEditing] = useState<Page | null>(null);
-  const [aiOpen, setAiOpen] = useState(false);
-  const [aiTopic, setAiTopic] = useState('');
-  const [aiLoading, setAiLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const load = async () => {
@@ -119,31 +116,7 @@ const AdminLandingPages = () => {
     setEditing({ ...editing, blocks: editing.blocks.filter((_, k) => k !== i) });
   };
 
-  const aiGenerate = async () => {
-    if (!aiTopic.trim()) return;
-    setAiLoading(true);
-    const { data, error } = await supabase.functions.invoke('ai-landing-page', { body: { topic: aiTopic } });
-    setAiLoading(false);
-    if (error || !data || data.error) {
-      toast.error(data?.error || error?.message || 'AI failed');
-      return;
-    }
-    setEditing({
-      id: '',
-      slug: data.slug || slugify(aiTopic),
-      title: data.title || aiTopic,
-      description: data.description || '',
-      blocks: data.blocks || [],
-      status: 'draft',
-      seo_title: data.seo_title,
-      seo_description: data.seo_description,
-      seo_keywords: data.seo_keywords,
-      seo_focus_keyword: data.seo_focus_keyword,
-    });
-    setAiOpen(false);
-    setAiTopic('');
-    toast.success('Landing page generated. Review and save.');
-  };
+
 
   if (editing) {
     return (
@@ -287,31 +260,13 @@ const AdminLandingPages = () => {
           <p className="text-sm text-muted-foreground">Programmatic landing pages with full SEO and block builder.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setAiOpen((v) => !v)}>
-            <Sparkles className="w-4 h-4 mr-2" />AI Generate
-          </Button>
           <Button onClick={startNew}><Plus className="w-4 h-4 mr-2" />New Page</Button>
         </div>
       </div>
 
-      {aiOpen && (
-        <Card>
-          <CardContent className="pt-6 space-y-3">
-            <Label>Topic / goal of the landing page</Label>
-            <Textarea value={aiTopic} onChange={(e) => setAiTopic(e.target.value)} placeholder="e.g. Winter Collection 2026 — drive sales for premium wool coats" rows={3} />
-            <div className="flex justify-end gap-2">
-              <Button variant="ghost" onClick={() => setAiOpen(false)}>Cancel</Button>
-              <Button onClick={aiGenerate} disabled={aiLoading || !aiTopic.trim()}>
-                <Sparkles className="w-4 h-4 mr-2" />{aiLoading ? 'Generating…' : 'Generate'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       <div className="grid gap-3">
         {pages.length === 0 && (
-          <Card><CardContent className="pt-6 text-center text-sm text-muted-foreground">No landing pages yet. Create one or generate with AI.</CardContent></Card>
+          <Card><CardContent className="pt-6 text-center text-sm text-muted-foreground">No landing pages yet. Create one to get started.</CardContent></Card>
         )}
         {pages.map((p) => (
           <Card key={p.id}>

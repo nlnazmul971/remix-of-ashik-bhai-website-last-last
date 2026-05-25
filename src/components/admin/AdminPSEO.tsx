@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { toast } from 'sonner';
-import { Plus, Trash2, Edit, Save, ExternalLink, Sparkles, Eye, Wand2 } from 'lucide-react';
+import { Plus, Trash2, Edit, Save, ExternalLink, Eye, Wand2 } from 'lucide-react';
 
 type Template = {
   id: string;
@@ -41,7 +41,7 @@ const AdminPSEO = () => {
   const [editing, setEditing] = useState<Template | null>(null);
   const [genTemplate, setGenTemplate] = useState<string>('');
   const [genCsv, setGenCsv] = useState('');
-  const [useAI, setUseAI] = useState(false);
+  const useAI = false;
   const [generating, setGenerating] = useState(false);
 
   const load = async () => {
@@ -237,14 +237,8 @@ const AdminPSEO = () => {
                 />
                 <p className="text-xs text-muted-foreground mt-1">Each row becomes one page. Existing slugs are skipped.</p>
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label className="flex items-center gap-2"><Sparkles className="w-4 h-4" />AI-enrich content (slower)</Label>
-                  <p className="text-xs text-muted-foreground">Uses AI to rewrite content uniquely per page. Avoids duplicate-content penalties.</p>
-                </div>
-                <Switch checked={useAI} onCheckedChange={setUseAI} />
-              </div>
               <div className="flex justify-end">
+
                 <Button onClick={generate} disabled={generating || !genTemplate}>
                   <Wand2 className="w-4 h-4 mr-2" />{generating ? 'Generating…' : 'Generate Pages'}
                 </Button>
