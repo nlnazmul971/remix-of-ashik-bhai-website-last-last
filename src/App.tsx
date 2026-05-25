@@ -34,6 +34,8 @@ const ShippingPolicy = lazy(() => import("./pages/ShippingPolicy"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const CustomPage = lazy(() => import("./pages/CustomPage"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -86,6 +88,8 @@ const App = () => (
                   <Route path="/shipping-policy" element={<ShippingPolicy />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="/page/:slug" element={<CustomPage />} />
+                  <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:slug" element={<BlogPost />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
