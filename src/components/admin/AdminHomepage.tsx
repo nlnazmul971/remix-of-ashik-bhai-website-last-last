@@ -1207,3 +1207,4 @@ const CategoriesPopupManager = ({ settings, onSave }: { settings: Record<string,
 };
 
 
+export default AdminHomepage;
