@@ -116,41 +116,7 @@ const AdminBlogs = () => {
     if (error) toast.error(error.message); else { toast.success('Deleted'); load(); }
   };
 
-  const ai = async (kind: string, field?: keyof Blog) => {
-    if (!editing) return;
-    setAiBusy(kind);
-    try {
-      const { data, error } = await supabase.functions.invoke('ai-blog-writer', {
-        body: {
-          kind,
-          topic: editing.title,
-          title: editing.title,
-          focusKeyword: editing.seo_focus_keyword || editing.title,
-          brand,
-          content: editing.content,
-        },
-      });
-      if (error) throw error;
-      const r = data?.result;
-      if (r === undefined) { toast.error('No result'); return; }
-      const upd: any = { ...editing };
-      if (kind === 'full-article') upd.content = r;
-      else if (kind === 'title') upd.title = r;
-      else if (kind === 'excerpt') upd.excerpt = r;
-      else if (kind === 'meta-title') upd.seo_title = r;
-      else if (kind === 'meta-description') upd.seo_description = r;
-      else if (kind === 'keywords') upd.seo_keywords = r;
-      else if (kind === 'tags' && Array.isArray(r)) upd.tags = r;
-      else if (kind === 'faq' && Array.isArray(r)) upd.faq = r;
-      else if (field) upd[field] = r;
-      setEditing(upd);
-      toast.success('AI generated ✓');
-    } catch (e: any) {
-      toast.error(e.message || 'AI failed');
-    } finally {
-      setAiBusy('');
-    }
-  };
+
 
   // ---- editor ----
   if (editing) {
