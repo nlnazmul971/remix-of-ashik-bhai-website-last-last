@@ -49,26 +49,32 @@ const AdminSEO = () => {
   const [ogImage, setOgImage] = useState('');
   const [twitterHandle, setTwitterHandle] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
+  const [locale, setLocale] = useState('en_US');
   const [robots, setRobots] = useState('');
   const [googleVerif, setGoogleVerif] = useState('');
   const [bingVerif, setBingVerif] = useState('');
+  const [fbVerif, setFbVerif] = useState('');
+  const [pinVerif, setPinVerif] = useState('');
   const [orgJsonLd, setOrgJsonLd] = useState('');
   const [overrides, setOverrides] = useState<Override[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (isLoading) return;
-    setBrand(settings['seo_brand_name'] || 'TWINKLE');
+    setBrand(settings['seo_brand_name'] || 'Baby Store');
     setTitleTemplate(settings['seo_title_template'] || '{title} | {brand}');
-    setDefaultTitle(settings['seo_default_title'] || 'TWINKLE');
-    setDefaultDesc(settings['seo_default_description'] || '');
-    setDefaultKeywords(settings['seo_default_keywords'] || '');
+    setDefaultTitle(settings['seo_default_title'] || 'Baby Store — Quality Baby Products');
+    setDefaultDesc(settings['seo_default_description'] || 'Shop trusted baby products — clothing, gear, toys & essentials. Safe, gentle and made for little ones. Fast delivery & cash on delivery available.');
+    setDefaultKeywords(settings['seo_default_keywords'] || 'baby products, baby clothing, baby toys, baby gear, baby essentials, newborn, infant, toddler');
     setOgImage(settings['seo_og_image'] || '');
     setTwitterHandle(settings['seo_twitter_handle'] || '');
     setBaseUrl(settings['seo_base_url'] || '');
+    setLocale(settings['seo_locale'] || 'en_US');
     setRobots(settings['seo_robots'] || 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     setGoogleVerif(settings['seo_google_verification'] || '');
     setBingVerif(settings['seo_bing_verification'] || '');
+    setFbVerif(settings['seo_facebook_verification'] || '');
+    setPinVerif(settings['seo_pinterest_verification'] || '');
     setOrgJsonLd(settings['seo_organization_jsonld'] || '');
     try {
       const parsed = JSON.parse(settings['seo_page_overrides'] || '{}');
@@ -103,9 +109,12 @@ const AdminSEO = () => {
         ['seo_og_image', ogImage],
         ['seo_twitter_handle', twitterHandle],
         ['seo_base_url', baseUrl],
+        ['seo_locale', locale],
         ['seo_robots', robots],
         ['seo_google_verification', googleVerif],
         ['seo_bing_verification', bingVerif],
+        ['seo_facebook_verification', fbVerif],
+        ['seo_pinterest_verification', pinVerif],
         ['seo_organization_jsonld', orgJsonLd],
         ['seo_page_overrides', JSON.stringify(overridesObj)],
       ];
@@ -187,15 +196,23 @@ const AdminSEO = () => {
         <Field label="Robots Directive" hint="Default: index, follow, max-image-preview:large">
           <input className={inputCls} value={robots} onChange={e => setRobots(e.target.value)} />
         </Field>
+        <Field label="Content Locale" hint="e.g. en_US, bn_BD">
+          <input className={inputCls} value={locale} onChange={e => setLocale(e.target.value)} placeholder="en_US" />
+        </Field>
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Google Site Verification" hint="Content of google-site-verification meta">
+          <Field label="Google Site Verification" hint="The content value of google-site-verification meta">
             <input className={inputCls} value={googleVerif} onChange={e => setGoogleVerif(e.target.value)} />
           </Field>
           <Field label="Bing Site Verification">
             <input className={inputCls} value={bingVerif} onChange={e => setBingVerif(e.target.value)} />
           </Field>
+          <Field label="Facebook Domain Verification">
+            <input className={inputCls} value={fbVerif} onChange={e => setFbVerif(e.target.value)} />
+          </Field>
+          <Field label="Pinterest Domain Verification">
+            <input className={inputCls} value={pinVerif} onChange={e => setPinVerif(e.target.value)} />
+          </Field>
         </div>
-        <p className="text-[11px] text-muted-foreground">Verification meta tags also need to be added to <code className="bg-muted px-1 rounded">index.html</code> to be picked up before JS loads.</p>
       </SectionCard>
 
       <SectionCard icon={Code2} title="Organization JSON-LD (Schema.org)" desc="Structured data for Google's Knowledge Graph & rich results.">

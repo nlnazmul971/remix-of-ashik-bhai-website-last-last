@@ -293,7 +293,7 @@ const ProductDetail = () => {
     <div className="min-h-screen bg-background">
       <SEO
         title={product.name}
-        description={(product.description || `Shop ${product.name} from TWINKLE — premium men's fashion in Bangladesh.`).slice(0, 155)}
+        description={(product.description || product.name).slice(0, 155)}
         path={`/product/${product.id}`}
         image={productImg}
         type="product"

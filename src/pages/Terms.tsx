@@ -5,7 +5,7 @@ import SEO from '@/components/SEO';
 
 const Terms = () => (
   <div className="min-h-screen bg-background">
-    <SEO title="Terms & Conditions" description="Terms and conditions for shopping at TWINKLE — orders, payments, returns and more." path="/terms" />
+    <SEO title="Terms & Conditions" path="/terms" />
     <Header />
     <CartDrawer />
     <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 sm:pt-40 pb-20">

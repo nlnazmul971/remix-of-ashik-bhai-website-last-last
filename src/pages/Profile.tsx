@@ -43,7 +43,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO title="My Account" description="Manage your TWINKLE account, orders and address." path="/profile" noIndex />
+      <SEO title="My Account" path="/profile" noIndex />
       <Header /><CartDrawer />
       <main className="max-w-2xl mx-auto px-4 pt-36 sm:pt-40 pb-20">
         <div className="text-center mb-8">

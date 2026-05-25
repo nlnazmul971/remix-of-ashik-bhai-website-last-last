@@ -189,11 +189,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO
-        title="TWINKLE"
-        description="TWINKLE (highlightsbd) — Bangladeshi unisex clothing brand. Shop shirts, t-shirts, pants & everyday wear with cash on delivery across Bangladesh."
-        path="/"
-      />
+      <SEO path="/" />
       <Header />
       <CartDrawer />
       {!showProducts && <Hero />}
