@@ -35,14 +35,16 @@ const BlogPost = () => {
       // increment view (best-effort)
       supabase.from('blogs').update({ view_count: (data.view_count || 0) + 1 }).eq('id', data.id);
 
+      const relatedQuery = supabase.from('blogs').select('id,title,slug,cover_image,excerpt,published_at')
+        .eq('status', 'published')
+        .neq('id', data.id)
+        .order('published_at', { ascending: false }).limit(3);
+      if (data.category_id) relatedQuery.eq('category_id', data.category_id);
+
       const [a, c, r, cm] = await Promise.all([
         data.author_id ? supabase.from('blog_authors').select('*').eq('id', data.author_id).maybeSingle() : Promise.resolve({ data: null }),
         data.category_id ? supabase.from('blog_categories').select('*').eq('id', data.category_id).maybeSingle() : Promise.resolve({ data: null }),
-        supabase.from('blogs').select('id,title,slug,cover_image,excerpt,published_at')
-          .eq('status', 'published')
-          .neq('id', data.id)
-          .eq(data.category_id ? 'category_id' : 'status', data.category_id || 'published')
-          .order('published_at', { ascending: false }).limit(3),
+        relatedQuery,
         supabase.from('blog_comments').select('*').eq('blog_id', data.id).eq('is_approved', true).order('created_at', { ascending: false }),
       ]);
       setAuthor(a.data); setCategory(c.data); setRelated(r.data || []); setComments(cm.data || []);
