@@ -45,7 +45,6 @@ const empty = (): Blog => ({
 
 const AdminBlogs = () => {
   const { data: settings = {} } = useStoreSettings();
-  const brand = settings['seo_brand_name'] || 'Baby Store';
 
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [cats, setCats] = useState<Cat[]>([]);
@@ -54,7 +53,6 @@ const AdminBlogs = () => {
   const [tab, setTab] = useState<'posts' | 'categories' | 'authors' | 'comments'>('posts');
   const [editing, setEditing] = useState<Blog | null>(null);
   const [busy, setBusy] = useState(false);
-  const [aiBusy, setAiBusy] = useState<string>('');
 
   const load = async () => {
     const [b, c, a, cm] = await Promise.all([
