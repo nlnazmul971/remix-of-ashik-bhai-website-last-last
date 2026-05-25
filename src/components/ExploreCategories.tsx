@@ -41,7 +41,7 @@ const ExploreCategories = () => {
           {title}
         </h2>
 
-        <div className="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-6">
+        <div className="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-3 sm:gap-6 xl:gap-4">
           {items.map((cat) => (
 
             <Link
