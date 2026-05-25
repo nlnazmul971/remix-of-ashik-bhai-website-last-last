@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useProducts, useDeleteProduct, useUpdateProduct, useCreateProduct, useProductImages, useAddProductImage, useDeleteProductImage, useAllSizeStock } from '@/hooks/useSupabase';
 import { Product, getProductImage } from '@/data/products';
-import { Edit, Trash2, Plus, Search, X, Upload, Image as ImageIcon, Copy, Check } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, X, Upload, Image as ImageIcon, Copy, Check, Sparkles, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -939,6 +939,90 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
             />
           </Section>
 
+          {/* Section: SEO */}
+          <Section title="SEO" subtitle="Per-product search engine optimization. AI buttons auto-generate optimized content.">
+            <div className="space-y-4">
+              <Field label="SEO Slug (URL-friendly, optional)">
+                <input
+                  value={(form as any).seo_slug || ''}
+                  onChange={e => setForm({ ...form, seo_slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-') } as any)}
+                  placeholder="e.g. organic-cotton-baby-onesie"
+                  className="luxury-input font-mono text-xs"
+                />
+              </Field>
+              <Field label="Focus Keyword">
+                <input
+                  value={(form as any).seo_focus_keyword || ''}
+                  onChange={e => setForm({ ...form, seo_focus_keyword: e.target.value } as any)}
+                  placeholder="e.g. organic baby onesie"
+                  className="luxury-input text-xs"
+                />
+              </Field>
+              <Field label="Meta Title (50-60 chars recommended)">
+                <div className="flex gap-2">
+                  <input
+                    value={(form as any).seo_title || ''}
+                    onChange={e => setForm({ ...form, seo_title: e.target.value } as any)}
+                    placeholder="Defaults to product name"
+                    className="luxury-input text-xs flex-1"
+                  />
+                  <AiGenButton kind="title" form={form} onResult={(v) => setForm({ ...form, seo_title: v } as any)} />
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">{((form as any).seo_title || '').length} / 60</p>
+              </Field>
+              <Field label="Meta Description (140-155 chars)">
+                <div className="flex gap-2">
+                  <textarea
+                    value={(form as any).seo_description || ''}
+                    onChange={e => setForm({ ...form, seo_description: e.target.value } as any)}
+                    placeholder="Defaults to product description"
+                    className="luxury-input text-xs flex-1 min-h-[70px]"
+                  />
+                  <AiGenButton kind="description" form={form} onResult={(v) => setForm({ ...form, seo_description: v } as any)} />
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">{((form as any).seo_description || '').length} / 155</p>
+              </Field>
+              <Field label="Keywords (comma separated)">
+                <div className="flex gap-2">
+                  <input
+                    value={(form as any).seo_keywords || ''}
+                    onChange={e => setForm({ ...form, seo_keywords: e.target.value } as any)}
+                    placeholder="keyword1, keyword2, ..."
+                    className="luxury-input text-xs flex-1"
+                  />
+                  <AiGenButton kind="keywords" form={form} onResult={(v) => setForm({ ...form, seo_keywords: v } as any)} />
+                </div>
+              </Field>
+              <Field label="Canonical URL (optional)">
+                <input
+                  value={(form as any).seo_canonical || ''}
+                  onChange={e => setForm({ ...form, seo_canonical: e.target.value } as any)}
+                  placeholder="https://… (leave empty to auto)"
+                  className="luxury-input text-xs"
+                />
+              </Field>
+              <Field label="OG Image URL (social share, optional)">
+                <input
+                  value={(form as any).seo_og_image || ''}
+                  onChange={e => setForm({ ...form, seo_og_image: e.target.value } as any)}
+                  placeholder="https://… (defaults to product image)"
+                  className="luxury-input text-xs"
+                />
+              </Field>
+              <Field label="FAQ (shown on page + Google FAQ rich result)">
+                <FaqEditor form={form} setForm={setForm} />
+              </Field>
+              <label className="flex items-center gap-2 px-4 py-2.5 border border-border hover:border-foreground/30 cursor-pointer transition-colors">
+                <input
+                  type="checkbox"
+                  checked={!!(form as any).seo_no_index}
+                  onChange={e => setForm({ ...form, seo_no_index: e.target.checked } as any)}
+                />
+                <span className="text-xs">Noindex this product (hide from Google)</span>
+              </label>
+            </div>
+          </Section>
+
           {/* Section: Visibility */}
           <Section title="Visibility & Status">
             <div className="flex flex-wrap gap-3">
@@ -982,5 +1066,84 @@ const Field = ({ label, children, className = '' }: { label: string; children: R
     {children}
   </div>
 );
+
+const AiGenButton = ({ kind, form, onResult }: { kind: 'title' | 'description' | 'keywords' | 'faq'; form: any; onResult: (v: any) => void }) => {
+  const [loading, setLoading] = useState(false);
+  const run = async () => {
+    if (!form.name) { toast.error('Enter product name first'); return; }
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-seo-generator', {
+        body: {
+          kind,
+          product: {
+            name: form.name,
+            category: form.category,
+            brand: form.brand,
+            price: form.price,
+            description: form.description,
+          },
+          focusKeyword: form.seo_focus_keyword,
+        },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      onResult((data as any).result);
+      toast.success('Generated');
+    } catch (e: any) {
+      toast.error('AI failed: ' + (e.message || e));
+    } finally {
+      setLoading(false);
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={run}
+      disabled={loading}
+      title="Generate with AI"
+      className="shrink-0 h-9 px-2.5 inline-flex items-center gap-1 border border-border rounded text-xs hover:bg-muted disabled:opacity-50"
+    >
+      {loading ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+      AI
+    </button>
+  );
+};
+
+const FaqEditor = ({ form, setForm }: { form: any; setForm: (v: any) => void }) => {
+  const faq: Array<{ q: string; a: string }> = Array.isArray(form.seo_faq) ? form.seo_faq : [];
+  const update = (next: any[]) => setForm({ ...form, seo_faq: next });
+  return (
+    <div className="space-y-2">
+      {faq.map((f, i) => (
+        <div key={i} className="border border-border rounded p-2 space-y-1.5 bg-muted/20">
+          <input
+            value={f.q}
+            onChange={e => update(faq.map((x, j) => j === i ? { ...x, q: e.target.value } : x))}
+            placeholder="Question"
+            className="luxury-input text-xs"
+          />
+          <textarea
+            value={f.a}
+            onChange={e => update(faq.map((x, j) => j === i ? { ...x, a: e.target.value } : x))}
+            placeholder="Answer"
+            className="luxury-input text-xs min-h-[50px]"
+          />
+          <button type="button" onClick={() => update(faq.filter((_, j) => j !== i))} className="text-[10px] text-destructive">Remove</button>
+        </div>
+      ))}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => update([...faq, { q: '', a: '' }])}
+          className="text-xs px-3 py-1.5 border border-dashed border-border rounded hover:bg-muted"
+        >
+          + Add FAQ
+        </button>
+        <AiGenButton kind="faq" form={form} onResult={(v) => update(Array.isArray(v) ? v : faq)} />
+      </div>
+    </div>
+  );
+};
 
 export default AdminProducts;

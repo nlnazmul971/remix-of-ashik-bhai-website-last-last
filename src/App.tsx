@@ -10,6 +10,7 @@ import { WishlistProvider } from "@/contexts/WishlistContext";
 import Index from "./pages/Index";
 import ScrollToTop from "./components/ScrollToTop";
 import AddToCartPopup from "./components/AddToCartPopup";
+import RedirectHandler from "./components/RedirectHandler";
 
 // Lazy load non-critical UI (off-screen / interactive popups)
 const TrackingScripts = lazy(() => import("./components/TrackingScripts"));
@@ -60,6 +61,7 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <ScrollToTop />
+              <RedirectHandler />
               <Suspense fallback={null}>
                 <AddToCartPopup />
                 <TrackingScripts />
