@@ -177,11 +177,11 @@ const AdminStockManagement = () => {
                     return (
                       <span
                         key={s.id}
-                        className={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-medium tracking-wider uppercase border rounded-full ${pillTone(avail)}`}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-semibold tracking-wider uppercase border rounded-full ${pillTone(avail)}`}
                       >
-                        <span className="opacity-60">{s.size}</span>
-                        <span>·</span>
-                        <span>{avail}</span>
+                        <span>{s.size || '—'}</span>
+                        <span className="opacity-50">·</span>
+                        <span className="font-normal">{avail}</span>
                       </span>
                     );
                   })
