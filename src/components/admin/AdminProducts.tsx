@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useProducts, useDeleteProduct, useUpdateProduct, useCreateProduct, useProductImages, useAddProductImage, useDeleteProductImage, useAllSizeStock } from '@/hooks/useSupabase';
 import { Product, getProductImage } from '@/data/products';
-import { Edit, Trash2, Plus, Search, X, Upload, Image as ImageIcon, Copy, Check, Sparkles, Loader2 } from 'lucide-react';
+import { Edit, Trash2, Plus, Search, X, Upload, Image as ImageIcon, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
