@@ -44,14 +44,8 @@ const CategoriesPopup = ({ open, onClose }: Props) => {
             <SheetTitle className="text-center text-base font-extrabold tracking-[0.15em] uppercase text-foreground">
               {title}
             </SheetTitle>
-            <button
-              onClick={onClose}
-              className="absolute right-4 top-4 p-1.5 rounded-full hover:bg-muted/60 transition-colors"
-              aria-label="Close"
-            >
-              <X size={18} className="text-foreground/70" />
-            </button>
           </SheetHeader>
+
 
           <div className="flex-1 overflow-y-auto px-4 py-4">
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
