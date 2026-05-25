@@ -12,6 +12,7 @@ import AnnouncementBar from '@/components/AnnouncementBar';
 import TopBar from '@/components/TopBar';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 
 const Header = () => {
@@ -137,6 +138,7 @@ const Header = () => {
 
                 {/* Right icons */}
                 <div className="flex items-center gap-1 sm:gap-1 ml-auto sm:ml-0 sm:bg-background/50 sm:backdrop-blur-md sm:ring-1 sm:ring-foreground/15 sm:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] sm:rounded-full sm:px-2 sm:py-1">
+                  <div className="hidden sm:block"><LanguageSwitcher /></div>
                   <Link to={profilePath} className="hidden sm:block p-1.5 hover:opacity-60 transition-opacity">
                     <User size={20} />
                   </Link>
