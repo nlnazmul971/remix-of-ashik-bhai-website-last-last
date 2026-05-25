@@ -468,6 +468,16 @@ export type Database = {
           name: string
           original_price: number | null
           price: number
+          seo_canonical: string | null
+          seo_description: string | null
+          seo_faq: Json
+          seo_focus_keyword: string | null
+          seo_keywords: string | null
+          seo_no_index: boolean
+          seo_og_image: string | null
+          seo_schema: Json | null
+          seo_slug: string | null
+          seo_title: string | null
           size_chart: Json | null
           sizes: string[]
           sku: string
@@ -489,6 +499,16 @@ export type Database = {
           name: string
           original_price?: number | null
           price: number
+          seo_canonical?: string | null
+          seo_description?: string | null
+          seo_faq?: Json
+          seo_focus_keyword?: string | null
+          seo_keywords?: string | null
+          seo_no_index?: boolean
+          seo_og_image?: string | null
+          seo_schema?: Json | null
+          seo_slug?: string | null
+          seo_title?: string | null
           size_chart?: Json | null
           sizes?: string[]
           sku?: string
@@ -510,6 +530,16 @@ export type Database = {
           name?: string
           original_price?: number | null
           price?: number
+          seo_canonical?: string | null
+          seo_description?: string | null
+          seo_faq?: Json
+          seo_focus_keyword?: string | null
+          seo_keywords?: string | null
+          seo_no_index?: boolean
+          seo_og_image?: string | null
+          seo_schema?: Json | null
+          seo_slug?: string | null
+          seo_title?: string | null
           size_chart?: Json | null
           sizes?: string[]
           sku?: string
@@ -549,6 +579,45 @@ export type Database = {
           phone?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      redirects: {
+        Row: {
+          created_at: string
+          from_path: string
+          hit_count: number
+          id: string
+          is_active: boolean
+          last_hit_at: string | null
+          notes: string | null
+          status_code: number
+          to_path: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          from_path: string
+          hit_count?: number
+          id?: string
+          is_active?: boolean
+          last_hit_at?: string | null
+          notes?: string | null
+          status_code?: number
+          to_path: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          from_path?: string
+          hit_count?: number
+          id?: string
+          is_active?: boolean
+          last_hit_at?: string | null
+          notes?: string | null
+          status_code?: number
+          to_path?: string
+          updated_at?: string
         }
         Relationships: []
       }
