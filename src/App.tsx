@@ -17,7 +17,7 @@ const TrackingScripts = lazy(() => import("./components/TrackingScripts"));
 const PageViewTracker = lazy(() => import("./components/PageViewTracker"));
 const FloatingActions = lazy(() => import("./components/FloatingActions"));
 const PromoPopup = lazy(() => import("./components/PromoPopup"));
-const SpinWheelPopup = lazy(() => import("./components/SpinWheelPopup"));
+
 
 // Lazy load non-critical pages
 const ProductDetail = lazy(() => import("./pages/ProductDetail"));
@@ -72,7 +72,7 @@ const App = () => (
                 <PageViewTracker />
                 <FloatingActions />
                 <PromoPopup />
-                <SpinWheelPopup />
+                
               </Suspense>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
