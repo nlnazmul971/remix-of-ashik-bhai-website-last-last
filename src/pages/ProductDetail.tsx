@@ -13,6 +13,7 @@ import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { useQueryClient } from '@tanstack/react-query';
 import SEO from '@/components/SEO';
 import { pushViewItem } from '@/lib/gtm';
@@ -155,6 +156,7 @@ const ProductImageGallery = ({ mainImage, name, productId, discountPercent }: { 
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const { t } = useLanguage();
   const { data: product, isLoading } = useProduct(id || '');
   const { data: reviews = [] } = useProductReviews(id || '');
   const { data: relatedProducts = [] } = useRelatedProducts(product?.category || '', id || '');
@@ -457,7 +459,7 @@ const ProductDetail = () => {
                     disabled={currentSizeAvailable <= 0}
                     className="flex-1 h-11 bg-secondary hover:bg-secondary/80 text-secondary-foreground text-[14px] font-semibold rounded transition disabled:opacity-40"
                   >
-                    Add to cart
+                    {currentSizeAvailable <= 0 ? t('product.outOfStock') : t('product.addToCart')}
                   </button>
                 </div>
 
@@ -467,7 +469,7 @@ const ProductDetail = () => {
                   disabled={currentSizeAvailable <= 0}
                   className="w-full h-12 bg-muted/40 hover:bg-muted/70 text-foreground border border-border text-[13px] font-medium tracking-[0.3em] uppercase rounded-none transition disabled:opacity-40 mb-4"
                 >
-                  Buy Now
+                  {t('product.buyNow')}
                 </button>
 
                 {/* Wishlist + favorites count */}
@@ -504,7 +506,7 @@ const ProductDetail = () => {
                 className="w-full flex items-center justify-between py-3 text-[11px] tracking-[0.15em] uppercase"
                 aria-expanded={showMobileDesc}
               >
-                <span>Description</span>
+                <span>{t('product.description')}</span>
                 <ChevronDown size={14} className={`transition-transform ${showMobileDesc ? 'rotate-180' : ''}`} />
               </button>
               {showMobileDesc && (
@@ -515,7 +517,7 @@ const ProductDetail = () => {
             {/* Size Chart Section - Updated for better data handling */}
             {product.size_chart && (
               <div className="mt-6 sm:mt-8 pt-4 sm:pt-6">
-                <h3 className="luxury-heading text-base sm:text-lg tracking-[0.1em] mb-3 sm:mb-4">Size Chart</h3>
+                <h3 className="luxury-heading text-base sm:text-lg tracking-[0.1em] mb-3 sm:mb-4">{t('product.sizeChart')}</h3>
                 <div className="overflow-x-auto">
                   {(() => {
                     let chartData: any[] = [];
@@ -557,7 +559,7 @@ const ProductDetail = () => {
             )}
 
             <div className="mt-8 sm:mt-10 pt-6 sm:pt-8">
-              <h3 className="luxury-heading text-base sm:text-lg tracking-[0.1em] mb-4 sm:mb-6">Reviews ({reviews.length})</h3>
+              <h3 className="luxury-heading text-base sm:text-lg tracking-[0.1em] mb-4 sm:mb-6">{t('product.reviews')} ({reviews.length})</h3>
               
               <ReviewForm productId={product.id} />
 

@@ -6,6 +6,7 @@ import { useUserRole } from '@/hooks/useSupabase';
 import { useWishlist } from '@/contexts/WishlistContext';
 import SearchOverlay from '@/components/SearchOverlay';
 import CategoriesPopup from '@/components/CategoriesPopup';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const MobileBottomNav = () => {
   const location = useLocation();
@@ -17,6 +18,7 @@ const MobileBottomNav = () => {
   const { data: role } = useUserRole(user?.uid);
   const { items: wishlistItems } = useWishlist();
   const profilePath = role === 'admin' ? '/admin' : '/profile';
+  const { t } = useLanguage();
 
   const isHome = location.pathname === '/' && !location.search;
   const isWishlist = location.pathname === '/wishlist';
@@ -84,11 +86,11 @@ const MobileBottomNav = () => {
           className="bg-card border border-border rounded-[22px] h-[56px] flex items-stretch px-1.5 pb-[env(safe-area-inset-bottom)]"
           style={{ boxShadow: '0 8px 24px -10px rgba(0,0,0,0.15)' }}
         >
-          <Item icon={Home} label="Home" to="/" active={isHome} />
-          <Item icon={Search} label="Search" onClick={() => setSearchOpen(true)} />
-          <Item icon={Heart} label="Wishlist" to="/wishlist" active={isWishlist} badge={wishlistItems.length} />
-          <Item icon={User} label="Account" to={profilePath} active={isProfile} />
-          <Item icon={LayoutGrid} label="Categories" onClick={() => setCategoriesOpen(true)} active={categoriesOpen} />
+          <Item icon={Home} label={t('nav.home')} to="/" active={isHome} />
+          <Item icon={Search} label={t('nav.search', 'Search')} onClick={() => setSearchOpen(true)} />
+          <Item icon={Heart} label={t('nav.wishlist')} to="/wishlist" active={isWishlist} badge={wishlistItems.length} />
+          <Item icon={User} label={t('nav.account')} to={profilePath} active={isProfile} />
+          <Item icon={LayoutGrid} label={t('nav.categories', 'Categories')} onClick={() => setCategoriesOpen(true)} active={categoriesOpen} />
         </div>
       </nav>
 
