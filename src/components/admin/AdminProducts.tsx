@@ -939,6 +939,90 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
             />
           </Section>
 
+          {/* Section: SEO */}
+          <Section title="SEO" subtitle="Per-product search engine optimization. AI buttons auto-generate optimized content.">
+            <div className="space-y-4">
+              <Field label="SEO Slug (URL-friendly, optional)">
+                <input
+                  value={(form as any).seo_slug || ''}
+                  onChange={e => setForm({ ...form, seo_slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-') } as any)}
+                  placeholder="e.g. organic-cotton-baby-onesie"
+                  className="luxury-input font-mono text-xs"
+                />
+              </Field>
+              <Field label="Focus Keyword">
+                <input
+                  value={(form as any).seo_focus_keyword || ''}
+                  onChange={e => setForm({ ...form, seo_focus_keyword: e.target.value } as any)}
+                  placeholder="e.g. organic baby onesie"
+                  className="luxury-input text-xs"
+                />
+              </Field>
+              <Field label="Meta Title (50-60 chars recommended)">
+                <div className="flex gap-2">
+                  <input
+                    value={(form as any).seo_title || ''}
+                    onChange={e => setForm({ ...form, seo_title: e.target.value } as any)}
+                    placeholder="Defaults to product name"
+                    className="luxury-input text-xs flex-1"
+                  />
+                  <AiGenButton kind="title" form={form} onResult={(v) => setForm({ ...form, seo_title: v } as any)} />
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">{((form as any).seo_title || '').length} / 60</p>
+              </Field>
+              <Field label="Meta Description (140-155 chars)">
+                <div className="flex gap-2">
+                  <textarea
+                    value={(form as any).seo_description || ''}
+                    onChange={e => setForm({ ...form, seo_description: e.target.value } as any)}
+                    placeholder="Defaults to product description"
+                    className="luxury-input text-xs flex-1 min-h-[70px]"
+                  />
+                  <AiGenButton kind="description" form={form} onResult={(v) => setForm({ ...form, seo_description: v } as any)} />
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">{((form as any).seo_description || '').length} / 155</p>
+              </Field>
+              <Field label="Keywords (comma separated)">
+                <div className="flex gap-2">
+                  <input
+                    value={(form as any).seo_keywords || ''}
+                    onChange={e => setForm({ ...form, seo_keywords: e.target.value } as any)}
+                    placeholder="keyword1, keyword2, ..."
+                    className="luxury-input text-xs flex-1"
+                  />
+                  <AiGenButton kind="keywords" form={form} onResult={(v) => setForm({ ...form, seo_keywords: v } as any)} />
+                </div>
+              </Field>
+              <Field label="Canonical URL (optional)">
+                <input
+                  value={(form as any).seo_canonical || ''}
+                  onChange={e => setForm({ ...form, seo_canonical: e.target.value } as any)}
+                  placeholder="https://… (leave empty to auto)"
+                  className="luxury-input text-xs"
+                />
+              </Field>
+              <Field label="OG Image URL (social share, optional)">
+                <input
+                  value={(form as any).seo_og_image || ''}
+                  onChange={e => setForm({ ...form, seo_og_image: e.target.value } as any)}
+                  placeholder="https://… (defaults to product image)"
+                  className="luxury-input text-xs"
+                />
+              </Field>
+              <Field label="FAQ (shown on page + Google FAQ rich result)">
+                <FaqEditor form={form} setForm={setForm} />
+              </Field>
+              <label className="flex items-center gap-2 px-4 py-2.5 border border-border hover:border-foreground/30 cursor-pointer transition-colors">
+                <input
+                  type="checkbox"
+                  checked={!!(form as any).seo_no_index}
+                  onChange={e => setForm({ ...form, seo_no_index: e.target.checked } as any)}
+                />
+                <span className="text-xs">Noindex this product (hide from Google)</span>
+              </label>
+            </div>
+          </Section>
+
           {/* Section: Visibility */}
           <Section title="Visibility & Status">
             <div className="flex flex-wrap gap-3">
