@@ -6,4 +6,4 @@ Disallow: /profile
 Disallow: /wishlist
 Disallow: /reset-password
 
-Sitemap: https://www.highlightsbd.shop/sitemap.xml
+Sitemap: /sitemap.xml
