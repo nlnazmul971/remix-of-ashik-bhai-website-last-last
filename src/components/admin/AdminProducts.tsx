@@ -940,7 +940,7 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
           </Section>
 
           {/* Section: SEO */}
-          <Section title="SEO" subtitle="Per-product search engine optimization. AI buttons auto-generate optimized content.">
+          <Section title="SEO" subtitle="Per-product search engine optimization.">
             <div className="space-y-4">
               <Field label="SEO Slug (URL-friendly, optional)">
                 <input
@@ -959,39 +959,30 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
                 />
               </Field>
               <Field label="Meta Title (50-60 chars recommended)">
-                <div className="flex gap-2">
-                  <input
-                    value={(form as any).seo_title || ''}
-                    onChange={e => setForm({ ...form, seo_title: e.target.value } as any)}
-                    placeholder="Defaults to product name"
-                    className="luxury-input text-xs flex-1"
-                  />
-                  <AiGenButton kind="title" form={form} onResult={(v) => setForm({ ...form, seo_title: v } as any)} />
-                </div>
+                <input
+                  value={(form as any).seo_title || ''}
+                  onChange={e => setForm({ ...form, seo_title: e.target.value } as any)}
+                  placeholder="Defaults to product name"
+                  className="luxury-input text-xs"
+                />
                 <p className="text-[10px] text-muted-foreground mt-1">{((form as any).seo_title || '').length} / 60</p>
               </Field>
               <Field label="Meta Description (140-155 chars)">
-                <div className="flex gap-2">
-                  <textarea
-                    value={(form as any).seo_description || ''}
-                    onChange={e => setForm({ ...form, seo_description: e.target.value } as any)}
-                    placeholder="Defaults to product description"
-                    className="luxury-input text-xs flex-1 min-h-[70px]"
-                  />
-                  <AiGenButton kind="description" form={form} onResult={(v) => setForm({ ...form, seo_description: v } as any)} />
-                </div>
+                <textarea
+                  value={(form as any).seo_description || ''}
+                  onChange={e => setForm({ ...form, seo_description: e.target.value } as any)}
+                  placeholder="Defaults to product description"
+                  className="luxury-input text-xs min-h-[70px]"
+                />
                 <p className="text-[10px] text-muted-foreground mt-1">{((form as any).seo_description || '').length} / 155</p>
               </Field>
               <Field label="Keywords (comma separated)">
-                <div className="flex gap-2">
-                  <input
-                    value={(form as any).seo_keywords || ''}
-                    onChange={e => setForm({ ...form, seo_keywords: e.target.value } as any)}
-                    placeholder="keyword1, keyword2, ..."
-                    className="luxury-input text-xs flex-1"
-                  />
-                  <AiGenButton kind="keywords" form={form} onResult={(v) => setForm({ ...form, seo_keywords: v } as any)} />
-                </div>
+                <input
+                  value={(form as any).seo_keywords || ''}
+                  onChange={e => setForm({ ...form, seo_keywords: e.target.value } as any)}
+                  placeholder="keyword1, keyword2, ..."
+                  className="luxury-input text-xs"
+                />
               </Field>
               <Field label="Canonical URL (optional)">
                 <input
