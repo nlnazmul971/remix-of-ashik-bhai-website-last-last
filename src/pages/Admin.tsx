@@ -32,6 +32,7 @@ import AdminSubcategories from '@/components/admin/AdminHeaderCategories';
 import AdminCustomPages from '@/components/admin/AdminCustomPages';
 import AdminPopups from '@/components/admin/AdminPopups';
 import AdminSEO from '@/components/admin/AdminSEO';
+import AdminRedirects from '@/components/admin/AdminRedirects';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import OrderTracker from '@/components/OrderTracker';
 
@@ -152,6 +153,7 @@ const Admin = () => {
             {activeTab === 'payment-methods' && <AdminPaymentMethods />}
             {activeTab === 'api' && <AdminAPI />}
             {activeTab === 'seo' && <AdminSEO />}
+            {activeTab === 'redirects' && <AdminRedirects />}
           </main>
         </div>
       </div>
