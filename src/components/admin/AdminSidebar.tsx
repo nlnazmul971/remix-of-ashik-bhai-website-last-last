@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, Layers, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, Layers, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, Globe } from 'lucide-react';
 import adminLogo from '@/assets/admin-logo.png';
 import {
   Sidebar,
@@ -49,6 +49,7 @@ const menuGroups = [
     items: [
       { title: 'Blog', key: 'blog', icon: BookOpen },
       { title: 'Landing Pages', key: 'landing-pages', icon: Rocket },
+      { title: 'Programmatic SEO', key: 'pseo', icon: Globe },
     ],
   },
   {
