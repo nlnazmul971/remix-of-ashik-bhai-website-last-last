@@ -36,9 +36,6 @@ const empty: Page = { id: '', slug: '', title: '', description: '', blocks: [], 
 const AdminLandingPages = () => {
   const [pages, setPages] = useState<Page[]>([]);
   const [editing, setEditing] = useState<Page | null>(null);
-  const [aiOpen, setAiOpen] = useState(false);
-  const [aiTopic, setAiTopic] = useState('');
-  const [aiLoading, setAiLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const load = async () => {
