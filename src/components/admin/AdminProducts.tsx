@@ -1147,6 +1147,3 @@ const FaqEditor = ({ form, setForm }: { form: any; setForm: (v: any) => void }) 
 };
 
 export default AdminProducts;
-
-
-export default AdminProducts;
