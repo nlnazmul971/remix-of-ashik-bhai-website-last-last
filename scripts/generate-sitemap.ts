@@ -72,6 +72,58 @@ async function getDynamicEntries(): Promise<SitemapEntry[]> {
     console.warn("[sitemap] custom pages fetch failed", e);
   }
 
+  try {
+    const { data: blogs } = await supabase
+      .from("blogs")
+      .select("slug, updated_at")
+      .eq("status", "published");
+    (blogs || []).forEach((b: any) => {
+      entries.push({
+        path: `/blog/${b.slug}`,
+        lastmod: b.updated_at ? new Date(b.updated_at).toISOString().split("T")[0] : undefined,
+        changefreq: "weekly",
+        priority: "0.7",
+      });
+    });
+    entries.push({ path: "/blog", changefreq: "daily", priority: "0.8" });
+  } catch (e) {
+    console.warn("[sitemap] blogs fetch failed", e);
+  }
+
+  try {
+    const { data: landing } = await supabase
+      .from("landing_pages")
+      .select("slug, updated_at")
+      .eq("status", "published");
+    (landing || []).forEach((p: any) => {
+      entries.push({
+        path: `/l/${p.slug}`,
+        lastmod: p.updated_at ? new Date(p.updated_at).toISOString().split("T")[0] : undefined,
+        changefreq: "weekly",
+        priority: "0.8",
+      });
+    });
+  } catch (e) {
+    console.warn("[sitemap] landing pages fetch failed", e);
+  }
+
+  try {
+    const { data: pseo } = await supabase
+      .from("pseo_pages")
+      .select("slug, updated_at")
+      .eq("status", "published");
+    (pseo || []).forEach((p: any) => {
+      entries.push({
+        path: `/p/${p.slug}`,
+        lastmod: p.updated_at ? new Date(p.updated_at).toISOString().split("T")[0] : undefined,
+        changefreq: "weekly",
+        priority: "0.6",
+      });
+    });
+  } catch (e) {
+    console.warn("[sitemap] pseo fetch failed", e);
+  }
+
   return entries;
 }
 
