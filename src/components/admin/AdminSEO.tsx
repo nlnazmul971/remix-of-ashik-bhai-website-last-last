@@ -49,26 +49,32 @@ const AdminSEO = () => {
   const [ogImage, setOgImage] = useState('');
   const [twitterHandle, setTwitterHandle] = useState('');
   const [baseUrl, setBaseUrl] = useState('');
+  const [locale, setLocale] = useState('en_US');
   const [robots, setRobots] = useState('');
   const [googleVerif, setGoogleVerif] = useState('');
   const [bingVerif, setBingVerif] = useState('');
+  const [fbVerif, setFbVerif] = useState('');
+  const [pinVerif, setPinVerif] = useState('');
   const [orgJsonLd, setOrgJsonLd] = useState('');
   const [overrides, setOverrides] = useState<Override[]>([]);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (isLoading) return;
-    setBrand(settings['seo_brand_name'] || 'TWINKLE');
+    setBrand(settings['seo_brand_name'] || 'Baby Store');
     setTitleTemplate(settings['seo_title_template'] || '{title} | {brand}');
-    setDefaultTitle(settings['seo_default_title'] || 'TWINKLE');
-    setDefaultDesc(settings['seo_default_description'] || '');
-    setDefaultKeywords(settings['seo_default_keywords'] || '');
+    setDefaultTitle(settings['seo_default_title'] || 'Baby Store — Quality Baby Products');
+    setDefaultDesc(settings['seo_default_description'] || 'Shop trusted baby products — clothing, gear, toys & essentials. Safe, gentle and made for little ones. Fast delivery & cash on delivery available.');
+    setDefaultKeywords(settings['seo_default_keywords'] || 'baby products, baby clothing, baby toys, baby gear, baby essentials, newborn, infant, toddler');
     setOgImage(settings['seo_og_image'] || '');
     setTwitterHandle(settings['seo_twitter_handle'] || '');
     setBaseUrl(settings['seo_base_url'] || '');
+    setLocale(settings['seo_locale'] || 'en_US');
     setRobots(settings['seo_robots'] || 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     setGoogleVerif(settings['seo_google_verification'] || '');
     setBingVerif(settings['seo_bing_verification'] || '');
+    setFbVerif(settings['seo_facebook_verification'] || '');
+    setPinVerif(settings['seo_pinterest_verification'] || '');
     setOrgJsonLd(settings['seo_organization_jsonld'] || '');
     try {
       const parsed = JSON.parse(settings['seo_page_overrides'] || '{}');
