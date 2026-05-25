@@ -428,6 +428,96 @@ export type Database = {
         }
         Relationships: []
       }
+      landing_page_analytics: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          landing_page_id: string
+          metadata: Json
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          landing_page_id: string
+          metadata?: Json
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          landing_page_id?: string
+          metadata?: Json
+        }
+        Relationships: []
+      }
+      landing_pages: {
+        Row: {
+          blocks: Json
+          conversion_count: number
+          created_at: string
+          description: string | null
+          id: string
+          published_at: string | null
+          seo_canonical: string | null
+          seo_description: string | null
+          seo_focus_keyword: string | null
+          seo_keywords: string | null
+          seo_no_index: boolean
+          seo_og_image: string | null
+          seo_schema: Json | null
+          seo_title: string | null
+          slug: string
+          status: string
+          title: string
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          blocks?: Json
+          conversion_count?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          published_at?: string | null
+          seo_canonical?: string | null
+          seo_description?: string | null
+          seo_focus_keyword?: string | null
+          seo_keywords?: string | null
+          seo_no_index?: boolean
+          seo_og_image?: string | null
+          seo_schema?: Json | null
+          seo_title?: string | null
+          slug: string
+          status?: string
+          title: string
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          blocks?: Json
+          conversion_count?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          published_at?: string | null
+          seo_canonical?: string | null
+          seo_description?: string | null
+          seo_focus_keyword?: string | null
+          seo_keywords?: string | null
+          seo_no_index?: boolean
+          seo_og_image?: string | null
+          seo_schema?: Json | null
+          seo_title?: string | null
+          slug?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           created_at: string
