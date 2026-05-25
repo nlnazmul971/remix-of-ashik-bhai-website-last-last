@@ -109,9 +109,12 @@ const AdminSEO = () => {
         ['seo_og_image', ogImage],
         ['seo_twitter_handle', twitterHandle],
         ['seo_base_url', baseUrl],
+        ['seo_locale', locale],
         ['seo_robots', robots],
         ['seo_google_verification', googleVerif],
         ['seo_bing_verification', bingVerif],
+        ['seo_facebook_verification', fbVerif],
+        ['seo_pinterest_verification', pinVerif],
         ['seo_organization_jsonld', orgJsonLd],
         ['seo_page_overrides', JSON.stringify(overridesObj)],
       ];
