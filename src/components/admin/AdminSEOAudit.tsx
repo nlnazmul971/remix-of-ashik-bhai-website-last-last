@@ -18,15 +18,10 @@ type Issue = {
 const sevOrder = { critical: 0, warning: 1, info: 2 } as const;
 
 const AdminSEOAudit = () => {
-  const { data: settings = {} } = useStoreSettings();
-  const brand = settings['seo_brand_name'] || 'Baby Store';
-
   const [scanning, setScanning] = useState(false);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [filter, setFilter] = useState<'all' | 'critical' | 'warning' | 'info'>('all');
   const [entityFilter, setEntityFilter] = useState<'all' | 'product' | 'blog' | 'page'>('all');
-  const [fixingId, setFixingId] = useState<string>('');
-  const [bulkBusy, setBulkBusy] = useState(false);
   const [stats, setStats] = useState({ products: 0, blogs: 0, pages: 0 });
 
   const scan = async () => {
