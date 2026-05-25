@@ -98,74 +98,11 @@ const AdminSEOAudit = () => {
 
   useEffect(() => { scan(); }, []);
 
-  const aiFixOne = async (issue: Issue) => {
-    setFixingId(issue.id);
-    try {
-      if (issue.entity === 'product') {
-        const { data: pr } = await supabase.from('products').select('*').eq('id', issue.entityId).maybeSingle();
-        if (!pr) throw new Error('Product not found');
-        const patch: any = {};
-        const calls: { kind: string; field: string }[] = [];
-        if (['missing-seo-title', 'bad-seo-title-length', 'fk-not-in-title'].includes(issue.code)) calls.push({ kind: 'title', field: 'seo_title' });
-        if (['missing-seo-description', 'bad-seo-description-length'].includes(issue.code)) calls.push({ kind: 'description', field: 'seo_description' });
-        if (issue.code === 'missing-keywords') calls.push({ kind: 'keywords', field: 'seo_keywords' });
-        if (issue.code === 'missing-focus-keyword') { patch.seo_focus_keyword = pr.name; }
-        for (const c of calls) {
-          const { data, error } = await supabase.functions.invoke('ai-seo-generator', {
-            body: { kind: c.kind, product: pr, brand, focusKeyword: pr.seo_focus_keyword || pr.name },
-          });
-          if (error) throw error;
-          if (data?.result) patch[c.field] = data.result;
-        }
-        if (Object.keys(patch).length) await supabase.from('products').update(patch).eq('id', issue.entityId);
-      } else if (issue.entity === 'blog') {
-        const { data: bl } = await supabase.from('blogs').select('*').eq('id', issue.entityId).maybeSingle();
-        if (!bl) throw new Error('Blog not found');
-        const patch: any = {};
-        const calls: { kind: string; field: string }[] = [];
-        if (['missing-seo-title', 'bad-seo-title-length'].includes(issue.code)) calls.push({ kind: 'meta-title', field: 'seo_title' });
-        if (issue.code === 'missing-seo-description') calls.push({ kind: 'meta-description', field: 'seo_description' });
-        if (issue.code === 'missing-excerpt') calls.push({ kind: 'excerpt', field: 'excerpt' });
-        if (issue.code === 'missing-focus-keyword') patch.seo_focus_keyword = bl.title;
-        for (const c of calls) {
-          const { data, error } = await supabase.functions.invoke('ai-blog-writer', {
-            body: { kind: c.kind, title: bl.title, topic: bl.title, focusKeyword: bl.seo_focus_keyword || bl.title, brand, content: bl.content },
-          });
-          if (error) throw error;
-          if (data?.result) patch[c.field] = data.result;
-        }
-        if (Object.keys(patch).length) await supabase.from('blogs').update(patch).eq('id', issue.entityId);
-      }
-      toast.success('Fixed ✓');
-      setIssues(prev => prev.filter(x => x.id !== issue.id));
-    } catch (e: any) {
-      toast.error(e.message || 'Fix failed');
-    } finally {
-      setFixingId('');
-    }
-  };
-
   const filtered = useMemo(() => issues.filter(i =>
     (filter === 'all' || i.severity === filter) &&
     (entityFilter === 'all' || i.entity === entityFilter)
   ), [issues, filter, entityFilter]);
 
-  const fixable = filtered.filter(i =>
-    ['missing-seo-title', 'bad-seo-title-length', 'fk-not-in-title', 'missing-seo-description', 'bad-seo-description-length', 'missing-keywords', 'missing-focus-keyword', 'missing-excerpt'].includes(i.code)
-  );
-
-  const bulkFix = async () => {
-    if (!fixable.length) return;
-    if (!confirm(`AI-fix ${fixable.length} issue${fixable.length === 1 ? '' : 's'}? This may take a minute.`)) return;
-    setBulkBusy(true);
-    let ok = 0; let fail = 0;
-    for (const i of fixable.slice(0, 30)) {
-      try { await aiFixOne(i); ok++; } catch { fail++; }
-    }
-    setBulkBusy(false);
-    toast.success(`Bulk fix done: ${ok} fixed${fail ? `, ${fail} failed` : ''}`);
-    scan();
-  };
 
   const counts = useMemo(() => ({
     critical: issues.filter(i => i.severity === 'critical').length,
