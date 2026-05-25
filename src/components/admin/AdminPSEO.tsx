@@ -41,7 +41,7 @@ const AdminPSEO = () => {
   const [editing, setEditing] = useState<Template | null>(null);
   const [genTemplate, setGenTemplate] = useState<string>('');
   const [genCsv, setGenCsv] = useState('');
-  const [useAI, setUseAI] = useState(false);
+  const useAI = false;
   const [generating, setGenerating] = useState(false);
 
   const load = async () => {
