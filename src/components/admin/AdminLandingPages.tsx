@@ -260,31 +260,13 @@ const AdminLandingPages = () => {
           <p className="text-sm text-muted-foreground">Programmatic landing pages with full SEO and block builder.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setAiOpen((v) => !v)}>
-            <Sparkles className="w-4 h-4 mr-2" />AI Generate
-          </Button>
           <Button onClick={startNew}><Plus className="w-4 h-4 mr-2" />New Page</Button>
         </div>
       </div>
 
-      {aiOpen && (
-        <Card>
-          <CardContent className="pt-6 space-y-3">
-            <Label>Topic / goal of the landing page</Label>
-            <Textarea value={aiTopic} onChange={(e) => setAiTopic(e.target.value)} placeholder="e.g. Winter Collection 2026 — drive sales for premium wool coats" rows={3} />
-            <div className="flex justify-end gap-2">
-              <Button variant="ghost" onClick={() => setAiOpen(false)}>Cancel</Button>
-              <Button onClick={aiGenerate} disabled={aiLoading || !aiTopic.trim()}>
-                <Sparkles className="w-4 h-4 mr-2" />{aiLoading ? 'Generating…' : 'Generate'}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       <div className="grid gap-3">
         {pages.length === 0 && (
-          <Card><CardContent className="pt-6 text-center text-sm text-muted-foreground">No landing pages yet. Create one or generate with AI.</CardContent></Card>
+          <Card><CardContent className="pt-6 text-center text-sm text-muted-foreground">No landing pages yet. Create one to get started.</CardContent></Card>
         )}
         {pages.map((p) => (
           <Card key={p.id}>
