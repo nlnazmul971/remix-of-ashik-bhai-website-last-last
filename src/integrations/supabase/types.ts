@@ -873,6 +873,108 @@ export type Database = {
         }
         Relationships: []
       }
+      pseo_pages: {
+        Row: {
+          content: string
+          created_at: string
+          description: string
+          h1: string
+          id: string
+          seo_keywords: string | null
+          seo_og_image: string | null
+          seo_schema: Json | null
+          slug: string
+          status: string
+          template_id: string | null
+          title: string
+          updated_at: string
+          variables: Json
+          view_count: number
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          description?: string
+          h1?: string
+          id?: string
+          seo_keywords?: string | null
+          seo_og_image?: string | null
+          seo_schema?: Json | null
+          slug: string
+          status?: string
+          template_id?: string | null
+          title?: string
+          updated_at?: string
+          variables?: Json
+          view_count?: number
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          description?: string
+          h1?: string
+          id?: string
+          seo_keywords?: string | null
+          seo_og_image?: string | null
+          seo_schema?: Json | null
+          slug?: string
+          status?: string
+          template_id?: string | null
+          title?: string
+          updated_at?: string
+          variables?: Json
+          view_count?: number
+        }
+        Relationships: []
+      }
+      pseo_templates: {
+        Row: {
+          content_template: string
+          created_at: string
+          description_template: string
+          h1_template: string
+          id: string
+          is_active: boolean
+          name: string
+          schema_template: Json | null
+          seo_keywords_template: string | null
+          title_template: string
+          updated_at: string
+          url_pattern: string
+          variables: Json
+        }
+        Insert: {
+          content_template?: string
+          created_at?: string
+          description_template?: string
+          h1_template?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          schema_template?: Json | null
+          seo_keywords_template?: string | null
+          title_template?: string
+          updated_at?: string
+          url_pattern: string
+          variables?: Json
+        }
+        Update: {
+          content_template?: string
+          created_at?: string
+          description_template?: string
+          h1_template?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          schema_template?: Json | null
+          seo_keywords_template?: string | null
+          title_template?: string
+          updated_at?: string
+          url_pattern?: string
+          variables?: Json
+        }
+        Relationships: []
+      }
       redirects: {
         Row: {
           created_at: string
