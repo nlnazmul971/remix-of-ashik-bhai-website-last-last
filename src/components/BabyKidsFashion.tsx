@@ -60,7 +60,7 @@ const BabyKidsFashion = () => {
           {rows.map((row, ri) => (
             <div key={ri} className="grid grid-cols-5 gap-2 sm:gap-4">
               {row.map((item, ii) => (
-                <Card key={`r${ri}-${ii}-${item.label}`} item={item} />
+                <Card key={`r${ri}-${ii}-${item.label}`} item={item} slotKey={`baby-kids:${ri}:${ii}`} />
               ))}
             </div>
           ))}
