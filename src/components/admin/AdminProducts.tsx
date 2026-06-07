@@ -709,6 +709,7 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
   });
   const [savedProductId, setSavedProductId] = useState(isNew ? '' : product.id);
   const [subcategories, setSubcategories] = useState<Array<{ id: string; parent_category: string; name: string; slug: string }>>([]);
+  const [headerCategories, setHeaderCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
   const [sizeStocks, setSizeStocks] = useState<Record<string, number>>({});
   const [existingSizeStocks, setExistingSizeStocks] = useState<Record<string, { id: string; total_stock: number }>>({});
   const [gallery, setGallery] = useState<string[]>(product.image_url ? [product.image_url] : []);
@@ -719,7 +720,10 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
   useEffect(() => {
     supabase.from('subcategories').select('*').eq('is_active', true).order('sort_order')
       .then(({ data }) => setSubcategories((data as any) || []));
+    supabase.from('header_categories').select('id, name, slug').eq('is_active', true).order('sort_order')
+      .then(({ data }) => setHeaderCategories((data as any) || []));
   }, []);
+
 
   // Load existing per-size stock + extra images for this product
   useEffect(() => {
@@ -835,9 +839,15 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
               </Field>
               <Field label="Category">
                 <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value, subcategory: null })} className="luxury-input">
-                  {['T-Shirt', 'Winter', 'Shirts', 'Knit Polos', 'Pant', 'Panjabi', 'Kafsu'].map(c => <option key={c}>{c}</option>)}
+                  <option value="">{headerCategories.length === 0 ? 'No categories yet — add in Categories' : '— Select category —'}</option>
+                  {headerCategories.map(c => <option key={c.id} value={c.slug}>{c.name}</option>)}
+                  {/* Keep current value visible if it's not in the loaded list */}
+                  {form.category && !headerCategories.some(c => c.slug === form.category) && (
+                    <option value={form.category}>{form.category}</option>
+                  )}
                 </select>
               </Field>
+
               <Field label="Sub-category" className="sm:col-span-2">
                 <select value={form.subcategory || ''} onChange={e => setForm({ ...form, subcategory: e.target.value || null })} className="luxury-input" disabled={availableSubs.length === 0}>
                   <option value="">{availableSubs.length === 0 ? 'No sub-categories' : '— None —'}</option>
