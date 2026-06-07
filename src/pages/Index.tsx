@@ -99,7 +99,7 @@ const Index = () => {
     return map;
   }, [allSizeStock]);
 
-  const showProducts = activeCategory || searchQuery || activeSub;
+  const showProducts = activeCategory || searchQuery || activeSub || activePlacement;
 
   // Apply size + price filters + sort client-side
   const filteredProducts = useMemo(() => {
