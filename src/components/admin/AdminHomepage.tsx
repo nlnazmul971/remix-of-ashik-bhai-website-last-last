@@ -89,6 +89,15 @@ const AdminHomepage = () => {
         toast.success('New Arrivals section updated!');
       }} />
 
+      {/* 5b. Trending Products */}
+      <TrendingProductsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Trending Products section updated!');
+      }} />
+
       {/* 6. Explore Categories */}
       <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
@@ -1048,6 +1057,83 @@ const NewArrivalsManager = ({ settings, onSave }: { settings: Record<string, any
         <div className="space-y-1">
           <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Number of Products (auto mode)</label>
           <input type="number" min={1} max={24} value={limit} onChange={e => setLimit(e.target.value)} className="luxury-input text-xs" placeholder="6" />
+        </div>
+      </div>
+      <div className="space-y-1.5 pt-2 border-t border-border">
+        <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Hand-picked Products ({productIds.length})</label>
+        <ProductPicker selectedIds={productIds} onChange={setProductIds} />
+      </div>
+    </div>
+  );
+};
+
+const TrendingProductsManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
+  const [enabled, setEnabled] = useState(settings['trending_enabled'] !== 'false');
+  const [eyebrow, setEyebrow] = useState(settings['trending_eyebrow'] || 'Hot Picks');
+  const [title, setTitle] = useState(settings['trending_title'] || 'Trending Products');
+  const [viewAll, setViewAll] = useState(settings['trending_view_all'] || '/?category=All');
+  const [limit, setLimit] = useState(settings['trending_limit'] || '12');
+  const initialIds: string[] = (() => {
+    try { return settings['trending_product_ids'] ? JSON.parse(settings['trending_product_ids']) : []; } catch { return []; }
+  })();
+  const [productIds, setProductIds] = useState<string[]>(initialIds);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEnabled(settings['trending_enabled'] !== 'false');
+    setEyebrow(settings['trending_eyebrow'] || 'Hot Picks');
+    setTitle(settings['trending_title'] || 'Trending Products');
+    setViewAll(settings['trending_view_all'] || '/?category=All');
+    setLimit(settings['trending_limit'] || '12');
+    try { if (settings['trending_product_ids']) setProductIds(JSON.parse(settings['trending_product_ids'])); } catch {}
+  }, [settings['trending_enabled'], settings['trending_eyebrow'], settings['trending_title'], settings['trending_view_all'], settings['trending_limit'], settings['trending_product_ids']]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave({
+        trending_enabled: enabled ? 'true' : 'false',
+        trending_eyebrow: eyebrow,
+        trending_title: title,
+        trending_view_all: viewAll,
+        trending_limit: limit,
+        trending_product_ids: JSON.stringify(productIds),
+      });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Trending Products Section</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">Pick specific products via search, or leave empty to auto-load products marked Trending.</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} /> Enabled
+          </label>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />} Save
+          </button>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-1">
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Eyebrow (small label)</label>
+          <input value={eyebrow} onChange={e => setEyebrow(e.target.value)} className="luxury-input text-xs" placeholder="Hot Picks" />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Title</label>
+          <input value={title} onChange={e => setTitle(e.target.value)} className="luxury-input text-xs" placeholder="Trending Products" />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">View All Link</label>
+          <input value={viewAll} onChange={e => setViewAll(e.target.value)} className="luxury-input text-xs" placeholder="/?category=All" />
+        </div>
+        <div className="space-y-1">
+          <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Number of Products (auto mode)</label>
+          <input type="number" min={1} max={24} value={limit} onChange={e => setLimit(e.target.value)} className="luxury-input text-xs" placeholder="12" />
         </div>
       </div>
       <div className="space-y-1.5 pt-2 border-t border-border">

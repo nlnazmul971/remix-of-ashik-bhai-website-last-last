@@ -78,7 +78,7 @@ const AdminProducts = () => {
           <button onClick={() => setCopyChartOpen(true)} className="inline-flex items-center gap-2 px-4 py-2.5 text-[10px] uppercase tracking-widest border border-border hover:bg-muted transition-colors">
             <Copy size={13} /> Copy Size Chart
           </button>
-          <button onClick={() => { setShowAddForm(true); setEditingProduct({ id: '', name: '', price: 0, original_price: null, image_url: '', category: 'T-Shirt', description: '', sizes: ['S', 'M', 'L', 'XL'], colors: [{ name: 'Black', hex: '#1a1a1a' }], stock: 0, featured: false, is_new_drop: false, is_active: true, brand: '', sku: '', size_chart: [], created_at: '', updated_at: '' } as any); }} className="inline-flex items-center gap-2 px-4 py-2.5 text-[10px] uppercase tracking-widest bg-foreground text-background hover:opacity-90 transition-opacity">
+          <button onClick={() => { setShowAddForm(true); setEditingProduct({ id: '', name: '', price: 0, original_price: null, image_url: '', category: 'T-Shirt', description: '', sizes: ['S', 'M', 'L', 'XL'], colors: [{ name: 'Black', hex: '#1a1a1a' }], stock: 0, featured: false, is_new_drop: false, is_new_arrival: false, is_trending: false, is_active: true, brand: '', sku: '', size_chart: [], created_at: '', updated_at: '' } as any); }} className="inline-flex items-center gap-2 px-4 py-2.5 text-[10px] uppercase tracking-widest bg-foreground text-background hover:opacity-90 transition-opacity">
             <Plus size={13} /> Add Product
           </button>
         </div>
@@ -1152,6 +1152,14 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
               <label className={`flex items-center gap-2 px-4 py-2.5 border cursor-pointer transition-colors ${form.is_new_drop ? 'border-primary/40 bg-primary/5' : 'border-border hover:border-foreground/30'}`}>
                 <input type="checkbox" checked={!!form.is_new_drop} onChange={e => setForm({ ...form, is_new_drop: e.target.checked })} className="accent-primary" />
                 <span className="text-xs uppercase tracking-widest">New Drop</span>
+              </label>
+              <label className={`flex items-center gap-2 px-4 py-2.5 border cursor-pointer transition-colors ${(form as any).is_new_arrival ? 'border-sky-500/40 bg-sky-500/5' : 'border-border hover:border-foreground/30'}`}>
+                <input type="checkbox" checked={!!(form as any).is_new_arrival} onChange={e => setForm({ ...form, is_new_arrival: e.target.checked } as any)} className="accent-sky-500" />
+                <span className="text-xs uppercase tracking-widest">✦ New Arrival</span>
+              </label>
+              <label className={`flex items-center gap-2 px-4 py-2.5 border cursor-pointer transition-colors ${(form as any).is_trending ? 'border-rose-500/40 bg-rose-500/5' : 'border-border hover:border-foreground/30'}`}>
+                <input type="checkbox" checked={!!(form as any).is_trending} onChange={e => setForm({ ...form, is_trending: e.target.checked } as any)} className="accent-rose-500" />
+                <span className="text-xs uppercase tracking-widest">🔥 Trending</span>
               </label>
             </div>
           </Section>
