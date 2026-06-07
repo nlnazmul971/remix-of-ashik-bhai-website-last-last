@@ -161,12 +161,12 @@ const Index = () => {
   // Dynamic posters from settings (MOCK fallback when empty)
   const rawPosters = settings['homepage_posters'];
   const parsedPosters = rawPosters ? JSON.parse(rawPosters) : [];
-  const posters = parsedPosters.length > 0 ? parsedPosters : MOCK_POSTERS;
+  const posters = parsedPosters;
 
-  // Category banners (3 horizontal banners section) — MOCK fallback when empty
+  // Category banners (3 horizontal banners section)
   const rawCategoryBanners = settings['homepage_category_banners'];
   const parsedBanners: { image: string; label: string; link: string; productIds?: string[]; subItems?: { image: string; label: string; link: string }[] }[] = rawCategoryBanners ? JSON.parse(rawCategoryBanners) : [];
-  const categoryBanners = parsedBanners.length > 0 ? parsedBanners : MOCK_CATEGORY_BANNERS;
+  const categoryBanners = parsedBanners;
 
   // NEW DROPS — products marked as "New Drop" in admin
   const newDrops = useMemo(
