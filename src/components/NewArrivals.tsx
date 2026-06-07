@@ -109,12 +109,12 @@ const NewArrivals = () => {
                   {/* Price */}
                   <div className="mt-1 flex items-baseline gap-1.5 flex-wrap">
                     <span className="text-base sm:text-xl font-extrabold text-sky-600">
-                      ৳{p.price}
+                      ৳{low}
                     </span>
                     {hasDiscount && (
                       <>
                         <span className="text-[11px] sm:text-xs text-gray-400 line-through">
-                          ৳{p.original_price}
+                          ৳{high}
                         </span>
                         <span className="text-[10px] sm:text-xs font-extrabold text-green-600">
                           {discountPct}% OFF
