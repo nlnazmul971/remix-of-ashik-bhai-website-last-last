@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, Layers, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, Globe, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, Layers, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, Globe, TrendingUp, DatabaseBackup } from 'lucide-react';
 import adminLogo from '@/assets/admin-logo.png';
 import {
   Sidebar,
@@ -67,6 +67,7 @@ const menuGroups = [
       { title: 'API', key: 'api', icon: Plug },
       { title: 'SEO', key: 'seo', icon: Search },
       { title: 'Redirects', key: 'redirects', icon: ArrowRightLeft },
+      { title: 'Backup & Restore', key: 'backup', icon: DatabaseBackup },
       { title: 'Trash', key: 'trash', icon: Trash2 },
       { title: 'Settings', key: 'settings', icon: Settings },
     ],
