@@ -22,7 +22,7 @@ const VideoCarousel = () => {
   const { data: settings = {} } = useStoreSettings();
   const raw = settings['homepage_videos'];
   const parsed: HomepageVideo[] = raw ? JSON.parse(raw) : [];
-  const videos = parsed.length > 0 ? parsed : MOCK_HOMEPAGE_VIDEOS;
+  const videos = parsed;
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center', skipSnaps: false });
   const [activeIdx, setActiveIdx] = useState(0);
