@@ -6,6 +6,8 @@ import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { toast } from 'sonner';
 import { flyToCart } from '@/lib/flyToCart';
+import { productPath } from '@/lib/productUrl';
+
 
 interface ProductCardProps {
   product: Product;
