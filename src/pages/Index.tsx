@@ -431,7 +431,7 @@ const Index = () => {
               return (
                 <div key={i} className="space-y-2 sm:space-y-3">
                   <Link
-                    to={b.link || '/'}
+                    to={`/?placement=${encodeURIComponent(`category-banners:${i}`)}`}
                     className="relative block overflow-hidden group aspect-[16/6] sm:aspect-[16/5] rounded-lg"
                   >
                     <img
@@ -453,7 +453,7 @@ const Index = () => {
                   {b.subItems && b.subItems.length > 0 && (
                     <div className="grid grid-cols-4 gap-3 sm:gap-6">
                       {b.subItems.map((s, si) => (
-                        <Link key={si} to={s.link || '/'} className="group flex flex-col items-center text-center">
+                        <Link key={si} to={`/?placement=${encodeURIComponent(`category-banners:${i}:${si}`)}`} className="group flex flex-col items-center text-center">
                           <div className="w-full aspect-square rounded-xl border border-border bg-card overflow-hidden p-2 sm:p-3 transition-transform group-hover:scale-[1.03]">
                             <img src={s.image} alt={s.label} className="w-full h-full object-contain" loading="lazy" />
                           </div>
@@ -469,7 +469,7 @@ const Index = () => {
                     <>
                       <div className="flex items-center justify-between pt-1">
                         <h4 className="text-sm sm:text-base font-semibold tracking-wide uppercase">{b.label}</h4>
-                        <Link to={b.link || '/'} className="text-xs sm:text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+                        <Link to={`/?placement=${encodeURIComponent(`category-banners:${i}`)}`} className="text-xs sm:text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
                           View all <ChevronRight size={14} />
                         </Link>
                       </div>
@@ -492,7 +492,7 @@ const Index = () => {
           <section className="mt-6 sm:mt-10">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               {posters.map((poster: any, i: number) => (
-                <Link key={i} to={poster.link || '/'} className="relative group overflow-hidden cursor-pointer block">
+                <Link key={i} to={`/?placement=${encodeURIComponent(`homepage-posters:${i}`)}`} className="relative group overflow-hidden cursor-pointer block">
                   <img src={poster.image} alt={poster.title} className="w-full h-auto block transition-transform duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
                   <div className="absolute bottom-6 left-6 right-6">

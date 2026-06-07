@@ -42,11 +42,11 @@ const ExploreCategories = () => {
         </h2>
 
         <div className="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-3 sm:gap-6 xl:gap-4">
-          {items.map((cat) => (
+          {items.map((cat, idx) => (
 
             <Link
               key={cat.label}
-              to={cat.link}
+              to={`/?placement=${encodeURIComponent(`explore-categories:${idx}`)}`}
               className="group flex flex-col items-center text-center"
             >
               <div className="relative w-full aspect-[3/4] flex items-end justify-center">

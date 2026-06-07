@@ -710,6 +710,7 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
   const [savedProductId, setSavedProductId] = useState(isNew ? '' : product.id);
   const [subcategories, setSubcategories] = useState<Array<{ id: string; parent_category: string; name: string; slug: string }>>([]);
   const [headerCategories, setHeaderCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
+  const [placementGroups, setPlacementGroups] = useState<Array<{ section: string; slots: Array<{ key: string; label: string }> }>>([]);
   const [sizeStocks, setSizeStocks] = useState<Record<string, number>>({});
   const [existingSizeStocks, setExistingSizeStocks] = useState<Record<string, { id: string; total_stock: number }>>({});
   const [gallery, setGallery] = useState<string[]>(product.image_url ? [product.image_url] : []);
@@ -722,6 +723,74 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
       .then(({ data }) => setSubcategories((data as any) || []));
     supabase.from('header_categories').select('id, name, slug').eq('is_active', true).order('sort_order')
       .then(({ data }) => setHeaderCategories((data as any) || []));
+
+    // Build placement slots from homepage section settings
+    supabase.from('store_settings').select('key, value').then(({ data }) => {
+      const map: Record<string, string> = {};
+      (data || []).forEach((r: any) => { map[r.key] = r.value; });
+      const safeParse = (v: any) => { try { return v ? JSON.parse(v) : null; } catch { return null; } };
+
+      const groups: Array<{ section: string; slots: Array<{ key: string; label: string }> }> = [];
+
+      // Baby & Kids Fashion (rows of cards)
+      const bk = safeParse(map['baby_kids_rows']);
+      const bkSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(bk)) {
+        bk.forEach((row: any[], ri: number) => {
+          (row || []).forEach((item: any, ii: number) => {
+            bkSlots.push({
+              key: `baby-kids:${ri}:${ii}`,
+              label: `Row ${ri + 1} · ${item?.label || ''} ${item?.sublabel || ''}`.trim(),
+            });
+          });
+        });
+      }
+      groups.push({ section: 'Baby & Kids Fashion', slots: bkSlots });
+
+      // Promo Posters
+      const pp = safeParse(map['promo_posters_items']);
+      const ppSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(pp)) pp.forEach((p: any, i: number) => ppSlots.push({
+        key: `promo-posters:${i}`,
+        label: p?.alt || p?.label || `Poster ${i + 1}`,
+      }));
+      groups.push({ section: 'Promo Posters', slots: ppSlots });
+
+      // Explore Categories
+      const ec = safeParse(map['explore_cats_items']);
+      const ecSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(ec)) ec.forEach((c: any, i: number) => ecSlots.push({
+        key: `explore-categories:${i}`,
+        label: c?.label || `Item ${i + 1}`,
+      }));
+      groups.push({ section: 'Explore Categories', slots: ecSlots });
+
+      // Category Banners (3 horizontal banners + their subItems)
+      const cb = safeParse(map['homepage_category_banners']);
+      const cbSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(cb)) {
+        cb.forEach((b: any, i: number) => {
+          cbSlots.push({ key: `category-banners:${i}`, label: `Banner ${i + 1} · ${b?.label || ''}`.trim() });
+          if (Array.isArray(b?.subItems)) {
+            b.subItems.forEach((s: any, si: number) => {
+              cbSlots.push({ key: `category-banners:${i}:${si}`, label: `   ↳ ${b?.label || `Banner ${i + 1}`} · ${s?.label || `Sub ${si + 1}`}` });
+            });
+          }
+        });
+      }
+      groups.push({ section: 'Category Banners (Homepage)', slots: cbSlots });
+
+      // Homepage Posters
+      const hp = safeParse(map['homepage_posters']);
+      const hpSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(hp)) hp.forEach((p: any, i: number) => hpSlots.push({
+        key: `homepage-posters:${i}`,
+        label: p?.title || p?.subtitle || `Poster ${i + 1}`,
+      }));
+      groups.push({ section: 'Homepage Posters', slots: hpSlots });
+
+      setPlacementGroups(groups);
+    });
   }, []);
 
 
@@ -856,40 +925,54 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
               </Field>
             </div>
 
-            {/* Homepage placements */}
+            {/* Homepage placements — pick specific banners/cards within each homepage section */}
             <div className="mt-4">
-              <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2">Homepage Placements</p>
-              <p className="text-[10px] text-muted-foreground/80 mb-2">Pick the homepage sections this product should appear in. Section tiles can link to <code>/?placement=&lt;key&gt;</code>.</p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {[
-                  { key: 'baby-kids', label: 'Baby & Kids Fashion' },
-                  { key: 'promo-posters', label: 'Promo Posters (Below Baby & Kids)' },
-                  { key: 'explore-categories', label: 'Explore Categories Section' },
-                  { key: 'category-banners', label: 'Category Banners (Homepage)' },
-                  { key: 'homepage-posters', label: 'Homepage Posters' },
-                ].map(opt => {
-                  const current: string[] = Array.isArray((form as any).homepage_placements) ? (form as any).homepage_placements : [];
-                  const checked = current.includes(opt.key);
-                  return (
-                    <label key={opt.key} className="flex items-center gap-2 px-3 py-2 border border-border rounded-md cursor-pointer hover:bg-muted/40 transition-colors">
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={(e) => {
-                          const next = e.target.checked
-                            ? [...current, opt.key]
-                            : current.filter((k) => k !== opt.key);
-                          setForm({ ...(form as any), homepage_placements: next } as any);
-                        }}
-                      />
-                      <span className="text-xs">{opt.label}</span>
-                      <code className="ml-auto text-[10px] text-muted-foreground">{opt.key}</code>
-                    </label>
-                  );
-                })}
-              </div>
+              <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-1">Homepage Placements</p>
+              <p className="text-[10px] text-muted-foreground/80 mb-3">
+                Tick the specific banner / card inside any homepage section where this product should appear.
+                Clicking that banner on the homepage will show only the products you assigned to it.
+              </p>
+              {placementGroups.every(g => g.slots.length === 0) ? (
+                <p className="text-[11px] text-muted-foreground italic px-3 py-4 border border-dashed border-border rounded-md">
+                  No homepage banners configured yet. Add items in Admin → Homepage first, then come back to assign products to them.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {placementGroups.map(group => {
+                    if (group.slots.length === 0) return null;
+                    const current: string[] = Array.isArray((form as any).homepage_placements) ? (form as any).homepage_placements : [];
+                    return (
+                      <div key={group.section} className="border border-border rounded-md p-3 bg-muted/20">
+                        <p className="text-[11px] font-semibold tracking-wide mb-2">{group.section}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                          {group.slots.map(slot => {
+                            const checked = current.includes(slot.key);
+                            return (
+                              <label key={slot.key} className="flex items-center gap-2 px-2.5 py-1.5 border border-border rounded bg-background cursor-pointer hover:bg-muted/40 transition-colors">
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={(e) => {
+                                    const next = e.target.checked
+                                      ? [...current, slot.key]
+                                      : current.filter((k) => k !== slot.key);
+                                    setForm({ ...(form as any), homepage_placements: next } as any);
+                                  }}
+                                />
+                                <span className="text-[11px] leading-tight whitespace-pre">{slot.label}</span>
+                                <code className="ml-auto text-[9px] text-muted-foreground shrink-0">{slot.key}</code>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </Section>
+
 
 
           {/* Section: Pricing */}
