@@ -95,9 +95,10 @@ type Props = {
   pendingApprovals?: number;
 };
 
-const AdminSidebar = ({ activeTab, onTabChange, onSignOut }: Props) => {
+const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendingApprovals = 0 }: Props) => {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
+  const menuGroups = buildMenuGroups(role);
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
@@ -109,6 +110,9 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut }: Props) => {
           {!collapsed && (
             <div className="min-w-0 leading-tight">
               <p className="text-[13px] font-semibold tracking-tight text-foreground">Admin Panel</p>
+              {role === 'moderator' && (
+                <p className="text-[10px] tracking-widest uppercase text-muted-foreground">Moderator</p>
+              )}
             </div>
           )}
         </div>
@@ -126,6 +130,7 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut }: Props) => {
               <SidebarMenu className="gap-px">
                 {group.items.map((item) => {
                   const isActive = activeTab === item.key;
+                  const badge = item.key === 'approvals' && role === 'admin' ? pendingApprovals : 0;
                   return (
                     <SidebarMenuItem key={item.key}>
                       <SidebarMenuButton
@@ -139,7 +144,12 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut }: Props) => {
                         }`}
                       >
                         <item.icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-foreground' : 'text-foreground/75 group-hover:text-foreground'}`} strokeWidth={isActive ? 2.5 : 2} />
-                        <span className="text-[13px] tracking-tight font-medium">{item.title}</span>
+                        <span className="text-[13px] tracking-tight font-medium flex-1">{item.title}</span>
+                        {badge > 0 && !collapsed && (
+                          <span className="ml-auto min-w-[18px] h-[18px] px-1.5 inline-flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-semibold">
+                            {badge}
+                          </span>
+                        )}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
