@@ -2,9 +2,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Review } from '@/data/products';
 
-export const useProducts = (category?: string, search?: string, subcategory?: string, includeInactive: boolean = false) => {
+export const useProducts = (
+  category?: string,
+  search?: string,
+  subcategory?: string,
+  includeInactive: boolean = false,
+  placement?: string,
+) => {
   return useQuery({
-    queryKey: ['products', category, search, subcategory, includeInactive],
+    queryKey: ['products', category, search, subcategory, includeInactive, placement],
     queryFn: async () => {
       let q = supabase.from('products').select('*').order('created_at', { ascending: false });
       if (!includeInactive) {
@@ -19,6 +25,10 @@ export const useProducts = (category?: string, search?: string, subcategory?: st
       if (subcategory) {
         q = q.ilike('subcategory', subcategory);
       }
+      if (placement) {
+        // homepage_placements is text[]; contains check
+        q = q.contains('homepage_placements', [placement]);
+      }
       const { data, error } = await q;
       if (error) throw error;
       let results = (data || []) as unknown as Product[];
@@ -30,6 +40,7 @@ export const useProducts = (category?: string, search?: string, subcategory?: st
     },
   });
 };
+
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

@@ -855,7 +855,42 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
                 </select>
               </Field>
             </div>
+
+            {/* Homepage placements */}
+            <div className="mt-4">
+              <p className="text-[11px] uppercase tracking-widest text-muted-foreground mb-2">Homepage Placements</p>
+              <p className="text-[10px] text-muted-foreground/80 mb-2">Pick the homepage sections this product should appear in. Section tiles can link to <code>/?placement=&lt;key&gt;</code>.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {[
+                  { key: 'baby-kids', label: 'Baby & Kids Fashion' },
+                  { key: 'promo-posters', label: 'Promo Posters (Below Baby & Kids)' },
+                  { key: 'explore-categories', label: 'Explore Categories Section' },
+                  { key: 'category-banners', label: 'Category Banners (Homepage)' },
+                  { key: 'homepage-posters', label: 'Homepage Posters' },
+                ].map(opt => {
+                  const current: string[] = Array.isArray((form as any).homepage_placements) ? (form as any).homepage_placements : [];
+                  const checked = current.includes(opt.key);
+                  return (
+                    <label key={opt.key} className="flex items-center gap-2 px-3 py-2 border border-border rounded-md cursor-pointer hover:bg-muted/40 transition-colors">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={(e) => {
+                          const next = e.target.checked
+                            ? [...current, opt.key]
+                            : current.filter((k) => k !== opt.key);
+                          setForm({ ...(form as any), homepage_placements: next } as any);
+                        }}
+                      />
+                      <span className="text-xs">{opt.label}</span>
+                      <code className="ml-auto text-[10px] text-muted-foreground">{opt.key}</code>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
           </Section>
+
 
           {/* Section: Pricing */}
           <Section title="Pricing" subtitle="Selling price and original price">

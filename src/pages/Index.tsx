@@ -51,12 +51,16 @@ const Index = () => {
   const PAGE_SIZE = 24;
   const activeCategory = searchParams.get('category') || '';
   const activeSub = searchParams.get('sub') || '';
+  const activePlacement = searchParams.get('placement') || '';
   const searchQuery = searchParams.get('search') || '';
   const { data: dbProducts = [], isLoading } = useProducts(
     activeCategory || undefined,
     searchQuery || undefined,
-    activeSub || undefined
+    activeSub || undefined,
+    false,
+    activePlacement || undefined,
   );
+
   const { data: dbAllProducts = [] } = useProducts();
   const allProducts = dbAllProducts;
   const products = dbProducts;
@@ -95,7 +99,7 @@ const Index = () => {
     return map;
   }, [allSizeStock]);
 
-  const showProducts = activeCategory || searchQuery || activeSub;
+  const showProducts = activeCategory || searchQuery || activeSub || activePlacement;
 
   // Apply size + price filters + sort client-side
   const filteredProducts = useMemo(() => {
