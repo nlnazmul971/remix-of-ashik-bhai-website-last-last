@@ -709,6 +709,7 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
   });
   const [savedProductId, setSavedProductId] = useState(isNew ? '' : product.id);
   const [subcategories, setSubcategories] = useState<Array<{ id: string; parent_category: string; name: string; slug: string }>>([]);
+  const [headerCategories, setHeaderCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
   const [sizeStocks, setSizeStocks] = useState<Record<string, number>>({});
   const [existingSizeStocks, setExistingSizeStocks] = useState<Record<string, { id: string; total_stock: number }>>({});
   const [gallery, setGallery] = useState<string[]>(product.image_url ? [product.image_url] : []);
@@ -719,7 +720,10 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
   useEffect(() => {
     supabase.from('subcategories').select('*').eq('is_active', true).order('sort_order')
       .then(({ data }) => setSubcategories((data as any) || []));
+    supabase.from('header_categories').select('id, name, slug').eq('is_active', true).order('sort_order')
+      .then(({ data }) => setHeaderCategories((data as any) || []));
   }, []);
+
 
   // Load existing per-size stock + extra images for this product
   useEffect(() => {
