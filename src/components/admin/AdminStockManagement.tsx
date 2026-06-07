@@ -153,6 +153,7 @@ const AdminStockManagement = () => {
           } else {
             displayStocks = stocks.map(s => ({ id: s.id, size: s.size || '—', available: getAvailable(s) }));
           }
+          const total = stocks.reduce((sum, s) => sum + getAvailable(s), 0);
           const isOut = total <= 0 && stocks.length > 0;
           const isLow = total > 0 && total < 10;
 
