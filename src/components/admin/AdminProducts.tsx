@@ -78,7 +78,7 @@ const AdminProducts = () => {
           <button onClick={() => setCopyChartOpen(true)} className="inline-flex items-center gap-2 px-4 py-2.5 text-[10px] uppercase tracking-widest border border-border hover:bg-muted transition-colors">
             <Copy size={13} /> Copy Size Chart
           </button>
-          <button onClick={() => { setShowAddForm(true); setEditingProduct({ id: '', name: '', price: 0, original_price: null, image_url: '', category: 'T-Shirt', description: '', sizes: ['S', 'M', 'L', 'XL'], colors: [{ name: 'Black', hex: '#1a1a1a' }], stock: 0, featured: false, is_new_drop: false, is_active: true, brand: '', sku: '', size_chart: [], created_at: '', updated_at: '' } as any); }} className="inline-flex items-center gap-2 px-4 py-2.5 text-[10px] uppercase tracking-widest bg-foreground text-background hover:opacity-90 transition-opacity">
+          <button onClick={() => { setShowAddForm(true); setEditingProduct({ id: '', name: '', price: 0, original_price: null, image_url: '', category: 'T-Shirt', description: '', sizes: ['S', 'M', 'L', 'XL'], colors: [{ name: 'Black', hex: '#1a1a1a' }], stock: 0, featured: false, is_new_drop: false, is_new_arrival: false, is_trending: false, is_active: true, brand: '', sku: '', size_chart: [], created_at: '', updated_at: '' } as any); }} className="inline-flex items-center gap-2 px-4 py-2.5 text-[10px] uppercase tracking-widest bg-foreground text-background hover:opacity-90 transition-opacity">
             <Plus size={13} /> Add Product
           </button>
         </div>
