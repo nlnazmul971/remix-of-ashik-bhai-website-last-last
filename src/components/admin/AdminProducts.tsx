@@ -839,9 +839,15 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
               </Field>
               <Field label="Category">
                 <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value, subcategory: null })} className="luxury-input">
-                  {['T-Shirt', 'Winter', 'Shirts', 'Knit Polos', 'Pant', 'Panjabi', 'Kafsu'].map(c => <option key={c}>{c}</option>)}
+                  <option value="">{headerCategories.length === 0 ? 'No categories yet — add in Categories' : '— Select category —'}</option>
+                  {headerCategories.map(c => <option key={c.id} value={c.slug}>{c.name}</option>)}
+                  {/* Keep current value visible if it's not in the loaded list */}
+                  {form.category && !headerCategories.some(c => c.slug === form.category) && (
+                    <option value={form.category}>{form.category}</option>
+                  )}
                 </select>
               </Field>
+
               <Field label="Sub-category" className="sm:col-span-2">
                 <select value={form.subcategory || ''} onChange={e => setForm({ ...form, subcategory: e.target.value || null })} className="luxury-input" disabled={availableSubs.length === 0}>
                   <option value="">{availableSubs.length === 0 ? 'No sub-categories' : '— None —'}</option>
