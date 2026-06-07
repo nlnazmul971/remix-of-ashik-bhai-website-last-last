@@ -1,17 +1,28 @@
 import { Link } from 'react-router-dom';
 import { productPath } from '@/lib/productUrl';
 import { ChevronRight, ShoppingCart, Heart } from 'lucide-react';
-import { useProducts } from '@/hooks/useSupabase';
+import { useProducts, useStoreSettings } from '@/hooks/useSupabase';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 
 const TrendingProducts = () => {
   const { data: dbProducts = [] } = useProducts();
+  const { data: s = {} } = useStoreSettings();
+  const enabled = s['trending_enabled'] !== 'false';
+  const eyebrow = s['trending_eyebrow'] || 'Hot Picks';
+  const title = s['trending_title'] || 'Trending Products';
+  const viewAllLink = s['trending_view_all'] || '/?category=All';
+  const limit = parseInt(s['trending_limit'] || '12', 10) || 12;
+  let pickedIds: string[] = [];
+  try { if (s['trending_product_ids']) pickedIds = JSON.parse(s['trending_product_ids']); } catch {}
   const source = dbProducts;
-  const products = source.slice(0, 12);
+  const flagged = (source as any[]).filter(p => p.is_trending);
+  const products = pickedIds.length > 0
+    ? pickedIds.map(id => (source as any[]).find(p => p.id === id)).filter(Boolean)
+    : (flagged.length > 0 ? flagged.slice(0, limit) : source.slice(0, limit));
   const { addItem } = useCart();
 
-  if (products.length === 0) return null;
+  if (!enabled || products.length === 0) return null;
 
   return (
     <section className="w-full bg-gradient-to-b from-sky-50/40 to-background py-6 sm:py-10">
