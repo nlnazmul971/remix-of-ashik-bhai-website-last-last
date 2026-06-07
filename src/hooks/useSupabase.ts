@@ -31,17 +31,42 @@ export const useProducts = (category?: string, search?: string, subcategory?: st
   });
 };
 
-export const useProduct = (id: string) => {
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+const slugifyName = (input: string) =>
+  (input || '')
+    .toString()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9\u0980-\u09FF]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+export const useProduct = (identifier: string) => {
   return useQuery({
-    queryKey: ['product', id],
+    queryKey: ['product', identifier],
     queryFn: async () => {
-      const { data, error } = await supabase.from('products').select('*').eq('id', id).single();
-      if (error) throw error;
-      return data as unknown as Product;
+      if (!identifier) return null;
+      // 1) UUID lookup
+      if (UUID_RE.test(identifier)) {
+        const { data, error } = await supabase.from('products').select('*').eq('id', identifier).maybeSingle();
+        if (error) throw error;
+        if (data) return data as unknown as Product;
+      }
+      // 2) seo_slug lookup
+      const bySlug = await supabase.from('products').select('*').eq('seo_slug', identifier).maybeSingle();
+      if (bySlug.data) return bySlug.data as unknown as Product;
+      // 3) Fallback: find by slugified product name
+      const { data: all, error: allErr } = await supabase.from('products').select('*');
+      if (allErr) throw allErr;
+      const match = (all || []).find((p: any) => slugifyName(p.name) === identifier);
+      return (match as unknown as Product) || null;
     },
-    enabled: !!id,
+    enabled: !!identifier,
   });
 };
+
 
 export const useProductImages = (productId: string) => {
   return useQuery({
