@@ -17,9 +17,10 @@ const NewArrivals = () => {
   let pickedIds: string[] = [];
   try { if (s['new_arrivals_product_ids']) pickedIds = JSON.parse(s['new_arrivals_product_ids']); } catch {}
   const source = dbProducts;
+  const flagged = (source as any[]).filter(p => p.is_new_arrival);
   const products = pickedIds.length > 0
     ? pickedIds.map(id => (source as any[]).find(p => p.id === id)).filter(Boolean)
-    : source.slice(0, limit);
+    : (flagged.length > 0 ? flagged.slice(0, limit) : source.slice(0, limit));
   const { addItem } = useCart();
 
   if (!enabled || products.length === 0) return null;
