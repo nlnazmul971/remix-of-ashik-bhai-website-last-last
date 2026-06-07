@@ -89,6 +89,15 @@ const AdminHomepage = () => {
         toast.success('New Arrivals section updated!');
       }} />
 
+      {/* 5b. Trending Products */}
+      <TrendingProductsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Trending Products section updated!');
+      }} />
+
       {/* 6. Explore Categories */}
       <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
