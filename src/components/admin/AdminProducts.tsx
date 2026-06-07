@@ -1153,6 +1153,14 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
                 <input type="checkbox" checked={!!form.is_new_drop} onChange={e => setForm({ ...form, is_new_drop: e.target.checked })} className="accent-primary" />
                 <span className="text-xs uppercase tracking-widest">New Drop</span>
               </label>
+              <label className={`flex items-center gap-2 px-4 py-2.5 border cursor-pointer transition-colors ${(form as any).is_new_arrival ? 'border-sky-500/40 bg-sky-500/5' : 'border-border hover:border-foreground/30'}`}>
+                <input type="checkbox" checked={!!(form as any).is_new_arrival} onChange={e => setForm({ ...form, is_new_arrival: e.target.checked } as any)} className="accent-sky-500" />
+                <span className="text-xs uppercase tracking-widest">✦ New Arrival</span>
+              </label>
+              <label className={`flex items-center gap-2 px-4 py-2.5 border cursor-pointer transition-colors ${(form as any).is_trending ? 'border-rose-500/40 bg-rose-500/5' : 'border-border hover:border-foreground/30'}`}>
+                <input type="checkbox" checked={!!(form as any).is_trending} onChange={e => setForm({ ...form, is_trending: e.target.checked } as any)} className="accent-rose-500" />
+                <span className="text-xs uppercase tracking-widest">🔥 Trending</span>
+              </label>
             </div>
           </Section>
         </div>
