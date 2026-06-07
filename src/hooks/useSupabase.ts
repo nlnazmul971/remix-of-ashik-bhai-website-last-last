@@ -271,6 +271,21 @@ export const useUpdateOrder = () => {
     mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
       const { error } = await supabase.from('orders').update(updates).eq('id', id);
       if (error) throw error;
+      // Audit log (best effort)
+      try {
+        const { logAction } = await import('@/lib/audit');
+        const keys = Object.keys(updates);
+        const isStatus = keys.includes('status');
+        await logAction({
+          entityType: 'order',
+          entityId: id,
+          action: isStatus ? 'status_change' : 'updated',
+          summary: isStatus
+            ? `Status → ${updates.status}`
+            : `Updated: ${keys.join(', ')}`,
+          details: updates,
+        });
+      } catch {}
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['orders'] }),
   });
