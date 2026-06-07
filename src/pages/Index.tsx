@@ -447,7 +447,7 @@ const Index = () => {
                         {b.label}
                       </h3>
                     </div>
-                    <span className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 px-5 py-2 sm:px-7 sm:py-2.5 bg-transparent backdrop-blur-sm border border-background/70 text-background text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold rounded-sm group-hover:bg-background/10 group-hover:scale-105 transition">
+                    <span className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-transparent backdrop-blur-sm border border-foreground/40 text-foreground text-[9px] sm:text-[11px] tracking-[0.2em] uppercase font-semibold rounded-sm group-hover:bg-background/20 group-hover:scale-105 transition">
                       Shop Now
                     </span>
                   </Link>
