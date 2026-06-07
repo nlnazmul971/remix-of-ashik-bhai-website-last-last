@@ -25,7 +25,7 @@ const PromoPosters = () => {
           {posters.map((p, i) => (
             <Link
               key={i}
-              to={p.link}
+              to={`/?placement=${encodeURIComponent(`promo-posters:${i}`)}`}
               className="block overflow-hidden rounded-xl sm:rounded-2xl bg-muted group"
             >
               <img
