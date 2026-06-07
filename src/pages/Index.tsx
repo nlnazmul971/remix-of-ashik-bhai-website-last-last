@@ -503,4 +503,78 @@ const Index = () => {
   );
 };
 
+const PostersSlider = ({ posters }: { posters: any[] }) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
+  const [selected, setSelected] = useState(0);
+  const autoplayRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    onSelect();
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi || posters.length <= 1) return;
+    autoplayRef.current = window.setInterval(() => emblaApi.scrollNext(), 4000);
+    return () => { if (autoplayRef.current) window.clearInterval(autoplayRef.current); };
+  }, [emblaApi, posters.length]);
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden rounded-lg" ref={emblaRef}>
+        <div className="flex">
+          {posters.map((poster: any, i: number) => (
+            <div key={i} className="flex-[0_0_100%] min-w-0">
+              <Link
+                to={`/?placement=${encodeURIComponent(`homepage-posters:${i}`)}`}
+                className="relative group overflow-hidden cursor-pointer block"
+              >
+                <img src={poster.image} alt={poster.title} className="w-full h-auto block transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <p className="luxury-body text-[10px] text-background/70 mb-2">{poster.subtitle}</p>
+                  <h3 className="luxury-heading text-2xl sm:text-3xl text-background tracking-[0.1em]">{poster.title}</h3>
+                  <div className="w-8 h-px bg-background/50 mt-3" />
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {posters.length > 1 && (
+        <>
+          <button
+            onClick={() => emblaApi?.scrollPrev()}
+            className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur items-center justify-center hover:bg-background shadow"
+            aria-label="Previous"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={() => emblaApi?.scrollNext()}
+            className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur items-center justify-center hover:bg-background shadow"
+            aria-label="Next"
+          >
+            <ChevronRight size={20} />
+          </button>
+          <div className="flex items-center justify-center gap-1.5 mt-3">
+            {posters.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => emblaApi?.scrollTo(i)}
+                className={`h-1.5 rounded-full transition-all ${i === selected ? 'w-6 bg-foreground' : 'w-1.5 bg-foreground/30'}`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 export default Index;
