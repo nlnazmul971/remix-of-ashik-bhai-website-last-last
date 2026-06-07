@@ -36,6 +36,9 @@ import AdminRedirects from '@/components/admin/AdminRedirects';
 import AdminBlogs from '@/components/admin/AdminBlogs';
 import AdminLandingPages from '@/components/admin/AdminLandingPages';
 import AdminBackup from '@/components/admin/AdminBackup';
+import AdminApprovals from '@/components/admin/AdminApprovals';
+import AdminActivityLog from '@/components/admin/AdminActivityLog';
+import { usePendingApprovalsCount } from '@/hooks/useAdminAccess';
 
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import OrderTracker from '@/components/OrderTracker';
@@ -47,6 +50,9 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   const isAdmin = role === 'admin';
+  const isModerator = role === 'moderator';
+  const isStaff = isAdmin || isModerator;
+  const { data: pendingApprovals = 0 } = usePendingApprovalsCount(isAdmin);
 
   if (!user) {
     return (
