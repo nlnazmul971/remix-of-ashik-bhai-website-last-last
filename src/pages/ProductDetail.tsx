@@ -264,7 +264,7 @@ const ProductDetail = () => {
   const seoDescription = (product as any).seo_description || (product.description || product.name).slice(0, 155);
   const seoKeywords = (product as any).seo_keywords || undefined;
   const seoSlug = (product as any).seo_slug;
-  const productPath = seoSlug ? `/product/${seoSlug}` : `/product/${product.id}`;
+  const productPath = seoSlug ? `/product/${seoSlug}` : buildProductPath(product);
   const seoFaq: Array<{ q: string; a: string }> = Array.isArray((product as any).seo_faq) ? (product as any).seo_faq : [];
   const customSchema = (product as any).seo_schema;
 
