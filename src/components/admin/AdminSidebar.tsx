@@ -49,7 +49,6 @@ const menuGroups = [
     items: [
       { title: 'Blog', key: 'blog', icon: BookOpen },
       { title: 'Landing Pages', key: 'landing-pages', icon: Rocket },
-      { title: 'Programmatic SEO', key: 'pseo', icon: Globe },
     ],
   },
   {
@@ -68,14 +67,13 @@ const menuGroups = [
       { title: 'Payment Methods', key: 'payment-methods', icon: Wallet },
       { title: 'API', key: 'api', icon: Plug },
       { title: 'SEO', key: 'seo', icon: Search },
-      { title: 'SEO Audit', key: 'seo-audit', icon: BarChart3 },
-      { title: 'SEO Analytics', key: 'seo-analytics', icon: TrendingUp },
       { title: 'Redirects', key: 'redirects', icon: ArrowRightLeft },
       { title: 'Trash', key: 'trash', icon: Trash2 },
       { title: 'Settings', key: 'settings', icon: Settings },
     ],
   },
 ];
+
 
 type Props = {
   activeTab: string;
