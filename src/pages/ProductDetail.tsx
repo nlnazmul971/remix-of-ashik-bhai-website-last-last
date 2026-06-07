@@ -155,11 +155,13 @@ const ProductImageGallery = ({ mainImage, name, productId, discountPercent }: { 
 };
 
 const ProductDetail = () => {
-  const { id } = useParams();
+  const { id: rawParam } = useParams();
+  const id = extractProductId(rawParam);
   const { t } = useLanguage();
   const { data: product, isLoading } = useProduct(id || '');
   const { data: reviews = [] } = useProductReviews(id || '');
   const { data: relatedProducts = [] } = useRelatedProducts(product?.category || '', id || '');
+
   const { addItem, setShowPopup } = useCart();
   const { isInWishlist, toggleItem } = useWishlist();
   const { addView } = useRecentlyViewed();
