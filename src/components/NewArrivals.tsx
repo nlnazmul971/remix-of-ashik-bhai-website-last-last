@@ -50,9 +50,11 @@ const NewArrivals = () => {
         {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-5 xl:gap-4">
           {products.map((p, idx) => {
-            const hasDiscount = p.original_price && p.original_price > p.price;
+            const high = Math.max(p.price || 0, p.original_price || 0);
+            const low = Math.min(p.price || 0, p.original_price || p.price || 0);
+            const hasDiscount = p.original_price && high > low;
             const discountPct = hasDiscount
-              ? Math.round(((p.original_price! - p.price) / p.original_price!) * 100)
+              ? Math.round(((high - low) / high) * 100)
               : 0;
             const badgeLabel = idx % 2 === 0 ? 'NEW' : 'BESTSELLER';
             const badgeClass =
