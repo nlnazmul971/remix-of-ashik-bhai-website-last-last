@@ -487,22 +487,10 @@ const Index = () => {
         )}
 
 
-        {/* Fancy Posters */}
-        {!showProducts && (
+        {/* Fancy Posters Slider */}
+        {!showProducts && posters.length > 0 && (
           <section className="mt-6 sm:mt-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              {posters.map((poster: any, i: number) => (
-                <Link key={i} to={`/?placement=${encodeURIComponent(`homepage-posters:${i}`)}`} className="relative group overflow-hidden cursor-pointer block">
-                  <img src={poster.image} alt={poster.title} className="w-full h-auto block transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <p className="luxury-body text-[10px] text-background/70 mb-2">{poster.subtitle}</p>
-                    <h3 className="luxury-heading text-2xl sm:text-3xl text-background tracking-[0.1em]">{poster.title}</h3>
-                    <div className="w-8 h-px bg-background/50 mt-3" />
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <PostersSlider posters={posters} />
           </section>
         )}
 
