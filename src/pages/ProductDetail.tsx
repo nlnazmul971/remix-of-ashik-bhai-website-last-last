@@ -365,31 +365,39 @@ const ProductDetail = () => {
               <span className="text-[22px] font-bold text-[hsl(0,75%,50%)]">{product.price.toLocaleString()}.00৳</span>
             </div>
 
-            {/* In stock pill */}
-            {!allSoldOut && (
-              <div className="inline-block mb-5">
-                <span className="inline-block bg-[hsl(140,55%,92%)] text-[hsl(140,65%,28%)] text-[13px] font-semibold px-3 py-1.5 rounded">
-                  {currentSizeAvailable || product.stock} in stock
-                </span>
-              </div>
-            )}
-
-            {/* Stock progress */}
-            {!allSoldOut && (
-              <div className="mb-5">
-                <p className="text-[15px] font-bold text-foreground mb-2">Products are almost sold out</p>
-                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-[hsl(0,75%,52%)] rounded-full"
-                    style={{ width: `${Math.min(100, Math.max(4, ((currentSizeAvailable || product.stock) / Math.max(product.stock, currentSizeAvailable || 1)) * 12))}%` }}
-                  />
-                </div>
-                <p className="text-[13px] text-muted-foreground mt-2">
-                  the available products :{' '}
-                  <span className="text-[hsl(0,75%,50%)] font-semibold">{currentSizeAvailable || product.stock}</span>
-                </p>
-              </div>
-            )}
+            {/* Urgency stock (fake, deterministic per product per day) */}
+            {(() => {
+              const seedStr = `${product.id}-${new Date().toISOString().slice(0, 10)}`;
+              let h = 0;
+              for (let i = 0; i < seedStr.length; i++) h = (h * 31 + seedStr.charCodeAt(i)) >>> 0;
+              const urgencyStock = 3 + (h % 7); // 3..9
+              return (
+                <>
+                  {!allSoldOut && (
+                    <div className="inline-block mb-5">
+                      <span className="inline-block bg-[hsl(140,55%,92%)] text-[hsl(140,65%,28%)] text-[13px] font-semibold px-3 py-1.5 rounded">
+                        {urgencyStock} in stock
+                      </span>
+                    </div>
+                  )}
+                  {!allSoldOut && (
+                    <div className="mb-5">
+                      <p className="text-[15px] font-bold text-foreground mb-2">Products are almost sold out</p>
+                      <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[hsl(0,75%,52%)] rounded-full"
+                          style={{ width: `${10 + (h % 20)}%` }}
+                        />
+                      </div>
+                      <p className="text-[13px] text-muted-foreground mt-2">
+                        the available products :{' '}
+                        <span className="text-[hsl(0,75%,50%)] font-semibold">{urgencyStock}</span>
+                      </p>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
 
             {/* Size (only if multiple) */}
             {product.sizes.length > 1 && (
