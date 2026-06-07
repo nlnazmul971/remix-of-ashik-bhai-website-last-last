@@ -137,12 +137,22 @@ const AdminStockManagement = () => {
         {filteredProducts.map((p: any) => {
           const stocks = stockByProduct[p.id] || [];
           const productSizes = Array.isArray(p.sizes) ? p.sizes.filter(Boolean) : [];
-          const displayStocks = productSizes.length
-            ? productSizes.map((size: string) => {
-                const match = stocks.find(s => String(s.size).trim().toLowerCase() === String(size).trim().toLowerCase());
-                return { id: match?.id || `${p.id}-${size}`, size, available: match ? getAvailable(match) : 0 };
-              })
-            : stocks.map(s => ({ id: s.id, size: s.size || '—', available: getAvailable(s) }));
+          const norm = (v: any) => String(v ?? '').trim().toLowerCase();
+          // Prefer product.sizes ordering, but fall back to ALL existing stock rows
+          // if nothing matches (so admin can see real data).
+          let displayStocks: { id: string; size: string; available: number }[] = [];
+          if (productSizes.length) {
+            displayStocks = productSizes.map((size: string) => {
+              const match = stocks.find(s => norm(s.size) === norm(size));
+              return { id: match?.id || `${p.id}-${size}`, size: match?.size || size, available: match ? getAvailable(match) : 0 };
+            });
+            const anyMatched = displayStocks.some(d => d.available > 0);
+            if (!anyMatched && stocks.some(s => getAvailable(s) > 0)) {
+              displayStocks = stocks.map(s => ({ id: s.id, size: s.size || '—', available: getAvailable(s) }));
+            }
+          } else {
+            displayStocks = stocks.map(s => ({ id: s.id, size: s.size || '—', available: getAvailable(s) }));
+          }
           const total = stocks.reduce((sum, s) => sum + getAvailable(s), 0);
           const isOut = total <= 0 && stocks.length > 0;
           const isLow = total > 0 && total < 10;

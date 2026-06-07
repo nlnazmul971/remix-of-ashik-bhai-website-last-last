@@ -36,6 +36,9 @@ import AdminRedirects from '@/components/admin/AdminRedirects';
 import AdminBlogs from '@/components/admin/AdminBlogs';
 import AdminLandingPages from '@/components/admin/AdminLandingPages';
 import AdminBackup from '@/components/admin/AdminBackup';
+import AdminApprovals from '@/components/admin/AdminApprovals';
+import AdminActivityLog from '@/components/admin/AdminActivityLog';
+import { usePendingApprovalsCount } from '@/hooks/useAdminAccess';
 
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import OrderTracker from '@/components/OrderTracker';
@@ -47,6 +50,9 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   const isAdmin = role === 'admin';
+  const isModerator = role === 'moderator';
+  const isStaff = isAdmin || isModerator;
+  const { data: pendingApprovals = 0 } = usePendingApprovalsCount(isAdmin);
 
   if (!user) {
     return (
@@ -101,7 +107,7 @@ const Admin = () => {
     );
   }
 
-  if (!isAdmin) {
+  if (!isStaff) {
     return (
       <div className="min-h-screen bg-background">
         <Header /><CartDrawer />
@@ -122,12 +128,23 @@ const Admin = () => {
     <SidebarProvider>
       <SEO title="Admin Panel" path="/admin" noIndex />
       <div className="min-h-screen flex w-full bg-background">
-        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} onSignOut={signOut} />
+        <AdminSidebar
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          onSignOut={signOut}
+          role={isAdmin ? 'admin' : 'moderator'}
+          pendingApprovals={pendingApprovals}
+        />
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-14 flex items-center border-b border-border px-4 gap-3 bg-background sticky top-0 z-30">
             <SidebarTrigger />
             <h1 className="text-sm font-medium tracking-wide capitalize">{activeTab}</h1>
             <div className="ml-auto flex items-center gap-3">
+              {isModerator && (
+                <span className="text-[10px] uppercase tracking-widest px-2 py-0.5 border border-amber-500/40 text-amber-700 dark:text-amber-400 rounded-full">
+                  Moderator
+                </span>
+              )}
               <Link to="/" className="text-xs text-muted-foreground hover:text-foreground transition-colors">← Back to Store</Link>
               <span className="text-xs text-muted-foreground">{user.email}</span>
             </div>
@@ -161,6 +178,8 @@ const Admin = () => {
             {activeTab === 'blog' && <AdminBlogs />}
             {activeTab === 'landing-pages' && <AdminLandingPages />}
             {activeTab === 'backup' && <AdminBackup />}
+            {activeTab === 'approvals' && <AdminApprovals />}
+            {activeTab === 'activity-log' && <AdminActivityLog />}
 
 
 

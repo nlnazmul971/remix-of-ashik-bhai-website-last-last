@@ -642,6 +642,14 @@ const AdminOrders = () => {
     if (!confirm(`${ids.length}টি অর্ডার Trash এ পাঠাবেন?`)) return;
     const { error } = await supabase.from('orders').update({ deleted_at: new Date().toISOString() } as any).in('id', ids);
     if (error) { toast.error('ডিলিট ব্যর্থ: ' + error.message); return; }
+    // Audit log for each
+    try {
+      const { logAction } = await import('@/lib/audit');
+      await Promise.all(ids.map(id => logAction({
+        entityType: 'order', entityId: id, action: 'deleted',
+        summary: `Moved order to Trash`,
+      })));
+    } catch {}
     toast.success(`${ids.length}টি অর্ডার Trash এ গেছে`);
     setSelectedIds(new Set());
     window.location.reload();
