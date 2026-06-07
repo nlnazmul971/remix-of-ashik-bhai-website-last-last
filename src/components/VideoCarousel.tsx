@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Play, X, Volume2, ChevronLeft, ChevronRight } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useStoreSettings } from '@/hooks/useSupabase';
-import { MOCK_HOMEPAGE_VIDEOS } from '@/data/mockData';
+
 
 export type HomepageVideo = {
   youtubeId: string;
