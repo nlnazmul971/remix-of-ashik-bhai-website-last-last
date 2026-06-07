@@ -14,6 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
+      action_logs: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_id: string | null
+          actor_role: string | null
+          created_at: string
+          details: Json | null
+          entity_id: string | null
+          entity_type: string
+          id: string
+          summary: string | null
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          summary?: string | null
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_id?: string | null
+          actor_role?: string | null
+          created_at?: string
+          details?: Json | null
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          summary?: string | null
+        }
+        Relationships: []
+      }
+      approval_requests: {
+        Row: {
+          action: string
+          created_at: string
+          entity_id: string | null
+          entity_type: string
+          id: string
+          payload: Json | null
+          reason: string | null
+          requested_by: string | null
+          requester_email: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_note: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type: string
+          id?: string
+          payload?: Json | null
+          reason?: string | null
+          requested_by?: string | null
+          requester_email?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_note?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string
+          id?: string
+          payload?: Json | null
+          reason?: string | null
+          requested_by?: string | null
+          requester_email?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_note?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_authors: {
         Row: {
           avatar_url: string | null
