@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { productPath } from '@/lib/productUrl';
 import { Search, X, TrendingUp, Clock, ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';

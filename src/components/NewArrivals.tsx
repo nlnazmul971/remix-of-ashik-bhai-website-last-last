@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { productPath } from '@/lib/productUrl';
 import { ChevronRight, Star, ShoppingCart, Heart } from 'lucide-react';
 import { useProducts, useStoreSettings } from '@/hooks/useSupabase';
 

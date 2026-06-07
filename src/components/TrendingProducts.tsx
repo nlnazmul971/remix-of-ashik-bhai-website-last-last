@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { productPath } from '@/lib/productUrl';
 import { ChevronRight, ShoppingCart, Heart } from 'lucide-react';
 import { useProducts } from '@/hooks/useSupabase';
 import { useCart } from '@/contexts/CartContext';
