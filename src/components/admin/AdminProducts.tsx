@@ -723,6 +723,74 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
       .then(({ data }) => setSubcategories((data as any) || []));
     supabase.from('header_categories').select('id, name, slug').eq('is_active', true).order('sort_order')
       .then(({ data }) => setHeaderCategories((data as any) || []));
+
+    // Build placement slots from homepage section settings
+    supabase.from('store_settings').select('key, value').then(({ data }) => {
+      const map: Record<string, string> = {};
+      (data || []).forEach((r: any) => { map[r.key] = r.value; });
+      const safeParse = (v: any) => { try { return v ? JSON.parse(v) : null; } catch { return null; } };
+
+      const groups: Array<{ section: string; slots: Array<{ key: string; label: string }> }> = [];
+
+      // Baby & Kids Fashion (rows of cards)
+      const bk = safeParse(map['baby_kids_rows']);
+      const bkSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(bk)) {
+        bk.forEach((row: any[], ri: number) => {
+          (row || []).forEach((item: any, ii: number) => {
+            bkSlots.push({
+              key: `baby-kids:${ri}:${ii}`,
+              label: `Row ${ri + 1} · ${item?.label || ''} ${item?.sublabel || ''}`.trim(),
+            });
+          });
+        });
+      }
+      groups.push({ section: 'Baby & Kids Fashion', slots: bkSlots });
+
+      // Promo Posters
+      const pp = safeParse(map['promo_posters_items']);
+      const ppSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(pp)) pp.forEach((p: any, i: number) => ppSlots.push({
+        key: `promo-posters:${i}`,
+        label: p?.alt || p?.label || `Poster ${i + 1}`,
+      }));
+      groups.push({ section: 'Promo Posters', slots: ppSlots });
+
+      // Explore Categories
+      const ec = safeParse(map['explore_cats_items']);
+      const ecSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(ec)) ec.forEach((c: any, i: number) => ecSlots.push({
+        key: `explore-categories:${i}`,
+        label: c?.label || `Item ${i + 1}`,
+      }));
+      groups.push({ section: 'Explore Categories', slots: ecSlots });
+
+      // Category Banners (3 horizontal banners + their subItems)
+      const cb = safeParse(map['homepage_category_banners']);
+      const cbSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(cb)) {
+        cb.forEach((b: any, i: number) => {
+          cbSlots.push({ key: `category-banners:${i}`, label: `Banner ${i + 1} · ${b?.label || ''}`.trim() });
+          if (Array.isArray(b?.subItems)) {
+            b.subItems.forEach((s: any, si: number) => {
+              cbSlots.push({ key: `category-banners:${i}:${si}`, label: `   ↳ ${b?.label || `Banner ${i + 1}`} · ${s?.label || `Sub ${si + 1}`}` });
+            });
+          }
+        });
+      }
+      groups.push({ section: 'Category Banners (Homepage)', slots: cbSlots });
+
+      // Homepage Posters
+      const hp = safeParse(map['homepage_posters']);
+      const hpSlots: Array<{ key: string; label: string }> = [];
+      if (Array.isArray(hp)) hp.forEach((p: any, i: number) => hpSlots.push({
+        key: `homepage-posters:${i}`,
+        label: p?.title || p?.subtitle || `Poster ${i + 1}`,
+      }));
+      groups.push({ section: 'Homepage Posters', slots: hpSlots });
+
+      setPlacementGroups(groups);
+    });
   }, []);
 
 
