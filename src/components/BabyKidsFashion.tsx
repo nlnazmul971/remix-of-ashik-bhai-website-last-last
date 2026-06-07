@@ -19,8 +19,8 @@ const defaultBoys: Item[] = [
   { label: '6 - 14', sublabel: 'Years', image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80', link: '/?category=Boys&sub=6-14-years' },
 ];
 
-const Card = ({ item }: { item: Item }) => (
-  <Link to={item.link} className="group flex flex-col items-center text-center">
+const Card = ({ item, slotKey }: { item: Item; slotKey: string }) => (
+  <Link to={`/?placement=${encodeURIComponent(slotKey)}`} className="group flex flex-col items-center text-center">
     <div className="w-full aspect-square overflow-hidden rounded-md bg-muted">
       <img
         src={item.image}
