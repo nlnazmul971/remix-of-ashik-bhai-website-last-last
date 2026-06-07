@@ -58,16 +58,8 @@ const Index = () => {
     activeSub || undefined
   );
   const { data: dbAllProducts = [] } = useProducts();
-  // MOCK fallback — remove `MOCK_PRODUCTS` filtering once DB has data
-  const allProducts = dbAllProducts.length > 0 ? dbAllProducts : MOCK_PRODUCTS;
-  const products = dbProducts.length > 0
-    ? dbProducts
-    : MOCK_PRODUCTS.filter(p => {
-        if (activeCategory && activeCategory !== 'All' && activeCategory !== 'New Dropped' && p.category.toLowerCase() !== activeCategory.toLowerCase()) return false;
-        if (activeCategory === 'New Dropped' && !p.is_new_drop) return false;
-        if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-        return true;
-      });
+  const allProducts = dbAllProducts;
+  const products = dbProducts;
   const { data: subcategories = [] } = useQuery({
     queryKey: ['subcategories-filter', activeCategory],
     queryFn: async () => {
