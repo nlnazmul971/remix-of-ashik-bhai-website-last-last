@@ -31,13 +31,11 @@ import AdminDeliveredItems from '@/components/admin/AdminDeliveredItems';
 import AdminSubcategories from '@/components/admin/AdminHeaderCategories';
 import AdminCustomPages from '@/components/admin/AdminCustomPages';
 import AdminPopups from '@/components/admin/AdminPopups';
-import AdminSEO from '@/components/admin/AdminSEO';
+import AdminSEOHub from '@/components/admin/AdminSEOHub';
 import AdminRedirects from '@/components/admin/AdminRedirects';
 import AdminBlogs from '@/components/admin/AdminBlogs';
-import AdminSEOAudit from '@/components/admin/AdminSEOAudit';
 import AdminLandingPages from '@/components/admin/AdminLandingPages';
-import AdminPSEO from '@/components/admin/AdminPSEO';
-import AdminSEOAnalytics from '@/components/admin/AdminSEOAnalytics';
+
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import OrderTracker from '@/components/OrderTracker';
 
