@@ -31,14 +31,14 @@ const TrendingProducts = () => {
         <div className="flex items-end justify-between mb-4 sm:mb-6 px-1">
           <div>
             <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-sky-600">
-              Hot Picks
+              {eyebrow}
             </p>
             <h2 className="text-xl sm:text-3xl font-extrabold text-gray-900 mt-0.5">
-              Trending Products
+              {title}
             </h2>
           </div>
           <Link
-            to="/?category=All"
+            to={viewAllLink}
             className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-sky-700 hover:text-sky-800 transition"
           >
             View All <ChevronRight size={16} />
