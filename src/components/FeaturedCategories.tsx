@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useStoreSettings } from '@/hooks/useSupabase';
-import { MOCK_FEATURED_CATEGORIES } from '@/data/mockData';
+
 
 export type FeaturedCategory = {
   image: string;
@@ -12,7 +12,7 @@ const FeaturedCategories = () => {
   const { data: settings = {} } = useStoreSettings();
   const raw = settings['homepage_featured_categories'];
   const parsed: FeaturedCategory[] = raw ? JSON.parse(raw) : [];
-  const items = parsed.length > 0 ? parsed : MOCK_FEATURED_CATEGORIES;
+  const items = parsed;
 
   if (items.length === 0) return null;
 

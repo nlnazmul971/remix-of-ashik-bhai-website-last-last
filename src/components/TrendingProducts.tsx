@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight, ShoppingCart, Heart } from 'lucide-react';
 import { useProducts } from '@/hooks/useSupabase';
-import { MOCK_PRODUCTS } from '@/data/mockData';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 
 const TrendingProducts = () => {
   const { data: dbProducts = [] } = useProducts();
-  const source = dbProducts.length > 0 ? dbProducts : MOCK_PRODUCTS;
+  const source = dbProducts;
   const products = source.slice(0, 12);
   const { addItem } = useCart();
 

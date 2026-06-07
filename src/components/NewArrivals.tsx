@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight, Star, ShoppingCart, Heart } from 'lucide-react';
 import { useProducts, useStoreSettings } from '@/hooks/useSupabase';
-import { MOCK_PRODUCTS } from '@/data/mockData';
+
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 
@@ -15,7 +15,7 @@ const NewArrivals = () => {
   const limit = parseInt(s['new_arrivals_limit'] || '6', 10) || 6;
   let pickedIds: string[] = [];
   try { if (s['new_arrivals_product_ids']) pickedIds = JSON.parse(s['new_arrivals_product_ids']); } catch {}
-  const source = dbProducts.length > 0 ? dbProducts : MOCK_PRODUCTS;
+  const source = dbProducts;
   const products = pickedIds.length > 0
     ? pickedIds.map(id => (source as any[]).find(p => p.id === id)).filter(Boolean)
     : source.slice(0, limit);

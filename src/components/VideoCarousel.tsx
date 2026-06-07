@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Play, X, Volume2, ChevronLeft, ChevronRight } from 'lucide-react';
 import useEmblaCarousel from 'embla-carousel-react';
 import { useStoreSettings } from '@/hooks/useSupabase';
-import { MOCK_HOMEPAGE_VIDEOS } from '@/data/mockData';
+
 
 export type HomepageVideo = {
   youtubeId: string;
@@ -22,7 +22,7 @@ const VideoCarousel = () => {
   const { data: settings = {} } = useStoreSettings();
   const raw = settings['homepage_videos'];
   const parsed: HomepageVideo[] = raw ? JSON.parse(raw) : [];
-  const videos = parsed.length > 0 ? parsed : MOCK_HOMEPAGE_VIDEOS;
+  const videos = parsed;
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center', skipSnaps: false });
   const [activeIdx, setActiveIdx] = useState(0);
