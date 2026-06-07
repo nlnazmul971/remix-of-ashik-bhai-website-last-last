@@ -85,7 +85,7 @@ const SearchOverlay = ({ open, onClose, query, setQuery, onSubmit }: Props) => {
 
   const goProduct = (p: Product) => {
     saveRecent(p.name);
-    navigate(`/product/${p.id}`);
+    navigate(productPath(p));
     setQuery('');
     onClose();
   };

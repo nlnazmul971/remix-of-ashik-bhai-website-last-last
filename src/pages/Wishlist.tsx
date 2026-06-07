@@ -29,7 +29,7 @@ const Wishlist = () => {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {items.map(product => (
               <div key={product.id} className="luxury-card group">
-                <Link to={`/product/${product.id}`}>
+                <Link to={productPath(product)}>
                   <div className="relative aspect-[3/4] overflow-hidden">
                     <img src={getProductImage(product.image_url, 600)} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <button onClick={(e) => { e.preventDefault(); removeItem(product.id); }} className="absolute top-3 right-3 p-2 bg-background/90 hover:bg-background transition-colors"><X size={14} /></button>
