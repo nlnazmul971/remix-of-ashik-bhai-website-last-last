@@ -155,13 +155,11 @@ const Admin = () => {
             {activeTab === 'delivery-charge' && <AdminDeliveryCharge />}
             {activeTab === 'payment-methods' && <AdminPaymentMethods />}
             {activeTab === 'api' && <AdminAPI />}
-            {activeTab === 'seo' && <AdminSEO />}
+            {activeTab === 'seo' && <AdminSEOHub />}
             {activeTab === 'redirects' && <AdminRedirects />}
             {activeTab === 'blog' && <AdminBlogs />}
-            {activeTab === 'seo-audit' && <AdminSEOAudit />}
             {activeTab === 'landing-pages' && <AdminLandingPages />}
-            {activeTab === 'pseo' && <AdminPSEO />}
-            {activeTab === 'seo-analytics' && <AdminSEOAnalytics />}
+
           </main>
         </div>
       </div>
