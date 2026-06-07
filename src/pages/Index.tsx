@@ -29,7 +29,7 @@ import { useProducts, useStoreSettings, useAllReviewStats, useAllProductImages, 
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { MOCK_PRODUCTS, MOCK_POSTERS, MOCK_CATEGORY_BANNERS } from '@/data/mockData';
+
 
 const SIZE_OPTIONS = ['S', 'M', 'L', 'XL', 'XXL', '3XL'];
 const PRICE_RANGES: { label: string; min: number; max: number }[] = [
