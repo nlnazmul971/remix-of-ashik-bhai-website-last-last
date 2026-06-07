@@ -18,6 +18,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import SEO from '@/components/SEO';
 import { pushViewItem } from '@/lib/gtm';
 import { flyToCart } from '@/lib/flyToCart';
+import { extractProductId, productPath as buildProductPath } from '@/lib/productUrl';
+
 
 const ProductImageGallery = ({ mainImage, name, productId, discountPercent }: { mainImage: string; name: string; productId: string; discountPercent?: number | null }) => {
   const { data: additionalImages = [] } = useProductImages(productId);
