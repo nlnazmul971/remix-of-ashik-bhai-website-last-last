@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft } from 'lucide-react';
 import { ChevronRight, Grid2x2, Grid3x3, SlidersHorizontal } from 'lucide-react';
 import {
   Select,
