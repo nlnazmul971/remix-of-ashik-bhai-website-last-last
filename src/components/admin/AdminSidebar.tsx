@@ -14,71 +14,85 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-const menuGroups = [
-  {
-    label: 'Overview',
-    items: [
-      { title: 'Dashboard', key: 'dashboard', icon: LayoutDashboard },
-      { title: 'Homepage', key: 'homepage', icon: Home },
-      { title: 'Custom Pages', key: 'custom-pages', icon: FileImage },
-      { title: 'Popups', key: 'popups', icon: Megaphone },
-    ],
-  },
-  {
-    label: 'Catalog',
-    items: [
-      { title: 'Products', key: 'products', icon: Package },
-      { title: 'Stock', key: 'stock', icon: BarChart3 },
-      { title: 'Coupons', key: 'coupons', icon: Tag },
-    ],
-  },
-  {
-    label: 'Orders',
-    items: [
-      { title: 'Orders', key: 'orders', icon: ShoppingBag },
-      { title: 'FB Orders', key: 'facebook-orders', icon: Facebook },
-      { title: 'Offline Orders', key: 'offline-orders', icon: Store },
-      { title: 'Returns', key: 'returns', icon: RotateCcw },
-      { title: 'Delivered Items', key: 'delivered-items', icon: PackageCheck },
-      { title: 'Packaging', key: 'packaging', icon: PackageOpen },
-    ],
-  },
-  {
-    label: 'Content',
-    items: [
-      { title: 'Blog', key: 'blog', icon: BookOpen },
-      { title: 'Landing Pages', key: 'landing-pages', icon: Rocket },
-    ],
-  },
-  {
-    label: 'Engagement',
-    items: [
-      { title: 'Reviews', key: 'reviews', icon: MessageSquare },
-      { title: 'Wishlist', key: 'wishlist', icon: Heart },
-      { title: 'Newsletter', key: 'newsletter', icon: Mail },
-    ],
-  },
-  {
-    label: 'System',
-    items: [
-      { title: 'Users', key: 'users', icon: Users },
-      { title: 'Delivery Charge', key: 'delivery-charge', icon: Truck },
-      { title: 'Payment Methods', key: 'payment-methods', icon: Wallet },
-      { title: 'API', key: 'api', icon: Plug },
-      { title: 'SEO', key: 'seo', icon: Search },
-      { title: 'Redirects', key: 'redirects', icon: ArrowRightLeft },
-      { title: 'Backup & Restore', key: 'backup', icon: DatabaseBackup },
-      { title: 'Trash', key: 'trash', icon: Trash2 },
-      { title: 'Settings', key: 'settings', icon: Settings },
-    ],
-  },
-];
+const buildMenuGroups = (role: 'admin' | 'moderator') => {
+  const groups: { label: string; items: { title: string; key: string; icon: any; badge?: number }[] }[] = [
+    {
+      label: 'Overview',
+      items: [
+        { title: 'Dashboard', key: 'dashboard', icon: LayoutDashboard },
+        { title: 'Homepage', key: 'homepage', icon: Home },
+        { title: 'Custom Pages', key: 'custom-pages', icon: FileImage },
+        { title: 'Popups', key: 'popups', icon: Megaphone },
+      ],
+    },
+    {
+      label: 'Catalog',
+      items: [
+        { title: 'Products', key: 'products', icon: Package },
+        { title: 'Stock', key: 'stock', icon: BarChart3 },
+        { title: 'Coupons', key: 'coupons', icon: Tag },
+      ],
+    },
+    {
+      label: 'Orders',
+      items: [
+        { title: 'Orders', key: 'orders', icon: ShoppingBag },
+        { title: 'FB Orders', key: 'facebook-orders', icon: Facebook },
+        { title: 'Offline Orders', key: 'offline-orders', icon: Store },
+        { title: 'Returns', key: 'returns', icon: RotateCcw },
+        { title: 'Delivered Items', key: 'delivered-items', icon: PackageCheck },
+        { title: 'Packaging', key: 'packaging', icon: PackageOpen },
+      ],
+    },
+    {
+      label: 'Content',
+      items: [
+        { title: 'Blog', key: 'blog', icon: BookOpen },
+        { title: 'Landing Pages', key: 'landing-pages', icon: Rocket },
+      ],
+    },
+    {
+      label: 'Engagement',
+      items: [
+        { title: 'Reviews', key: 'reviews', icon: MessageSquare },
+        { title: 'Wishlist', key: 'wishlist', icon: Heart },
+        { title: 'Newsletter', key: 'newsletter', icon: Mail },
+      ],
+    },
+    {
+      label: 'Governance',
+      items: [
+        { title: 'Activity Log', key: 'activity-log', icon: Activity },
+        ...(role === 'admin'
+          ? [{ title: 'Approvals', key: 'approvals', icon: ShieldCheck }]
+          : [{ title: 'My Requests', key: 'approvals', icon: ShieldCheck }]),
+      ],
+    },
+    {
+      label: 'System',
+      items: [
+        { title: 'Users', key: 'users', icon: Users },
+        { title: 'Delivery Charge', key: 'delivery-charge', icon: Truck },
+        { title: 'Payment Methods', key: 'payment-methods', icon: Wallet },
+        { title: 'API', key: 'api', icon: Plug },
+        { title: 'SEO', key: 'seo', icon: Search },
+        { title: 'Redirects', key: 'redirects', icon: ArrowRightLeft },
+        { title: 'Backup & Restore', key: 'backup', icon: DatabaseBackup },
+        { title: 'Trash', key: 'trash', icon: Trash2 },
+        { title: 'Settings', key: 'settings', icon: Settings },
+      ],
+    },
+  ];
+  return groups;
+};
 
 
 type Props = {
   activeTab: string;
   onTabChange: (tab: string) => void;
   onSignOut: () => void;
+  role?: 'admin' | 'moderator';
+  pendingApprovals?: number;
 };
 
 const AdminSidebar = ({ activeTab, onTabChange, onSignOut }: Props) => {
