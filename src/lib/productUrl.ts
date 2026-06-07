@@ -20,7 +20,8 @@ export const slugify = (input: string): string => {
 export const productPath = (product: { id: string; name?: string | null } | null | undefined): string => {
   if (!product?.id) return '#';
   const slug = slugify(product.name || '');
-  return slug ? `/product/${slug}-${product.id}` : `/product/${product.id}`;
+  return slug ? `/product/${slug}` : `/product/${product.id}`;
+
 };
 
 // Extract a product UUID from a URL param that may be "slug-uuid", "uuid", or a bare slug.
