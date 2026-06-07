@@ -5,13 +5,6 @@ import { X } from 'lucide-react';
 
 type Item = { label: string; image: string; link: string };
 
-const defaultItems: Item[] = [
-  { label: 'Footwear', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80', link: '/?category=Footwear' },
-  { label: 'Accessories', image: 'https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=400&q=80', link: '/?category=Accessories' },
-  { label: 'Toys & Gaming', image: 'https://images.unsplash.com/photo-1558877385-81a1c7e67d72?w=400&q=80', link: '/?category=Toys' },
-  { label: 'Baby Gear', image: 'https://images.unsplash.com/photo-1591147834506-fde07cdcfc6e?w=400&q=80', link: '/?category=Baby-Gear' },
-];
-
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -21,7 +14,7 @@ const CategoriesPopup = ({ open, onClose }: Props) => {
   const { data: s = {} } = useStoreSettings();
   const title = s['categories_popup_title'] || 'Shop by Category';
 
-  let items: Item[] = defaultItems;
+  let items: Item[] = [];
   try {
     if (s['categories_popup_items']) {
       const parsed = JSON.parse(s['categories_popup_items']);

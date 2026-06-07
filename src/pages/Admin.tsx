@@ -35,6 +35,7 @@ import AdminSEOHub from '@/components/admin/AdminSEOHub';
 import AdminRedirects from '@/components/admin/AdminRedirects';
 import AdminBlogs from '@/components/admin/AdminBlogs';
 import AdminLandingPages from '@/components/admin/AdminLandingPages';
+import AdminBackup from '@/components/admin/AdminBackup';
 
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import OrderTracker from '@/components/OrderTracker';
@@ -159,6 +160,9 @@ const Admin = () => {
             {activeTab === 'redirects' && <AdminRedirects />}
             {activeTab === 'blog' && <AdminBlogs />}
             {activeTab === 'landing-pages' && <AdminLandingPages />}
+            {activeTab === 'backup' && <AdminBackup />}
+
+
 
           </main>
         </div>
