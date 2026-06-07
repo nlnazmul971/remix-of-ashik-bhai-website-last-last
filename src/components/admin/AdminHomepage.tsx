@@ -50,29 +50,19 @@ const AdminHomepage = () => {
         toast.success('Logo updated!');
       }} />
 
+      {/* 1. Hero Slider */}
       <SliderManager slides={slides} onSave={async (newSlides) => {
         await updateSetting.mutateAsync({ key: 'hero_slides', value: JSON.stringify(newSlides) });
         toast.success('Slider updated!');
       }} />
 
-      <PosterManager posters={posters} onSave={async (newPosters) => {
-        await updateSetting.mutateAsync({ key: 'homepage_posters', value: JSON.stringify(newPosters) });
-        toast.success('Posters updated!');
-      }} />
-
-      <CategoryBannerManager banners={categoryBanners} onSave={async (newBanners) => {
-        await updateSetting.mutateAsync({ key: 'homepage_category_banners', value: JSON.stringify(newBanners) });
-        toast.success('Category banners updated!');
-      }} />
-
+      {/* 2. Video Carousel */}
       <VideoManager videos={videos} onSave={async (newVideos) => {
         await updateSetting.mutateAsync({ key: 'homepage_videos', value: JSON.stringify(newVideos) });
         toast.success('Videos updated!');
       }} />
 
-
-
-
+      {/* 3. Baby & Kids Fashion */}
       <BabyKidsManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
           // @ts-ignore
@@ -81,6 +71,7 @@ const AdminHomepage = () => {
         toast.success('Baby & Kids section updated!');
       }} />
 
+      {/* 4. Promo Posters */}
       <PromoPostersManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
           // @ts-ignore
@@ -89,6 +80,7 @@ const AdminHomepage = () => {
         toast.success('Promo posters updated!');
       }} />
 
+      {/* 5. New Arrivals */}
       <NewArrivalsManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
           // @ts-ignore
@@ -97,6 +89,7 @@ const AdminHomepage = () => {
         toast.success('New Arrivals section updated!');
       }} />
 
+      {/* 6. Explore Categories */}
       <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
           // @ts-ignore
@@ -105,6 +98,19 @@ const AdminHomepage = () => {
         toast.success('Explore Categories updated!');
       }} />
 
+      {/* 7. Category Banners (3 horizontal) */}
+      <CategoryBannerManager banners={categoryBanners} onSave={async (newBanners) => {
+        await updateSetting.mutateAsync({ key: 'homepage_category_banners', value: JSON.stringify(newBanners) });
+        toast.success('Category banners updated!');
+      }} />
+
+      {/* 8. Fancy Posters (bottom) */}
+      <PosterManager posters={posters} onSave={async (newPosters) => {
+        await updateSetting.mutateAsync({ key: 'homepage_posters', value: JSON.stringify(newPosters) });
+        toast.success('Posters updated!');
+      }} />
+
+      {/* Other: Categories Popup */}
       <CategoriesPopupManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
           // @ts-ignore
