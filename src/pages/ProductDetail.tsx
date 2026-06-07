@@ -172,7 +172,7 @@ const ProductDetail = () => {
   const baseMessageLink = storeSettings?.product_message_link || storeSettings?.footer_messenger || 'https://m.me/highlightbd';
   const buildMessageLink = () => {
     if (!product) return baseMessageLink;
-    const productUrl = `${window.location.origin}/product/${product.id}`;
+    const productUrl = `${window.location.origin}${buildProductPath(product)}`;
     const text = `Hi! I'm interested in this product:\n${product.name}\n${productUrl}`;
     try {
       const u = new URL(baseMessageLink);
