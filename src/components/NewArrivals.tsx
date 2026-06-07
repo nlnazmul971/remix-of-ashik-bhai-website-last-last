@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight, Star, ShoppingCart, Heart } from 'lucide-react';
 import { useProducts, useStoreSettings } from '@/hooks/useSupabase';
-import { MOCK_PRODUCTS } from '@/data/mockData';
+
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
 
