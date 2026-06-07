@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { productPath } from '@/lib/productUrl';
 import { ShoppingCart, Heart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { toast } from 'sonner';
@@ -34,7 +35,7 @@ const PrettyProductCard = ({ product: p, badgeLabel, badgeClass }: Props) => {
           <Heart size={14} />
         </button>
 
-        <Link to={`/product/${p.id}`} className="block aspect-square overflow-hidden">
+        <Link to={productPath(p)} className="block aspect-square overflow-hidden">
           <img
             src={p.image_url}
             alt={p.name}
@@ -46,7 +47,7 @@ const PrettyProductCard = ({ product: p, badgeLabel, badgeClass }: Props) => {
 
 
       <div className="p-2 sm:p-3 flex-1 flex flex-col">
-        <Link to={`/product/${p.id}`}>
+        <Link to={productPath(p)}>
           <h3 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-sky-700 transition">
             {p.name}
           </h3>

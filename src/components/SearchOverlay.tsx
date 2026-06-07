@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { productPath } from '@/lib/productUrl';
 import { Search, X, TrendingUp, Clock, ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -85,7 +86,7 @@ const SearchOverlay = ({ open, onClose, query, setQuery, onSubmit }: Props) => {
 
   const goProduct = (p: Product) => {
     saveRecent(p.name);
-    navigate(`/product/${p.id}`);
+    navigate(productPath(p));
     setQuery('');
     onClose();
   };

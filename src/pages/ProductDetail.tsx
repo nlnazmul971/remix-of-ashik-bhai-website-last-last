@@ -18,6 +18,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import SEO from '@/components/SEO';
 import { pushViewItem } from '@/lib/gtm';
 import { flyToCart } from '@/lib/flyToCart';
+import { extractProductId, productPath as buildProductPath } from '@/lib/productUrl';
+
 
 const ProductImageGallery = ({ mainImage, name, productId, discountPercent }: { mainImage: string; name: string; productId: string; discountPercent?: number | null }) => {
   const { data: additionalImages = [] } = useProductImages(productId);
@@ -155,11 +157,13 @@ const ProductImageGallery = ({ mainImage, name, productId, discountPercent }: { 
 };
 
 const ProductDetail = () => {
-  const { id } = useParams();
+  const { id: rawParam } = useParams();
+  const id = extractProductId(rawParam);
   const { t } = useLanguage();
   const { data: product, isLoading } = useProduct(id || '');
   const { data: reviews = [] } = useProductReviews(id || '');
   const { data: relatedProducts = [] } = useRelatedProducts(product?.category || '', id || '');
+
   const { addItem, setShowPopup } = useCart();
   const { isInWishlist, toggleItem } = useWishlist();
   const { addView } = useRecentlyViewed();
@@ -168,7 +172,7 @@ const ProductDetail = () => {
   const baseMessageLink = storeSettings?.product_message_link || storeSettings?.footer_messenger || 'https://m.me/highlightbd';
   const buildMessageLink = () => {
     if (!product) return baseMessageLink;
-    const productUrl = `${window.location.origin}/product/${product.id}`;
+    const productUrl = `${window.location.origin}${buildProductPath(product)}`;
     const text = `Hi! I'm interested in this product:\n${product.name}\n${productUrl}`;
     try {
       const u = new URL(baseMessageLink);
@@ -260,7 +264,7 @@ const ProductDetail = () => {
   const seoDescription = (product as any).seo_description || (product.description || product.name).slice(0, 155);
   const seoKeywords = (product as any).seo_keywords || undefined;
   const seoSlug = (product as any).seo_slug;
-  const productPath = seoSlug ? `/product/${seoSlug}` : `/product/${product.id}`;
+  const productPath = seoSlug ? `/product/${seoSlug}` : buildProductPath(product);
   const seoFaq: Array<{ q: string; a: string }> = Array.isArray((product as any).seo_faq) ? (product as any).seo_faq : [];
   const customSchema = (product as any).seo_schema;
 

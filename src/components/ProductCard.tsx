@@ -6,6 +6,8 @@ import { useCart } from '@/contexts/CartContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { toast } from 'sonner';
 import { flyToCart } from '@/lib/flyToCart';
+import { productPath } from '@/lib/productUrl';
+
 
 interface ProductCardProps {
   product: Product;
@@ -69,7 +71,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
 
   return (
     <div className="group animate-fade-in bg-white rounded-none border border-border/60 flex flex-col h-full">
-      <Link to={`/product/${product.id}`} className="block">
+      <Link to={productPath(product)} className="block">
         <div
           ref={imageRef}
           className="relative overflow-hidden aspect-square bg-white"
@@ -172,7 +174,7 @@ const ProductCard = ({ product, reviewStats = {}, hoverImageUrl, isSoldOut = fal
           </p>
         )}
 
-        <Link to={`/product/${product.id}`}>
+        <Link to={productPath(product)}>
           <h3 className="text-[14px] font-semibold text-foreground leading-snug line-clamp-2 min-h-[2.6em]">
             {product.name}
           </h3>

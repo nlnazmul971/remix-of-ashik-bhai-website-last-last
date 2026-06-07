@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { productPath } from '@/lib/productUrl';
 import { ChevronRight, Star, ShoppingCart, Heart } from 'lucide-react';
 import { useProducts, useStoreSettings } from '@/hooks/useSupabase';
 
@@ -81,7 +82,7 @@ const NewArrivals = () => {
                   </button>
 
                   <Link
-                    to={`/product/${p.id}`}
+                    to={productPath(p)}
                     className="block aspect-square overflow-hidden"
                   >
                     <img
@@ -96,7 +97,7 @@ const NewArrivals = () => {
                 {/* Body */}
                 <div className="p-2 sm:p-3 flex-1 flex flex-col">
                   {/* Title */}
-                  <Link to={`/product/${p.id}`}>
+                  <Link to={productPath(p)}>
                     <h3 className="text-xs sm:text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-sky-700 transition">
                       {p.name}
                     </h3>
