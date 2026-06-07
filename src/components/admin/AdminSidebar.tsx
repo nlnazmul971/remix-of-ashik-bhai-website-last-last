@@ -20,7 +20,7 @@ const menuGroups = [
     items: [
       { title: 'Dashboard', key: 'dashboard', icon: LayoutDashboard },
       { title: 'Homepage', key: 'homepage', icon: Home },
-      { title: 'Header & Sub-categories', key: 'subcategories', icon: Layers },
+      { title: 'Categories', key: 'subcategories', icon: Layers },
       { title: 'Custom Pages', key: 'custom-pages', icon: FileImage },
       { title: 'Popups', key: 'popups', icon: Megaphone },
     ],
