@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useStoreSettings } from '@/hooks/useSupabase';
-import { MOCK_FEATURED_CATEGORIES } from '@/data/mockData';
+
 
 export type FeaturedCategory = {
   image: string;
