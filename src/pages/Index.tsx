@@ -436,14 +436,14 @@ const Index = () => {
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 sm:gap-4">
-                      <h3 className="text-foreground text-xl sm:text-3xl lg:text-4xl tracking-[0.2em] uppercase font-bold drop-shadow-sm text-center px-4">
+                    <div className="absolute inset-0 flex flex-col items-center justify-center px-4">
+                      <h3 className="text-foreground text-xl sm:text-3xl lg:text-4xl tracking-[0.2em] uppercase font-bold drop-shadow-sm text-center">
                         {b.label}
                       </h3>
-                      <span className="inline-flex items-center gap-2 px-5 py-2 sm:px-7 sm:py-2.5 bg-[hsl(var(--announce))] text-background text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold rounded-sm shadow-md group-hover:scale-105 transition">
-                        Shop Now
-                      </span>
                     </div>
+                    <span className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 px-5 py-2 sm:px-7 sm:py-2.5 bg-[hsl(var(--announce))] text-background text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold rounded-sm shadow-md group-hover:scale-105 transition">
+                      Shop Now
+                    </span>
                   </Link>
 
                   {b.subItems && b.subItems.length > 0 && (
