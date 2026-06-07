@@ -1,5 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ChevronLeft } from 'lucide-react';
 import { ChevronRight, Grid2x2, Grid3x3, SlidersHorizontal } from 'lucide-react';
 import {
   Select,
@@ -445,7 +447,7 @@ const Index = () => {
                         {b.label}
                       </h3>
                     </div>
-                    <span className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 px-5 py-2 sm:px-7 sm:py-2.5 bg-[hsl(var(--announce))] text-background text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold rounded-sm shadow-md group-hover:scale-105 transition">
+                    <span className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 inline-flex items-center gap-2 px-5 py-2 sm:px-7 sm:py-2.5 bg-transparent backdrop-blur-sm border border-background/70 text-background text-[10px] sm:text-xs tracking-[0.25em] uppercase font-semibold rounded-sm group-hover:bg-background/10 group-hover:scale-105 transition">
                       Shop Now
                     </span>
                   </Link>
@@ -487,28 +489,90 @@ const Index = () => {
         )}
 
 
-        {/* Fancy Posters */}
-        {!showProducts && (
+        {/* Fancy Posters Slider */}
+        {!showProducts && posters.length > 0 && (
           <section className="mt-6 sm:mt-10">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              {posters.map((poster: any, i: number) => (
-                <Link key={i} to={`/?placement=${encodeURIComponent(`homepage-posters:${i}`)}`} className="relative group overflow-hidden cursor-pointer block">
-                  <img src={poster.image} alt={poster.title} className="w-full h-auto block transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6">
-                    <p className="luxury-body text-[10px] text-background/70 mb-2">{poster.subtitle}</p>
-                    <h3 className="luxury-heading text-2xl sm:text-3xl text-background tracking-[0.1em]">{poster.title}</h3>
-                    <div className="w-8 h-px bg-background/50 mt-3" />
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <PostersSlider posters={posters} />
           </section>
         )}
 
       </main>
       
       <Footer />
+    </div>
+  );
+};
+
+const PostersSlider = ({ posters }: { posters: any[] }) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'center' });
+  const [selected, setSelected] = useState(0);
+  const autoplayRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelected(emblaApi.selectedScrollSnap());
+    onSelect();
+    emblaApi.on('select', onSelect);
+    emblaApi.on('reInit', onSelect);
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi || posters.length <= 1) return;
+    autoplayRef.current = window.setInterval(() => emblaApi.scrollNext(), 4000);
+    return () => { if (autoplayRef.current) window.clearInterval(autoplayRef.current); };
+  }, [emblaApi, posters.length]);
+
+  return (
+    <div className="relative">
+      <div className="overflow-hidden rounded-lg" ref={emblaRef}>
+        <div className="flex">
+          {posters.map((poster: any, i: number) => (
+            <div key={i} className="flex-[0_0_100%] min-w-0">
+              <Link
+                to={`/?placement=${encodeURIComponent(`homepage-posters:${i}`)}`}
+                className="relative group overflow-hidden cursor-pointer block"
+              >
+                <img src={poster.image} alt={poster.title} className="w-full h-auto block transition-transform duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6">
+                  <p className="luxury-body text-[10px] text-background/70 mb-2">{poster.subtitle}</p>
+                  <h3 className="luxury-heading text-2xl sm:text-3xl text-background tracking-[0.1em]">{poster.title}</h3>
+                  <div className="w-8 h-px bg-background/50 mt-3" />
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {posters.length > 1 && (
+        <>
+          <button
+            onClick={() => emblaApi?.scrollPrev()}
+            className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur items-center justify-center hover:bg-background shadow"
+            aria-label="Previous"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={() => emblaApi?.scrollNext()}
+            className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/80 backdrop-blur items-center justify-center hover:bg-background shadow"
+            aria-label="Next"
+          >
+            <ChevronRight size={20} />
+          </button>
+          <div className="flex items-center justify-center gap-1.5 mt-3">
+            {posters.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => emblaApi?.scrollTo(i)}
+                className={`h-1.5 rounded-full transition-all ${i === selected ? 'w-6 bg-foreground' : 'w-1.5 bg-foreground/30'}`}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };
