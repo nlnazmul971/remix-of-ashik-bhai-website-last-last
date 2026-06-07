@@ -710,6 +710,7 @@ const ProductForm = ({ product, isNew, onSave, onCancel, onDone }: { product: Pr
   const [savedProductId, setSavedProductId] = useState(isNew ? '' : product.id);
   const [subcategories, setSubcategories] = useState<Array<{ id: string; parent_category: string; name: string; slug: string }>>([]);
   const [headerCategories, setHeaderCategories] = useState<Array<{ id: string; name: string; slug: string }>>([]);
+  const [placementGroups, setPlacementGroups] = useState<Array<{ section: string; slots: Array<{ key: string; label: string }> }>>([]);
   const [sizeStocks, setSizeStocks] = useState<Record<string, number>>({});
   const [existingSizeStocks, setExistingSizeStocks] = useState<Record<string, { id: string; total_stock: number }>>({});
   const [gallery, setGallery] = useState<string[]>(product.image_url ? [product.image_url] : []);
