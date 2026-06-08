@@ -1035,6 +1035,9 @@ const AdminOrders = () => {
               <p><span className="text-muted-foreground">Status:</span> <span className="luxury-badge">{selectedOrder.status}</span></p>
               <p><span className="text-muted-foreground">Date:</span> {new Date(selectedOrder.created_at).toLocaleString()}</p>
 
+              {/* Change History */}
+              <OrderActivityHistory orderId={selectedOrder.id} />
+
               {/* Call Tracking */}
               <div className="border border-border rounded-lg p-3 mt-3 space-y-2">
                 <div className="flex items-center justify-between">
