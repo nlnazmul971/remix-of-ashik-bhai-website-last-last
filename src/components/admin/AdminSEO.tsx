@@ -195,37 +195,64 @@ const AdminSEO = () => {
       </SectionCard>
 
       <SectionCard icon={ImageIcon} title="Social Sharing (Open Graph & Twitter)" desc="Image shown when your link is shared on Facebook, WhatsApp, Twitter, LinkedIn.">
+        <SEOHelp
+          title="Social share image kothay banabo? — Step by step"
+          steps={[
+            { text: 'Canva khule "Custom size" select korun. Width: 1200, Height: 630 px.' , link: { label: 'Canva khulun', href: 'https://www.canva.com/' } },
+            { text: 'Apnar logo, brand naam, ar attractive tagline boshan. JPG format-e download korun (size 500KB er moddhe).' },
+            { text: 'Image ta upload korun (eg. Products section-er kono product image-e add korun) ba public URL ta paste korun ekhane.' },
+            { text: 'Twitter Handle: apnar Twitter/X account username dite hobe @ shoho (eg. @highlightsbd).' },
+          ]}
+          tips={[
+            'OG image na thakle Facebook/WhatsApp link blank dekhabe — eta khub joruri.',
+            '1200x630 ratio na hole crop hoye jabe.',
+          ]}
+        />
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Default OG Image URL" hint="1200x630 px recommended">
+          <Field label="Default OG Image URL" hint="1200x630 px recommended. JPG/PNG.">
             <input className={inputCls} value={ogImage} onChange={e => setOgImage(e.target.value)} placeholder="https://.../og.jpg" />
           </Field>
-          <Field label="Twitter Handle" hint="Include @">
+          <Field label="Twitter Handle" hint="Include @ symbol">
             <input className={inputCls} value={twitterHandle} onChange={e => setTwitterHandle(e.target.value)} placeholder="@yourbrand" />
           </Field>
         </div>
         {ogImage && (
-          <div className="mt-2"><img src={ogImage} alt="OG preview" className="max-h-32 rounded border border-border" /></div>
+          <div className="mt-2"><img src={ogImage} alt={`${brand} social sharing preview`} className="max-h-32 rounded border border-border" /></div>
         )}
       </SectionCard>
 
       <SectionCard icon={Shield} title="Crawler & Verification" desc="Control how search engines crawl and verify ownership.">
-        <Field label="Robots Directive" hint="Default: index, follow, max-image-preview:large">
+        <SEOHelp
+          title="Verification code kothay pabo? — Google, Bing, Facebook, Pinterest"
+          steps={[
+            { text: 'Google: Search Console-e jaan → Property add korun (apnar domain dilei hobe) → "HTML tag" method select korun → "content=" er bhitor je code thakbe, oita copy kore Google Site Verification field-e paste korun.', link: { label: 'Google Search Console', href: 'https://search.google.com/search-console' } },
+            { text: 'Bing: Bing Webmaster Tools-e site add korun → "Meta tag" option select korun → content value ta copy korun.', link: { label: 'Bing Webmaster', href: 'https://www.bing.com/webmasters' } },
+            { text: 'Facebook: Business Manager → Brand Safety → Domains → apnar domain add korun → "Meta-tag verification" → code copy korun.', link: { label: 'FB Business Manager', href: 'https://business.facebook.com/' } },
+            { text: 'Pinterest: Pinterest Business account → Settings → Claim → Website → "Add HTML tag" → content value copy korun.', link: { label: 'Pinterest Business', href: 'https://www.pinterest.com/business/hub/' } },
+            { text: 'Code paste korar por "Save All" press korun. Tarpor je site-e add korechen oikhane "Verify" button click korun.' },
+          ]}
+          tips={[
+            'Robots Directive — default ta ("index, follow") rakhle Google sob page crawl korbe. Site hide korte chaile "noindex, nofollow" diben.',
+            'Locale — Bangladesh-e Bangla site hole "bn_BD" diben, English hole "en_US".',
+          ]}
+        />
+        <Field label="Robots Directive" hint='Default: "index, follow" — Google ke sob page crawl korte dey'>
           <input className={inputCls} value={robots} onChange={e => setRobots(e.target.value)} />
         </Field>
-        <Field label="Content Locale" hint="e.g. en_US, bn_BD">
+        <Field label="Content Locale" hint="Bangla: bn_BD · English: en_US">
           <input className={inputCls} value={locale} onChange={e => setLocale(e.target.value)} placeholder="en_US" />
         </Field>
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Google Site Verification" hint="The content value of google-site-verification meta">
-            <input className={inputCls} value={googleVerif} onChange={e => setGoogleVerif(e.target.value)} />
+          <Field label="Google Site Verification" hint='Meta tag-er content="..." value ta paste korun'>
+            <input className={inputCls} value={googleVerif} onChange={e => setGoogleVerif(e.target.value)} placeholder="abc123XyZ..." />
           </Field>
-          <Field label="Bing Site Verification">
+          <Field label="Bing Site Verification" hint="Bing Webmaster Tools theke">
             <input className={inputCls} value={bingVerif} onChange={e => setBingVerif(e.target.value)} />
           </Field>
-          <Field label="Facebook Domain Verification">
+          <Field label="Facebook Domain Verification" hint="FB Business Manager → Brand Safety → Domains">
             <input className={inputCls} value={fbVerif} onChange={e => setFbVerif(e.target.value)} />
           </Field>
-          <Field label="Pinterest Domain Verification">
+          <Field label="Pinterest Domain Verification" hint="Pinterest Business → Settings → Claim">
             <input className={inputCls} value={pinVerif} onChange={e => setPinVerif(e.target.value)} />
           </Field>
         </div>
