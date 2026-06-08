@@ -101,20 +101,39 @@ const AdminBlogs = () => {
       faq: editing.faq,
       related_post_ids: editing.related_post_ids,
     };
-    const { error } = editing.id
-      ? await supabase.from('blogs').update(payload).eq('id', editing.id)
-      : await supabase.from('blogs').insert(payload);
-    setBusy(false);
-    if (error) { toast.error(error.message); return; }
-    toast.success('Saved ✓');
-    setEditing(null);
-    load();
+    try {
+      const { gated } = await gateWrite({
+        entityType: 'blogs',
+        action: editing.id ? 'update' : 'create',
+        entityId: editing.id || null,
+        payload,
+        run: async () => {
+          const { error } = editing.id
+            ? await supabase.from('blogs').update(payload).eq('id', editing.id)
+            : await supabase.from('blogs').insert(payload);
+          if (error) throw error;
+        },
+      });
+      setBusy(false);
+      if (gated) { setEditing(null); return; }
+      toast.success('Saved ✓');
+      setEditing(null);
+      load();
+    } catch (e: any) { setBusy(false); toast.error(e.message); }
   };
 
   const remove = async (id: string) => {
     if (!confirm('Delete this post?')) return;
-    const { error } = await supabase.from('blogs').delete().eq('id', id);
-    if (error) toast.error(error.message); else { toast.success('Deleted'); load(); }
+    try {
+      const { gated } = await gateWrite({
+        entityType: 'blogs', action: 'delete', entityId: id,
+        run: async () => {
+          const { error } = await supabase.from('blogs').delete().eq('id', id);
+          if (error) throw error;
+        },
+      });
+      if (!gated) { toast.success('Deleted'); load(); }
+    } catch (e: any) { toast.error(e.message); }
   };
 
 
