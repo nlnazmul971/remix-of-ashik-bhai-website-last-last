@@ -11,7 +11,7 @@ const OrderActivityHistory = ({ orderId }: Props) => {
       const { data, error } = await supabase
         .from('action_logs')
         .select('id, actor_email, actor_role, action, summary, details, created_at')
-        .eq('entity_type', 'orders')
+        .eq('entity_type', 'order')
         .eq('entity_id', orderId)
         .order('created_at', { ascending: false })
         .limit(50);
