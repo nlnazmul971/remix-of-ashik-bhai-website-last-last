@@ -187,14 +187,7 @@ const AdminLandingPages = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <Textarea
-                      value={JSON.stringify(b.data, null, 2)}
-                      onChange={(e) => {
-                        try { updateBlock(i, JSON.parse(e.target.value)); } catch { /* ignore until valid */ }
-                      }}
-                      rows={Math.min(20, JSON.stringify(b.data, null, 2).split('\n').length + 1)}
-                      className="font-mono text-xs"
-                    />
+                    <LandingBlockEditor type={b.type} data={b.data} onChange={(d) => updateBlock(i, d)} />
                   </CardContent>
                 </Card>
               ))}
