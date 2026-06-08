@@ -569,10 +569,17 @@ export const useUpdateStoreSetting = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ key, value }: { key: string; value: string }) => {
-      const { error } = await (supabase.from('store_settings') as any).upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-      if (error) throw error;
+      const { gated } = await gateWrite({
+        entityType: 'store_settings', action: 'update', entityId: key, payload: { value },
+        run: async () => {
+          const { error } = await (supabase.from('store_settings') as any).upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+          if (error) throw error;
+        },
+      });
+      return { gated, key, value };
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (res, variables) => {
+      if (res?.gated) return;
       qc.setQueryData<Record<string, string>>(['store-settings'], current => ({
         ...(current || {}),
         [variables.key]: variables.value,
