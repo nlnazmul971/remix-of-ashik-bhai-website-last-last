@@ -26,6 +26,11 @@ export type InvoiceOrder = {
 export type InvoiceOverrides = {
   brandName?: string;
   brandSub?: string;
+  brandWebsite?: string;
+  brandAddress?: string;
+  brandPhone?: string;
+  brandEmail?: string;
+  brandCopyright?: string;
   customerAddressFull?: string;
   courierProviderLabel?: string;
   extraLines?: string[];
