@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Review } from '@/data/products';
+import { gateWrite } from '@/lib/audit';
 
 export const useProducts = (
   category?: string,
@@ -477,8 +478,14 @@ export const useCreateCoupon = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (coupon: Pick<CouponRow, 'name' | 'code' | 'discount_type' | 'discount_value' | 'min_order_amount' | 'max_uses' | 'is_active'>) => {
-      const { error } = await supabase.from('coupons').insert(coupon as any);
-      if (error) throw error;
+      const { gated } = await gateWrite({
+        entityType: 'coupons', action: 'create', payload: coupon,
+        run: async () => {
+          const { error } = await supabase.from('coupons').insert(coupon as any);
+          if (error) throw error;
+        },
+      });
+      return { gated };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['coupons'] }),
   });
@@ -488,8 +495,14 @@ export const useUpdateCoupon = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<CouponRow> & { id: string }) => {
-      const { error } = await supabase.from('coupons').update(updates as any).eq('id', id);
-      if (error) throw error;
+      const { gated } = await gateWrite({
+        entityType: 'coupons', action: 'update', entityId: id, payload: updates,
+        run: async () => {
+          const { error } = await supabase.from('coupons').update(updates as any).eq('id', id);
+          if (error) throw error;
+        },
+      });
+      return { gated };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['coupons'] }),
   });
@@ -499,8 +512,14 @@ export const useDeleteCoupon = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('coupons').delete().eq('id', id);
-      if (error) throw error;
+      const { gated } = await gateWrite({
+        entityType: 'coupons', action: 'delete', entityId: id,
+        run: async () => {
+          const { error } = await supabase.from('coupons').delete().eq('id', id);
+          if (error) throw error;
+        },
+      });
+      return { gated };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['coupons'] }),
   });
@@ -550,10 +569,17 @@ export const useUpdateStoreSetting = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ key, value }: { key: string; value: string }) => {
-      const { error } = await (supabase.from('store_settings') as any).upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
-      if (error) throw error;
+      const { gated } = await gateWrite({
+        entityType: 'store_settings', action: 'update', entityId: key, payload: { value },
+        run: async () => {
+          const { error } = await (supabase.from('store_settings') as any).upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: 'key' });
+          if (error) throw error;
+        },
+      });
+      return { gated, key, value };
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (res, variables) => {
+      if (res?.gated) return;
       qc.setQueryData<Record<string, string>>(['store-settings'], current => ({
         ...(current || {}),
         [variables.key]: variables.value,

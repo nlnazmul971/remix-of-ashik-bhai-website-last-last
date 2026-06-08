@@ -5,6 +5,7 @@ import { Plus, Edit2, Trash2, Loader2, Save, X, Eye, MessageSquare, FolderTree, 
 import ImageUpload from './ImageUpload';
 import { slugify, calcReadingTime } from '@/lib/blogHelpers';
 import { useStoreSettings } from '@/hooks/useSupabase';
+import { gateWrite } from '@/lib/audit';
 
 type Blog = {
   id: string;
@@ -100,20 +101,39 @@ const AdminBlogs = () => {
       faq: editing.faq,
       related_post_ids: editing.related_post_ids,
     };
-    const { error } = editing.id
-      ? await supabase.from('blogs').update(payload).eq('id', editing.id)
-      : await supabase.from('blogs').insert(payload);
-    setBusy(false);
-    if (error) { toast.error(error.message); return; }
-    toast.success('Saved ✓');
-    setEditing(null);
-    load();
+    try {
+      const { gated } = await gateWrite({
+        entityType: 'blogs',
+        action: editing.id ? 'update' : 'create',
+        entityId: editing.id || null,
+        payload,
+        run: async () => {
+          const { error } = editing.id
+            ? await supabase.from('blogs').update(payload).eq('id', editing.id)
+            : await supabase.from('blogs').insert(payload);
+          if (error) throw error;
+        },
+      });
+      setBusy(false);
+      if (gated) { setEditing(null); return; }
+      toast.success('Saved ✓');
+      setEditing(null);
+      load();
+    } catch (e: any) { setBusy(false); toast.error(e.message); }
   };
 
   const remove = async (id: string) => {
     if (!confirm('Delete this post?')) return;
-    const { error } = await supabase.from('blogs').delete().eq('id', id);
-    if (error) toast.error(error.message); else { toast.success('Deleted'); load(); }
+    try {
+      const { gated } = await gateWrite({
+        entityType: 'blogs', action: 'delete', entityId: id,
+        run: async () => {
+          const { error } = await supabase.from('blogs').delete().eq('id', id);
+          if (error) throw error;
+        },
+      });
+      if (!gated) { toast.success('Deleted'); load(); }
+    } catch (e: any) { toast.error(e.message); }
   };
 
 
@@ -303,17 +323,35 @@ const SimpleList = ({ table, rows, reload, columns }: { table: 'blog_categories'
   const add = async () => {
     if (!draft.name?.trim()) { toast.error('Name required'); return; }
     const payload = { ...draft, slug: draft.slug || slugify(draft.name) };
-    const { error } = await supabase.from(table).insert(payload);
-    if (error) toast.error(error.message); else { toast.success('Added'); setDraft({}); reload(); }
+    try {
+      const { gated } = await gateWrite({
+        entityType: table, action: 'create', payload,
+        run: async () => {
+          const { error } = await supabase.from(table).insert(payload);
+          if (error) throw error;
+        },
+      });
+      if (!gated) { toast.success('Added'); setDraft({}); reload(); }
+    } catch (e: any) { toast.error(e.message); }
   };
   const update = async (id: string, patch: any) => {
-    await supabase.from(table).update(patch).eq('id', id);
-    reload();
+    try {
+      const { gated } = await gateWrite({
+        entityType: table, action: 'update', entityId: id, payload: patch,
+        run: async () => { await supabase.from(table).update(patch).eq('id', id); },
+      });
+      if (!gated) reload();
+    } catch (e: any) { toast.error(e.message); }
   };
   const del = async (id: string) => {
     if (!confirm('Delete?')) return;
-    await supabase.from(table).delete().eq('id', id);
-    reload();
+    try {
+      const { gated } = await gateWrite({
+        entityType: table, action: 'delete', entityId: id,
+        run: async () => { await supabase.from(table).delete().eq('id', id); },
+      });
+      if (!gated) reload();
+    } catch (e: any) { toast.error(e.message); }
   };
   return (
     <div className="space-y-3">

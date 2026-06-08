@@ -45,6 +45,18 @@ const AdminApprovals = () => {
 
   const applyChange = async (r: ApprovalRow): Promise<{ ok: boolean; msg?: string }> => {
     try {
+      // Special case: store_settings is keyed by `key`, not `id`, and we always upsert.
+      if (r.entity_type === 'store_settings') {
+        const key = r.entity_id;
+        const value = r.payload?.value;
+        if (!key) return { ok: false, msg: 'Missing setting key' };
+        const { error } = await (supabase.from('store_settings') as any).upsert(
+          { key, value: value ?? '', updated_at: new Date().toISOString() },
+          { onConflict: 'key' }
+        );
+        if (error) return { ok: false, msg: error.message };
+        return { ok: true };
+      }
       if (r.action === 'delete') {
         const { error } = await supabase.from(r.entity_type as any).delete().eq('id', r.entity_id);
         if (error) return { ok: false, msg: error.message };

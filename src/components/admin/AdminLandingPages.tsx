@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink, Edit, Save, Eye } from 'lucide-react';
 import { BLOCK_TYPES } from '@/components/landing/LandingBlocks';
+import { gateWrite } from '@/lib/audit';
 
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
@@ -68,24 +69,38 @@ const AdminLandingPages = () => {
       seo_no_index: !!editing.seo_no_index,
       published_at: editing.status === 'published' ? new Date().toISOString() : null,
     };
-    const { error } = editing.id
-      ? await supabase.from('landing_pages').update(payload).eq('id', editing.id)
-      : await supabase.from('landing_pages').insert(payload);
+    const gate = await gateWrite({
+      entityType: 'landing_pages',
+      action: editing.id ? 'update' : 'create',
+      entityId: editing.id || null,
+      payload,
+      run: async () => {
+        const { error } = editing.id
+          ? await supabase.from('landing_pages').update(payload).eq('id', editing.id)
+          : await supabase.from('landing_pages').insert(payload);
+        if (error) throw error;
+      },
+    }).catch(e => ({ gated: false, error: e }));
     setSaving(false);
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Saved');
-      setEditing(null);
-      load();
-    }
+    if ((gate as any).error) { toast.error((gate as any).error.message); return; }
+    if (gate.gated) { setEditing(null); return; }
+    toast.success('Saved');
+    setEditing(null);
+    load();
   };
 
   const remove = async (id: string) => {
     if (!confirm('Delete this landing page?')) return;
-    const { error } = await supabase.from('landing_pages').delete().eq('id', id);
-    if (error) toast.error(error.message);
-    else { toast.success('Deleted'); load(); }
+    try {
+      const { gated } = await gateWrite({
+        entityType: 'landing_pages', action: 'delete', entityId: id,
+        run: async () => {
+          const { error } = await supabase.from('landing_pages').delete().eq('id', id);
+          if (error) throw error;
+        },
+      });
+      if (!gated) { toast.success('Deleted'); load(); }
+    } catch (e: any) { toast.error(e.message); }
   };
 
   const addBlock = (type: string) => {
