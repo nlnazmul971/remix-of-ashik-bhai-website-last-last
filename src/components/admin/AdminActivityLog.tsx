@@ -23,9 +23,17 @@ const actionTone: Record<string, string> = {
   rejected: 'bg-destructive/10 text-destructive border-destructive/20',
 };
 
-const AdminActivityLog = () => {
+const AdminActivityLog = ({ onNavigate }: { onNavigate?: (tab: string) => void } = {}) => {
   const [search, setSearch] = useState('');
   const [entity, setEntity] = useState('all');
+
+  const openEntity = (l: LogRow) => {
+    if (!l.entity_id) return;
+    if (l.entity_type === 'order') {
+      sessionStorage.setItem('focusOrderId', l.entity_id);
+      onNavigate?.('orders');
+    }
+  };
 
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ['action_logs', entity],
