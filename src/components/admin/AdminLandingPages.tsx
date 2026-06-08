@@ -14,6 +14,7 @@ import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink, Edit, Save, Eye } from 
 import { BLOCK_TYPES } from '@/components/landing/LandingBlocks';
 import { gateWrite } from '@/lib/audit';
 import LandingBlockEditor from './LandingBlockEditor';
+import SEOHelp from './SEOHelp';
 
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
