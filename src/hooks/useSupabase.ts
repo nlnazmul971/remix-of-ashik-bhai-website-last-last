@@ -478,8 +478,14 @@ export const useCreateCoupon = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (coupon: Pick<CouponRow, 'name' | 'code' | 'discount_type' | 'discount_value' | 'min_order_amount' | 'max_uses' | 'is_active'>) => {
-      const { error } = await supabase.from('coupons').insert(coupon as any);
-      if (error) throw error;
+      const { gated } = await gateWrite({
+        entityType: 'coupons', action: 'create', payload: coupon,
+        run: async () => {
+          const { error } = await supabase.from('coupons').insert(coupon as any);
+          if (error) throw error;
+        },
+      });
+      return { gated };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['coupons'] }),
   });
@@ -489,8 +495,14 @@ export const useUpdateCoupon = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<CouponRow> & { id: string }) => {
-      const { error } = await supabase.from('coupons').update(updates as any).eq('id', id);
-      if (error) throw error;
+      const { gated } = await gateWrite({
+        entityType: 'coupons', action: 'update', entityId: id, payload: updates,
+        run: async () => {
+          const { error } = await supabase.from('coupons').update(updates as any).eq('id', id);
+          if (error) throw error;
+        },
+      });
+      return { gated };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['coupons'] }),
   });
@@ -500,8 +512,14 @@ export const useDeleteCoupon = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('coupons').delete().eq('id', id);
-      if (error) throw error;
+      const { gated } = await gateWrite({
+        entityType: 'coupons', action: 'delete', entityId: id,
+        run: async () => {
+          const { error } = await supabase.from('coupons').delete().eq('id', id);
+          if (error) throw error;
+        },
+      });
+      return { gated };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['coupons'] }),
   });
