@@ -157,24 +157,39 @@ const AdminSEO = () => {
       </div>
 
       <SectionCard icon={Globe} title="Brand & Defaults" desc="Used when a page doesn't override these values.">
+        <SEOHelp
+          title="Ki info dite hobe? — Bujhe nin"
+          defaultOpen
+          steps={[
+            { text: 'Brand Name — apnar dokaner naam (eg. "Highlights BD"). Eta protita page er title-e add hobe.' },
+            { text: 'Title Template — {title} | {brand} format. Mane: page er nijer title aage, tarpor pipe ( | ), tarpor brand naam. Google search-e ei kotha gula dekhabe.' },
+            { text: 'Default Page Title — homepage ba je page-er nijer title nai, oi page-e ei title dekhabe. 50–60 character-er moddhe rakhun.' },
+            { text: 'Base URL — apnar website-er purno address. Eta canonical link banate use hoy (duplicate content thekey banchaye).' },
+            { text: 'Meta Description — Google search result-e title er niche je summary dekha jay. 140–160 character somporkito.' },
+          ]}
+          tips={[
+            'Title-e main keyword aage rakhun (eg. "Baby Clothes BD | Highlights").',
+            'Description-e CTA dile click-through bare (eg. "Free delivery! Order now").',
+          ]}
+        />
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Brand Name"><input className={inputCls} value={brand} onChange={e => setBrand(e.target.value)} /></Field>
+          <Field label="Brand Name" hint="Apnar dokan / website naam"><input className={inputCls} value={brand} onChange={e => setBrand(e.target.value)} placeholder="Highlights BD" /></Field>
           <Field label="Title Template" hint="Tokens: {title}, {brand}">
             <input className={inputCls} value={titleTemplate} onChange={e => setTitleTemplate(e.target.value)} placeholder="{title} | {brand}" />
           </Field>
-          <Field label="Default Page Title"><input className={inputCls} value={defaultTitle} onChange={e => setDefaultTitle(e.target.value)} /></Field>
+          <Field label="Default Page Title" hint="50–60 character recommended"><input className={inputCls} value={defaultTitle} onChange={e => setDefaultTitle(e.target.value)} /></Field>
           <Field label="Base URL (canonical root)" hint="e.g. https://www.highlightsbd.shop">
             <input className={inputCls} value={baseUrl} onChange={e => setBaseUrl(e.target.value)} placeholder="https://..." />
           </Field>
         </div>
-        <Field label={`Default Meta Description (${defaultDesc.length}/160 recommended)`}>
+        <Field label={`Default Meta Description (${defaultDesc.length}/160 recommended)`} hint="Google search result-e title er niche dekhabe">
           <textarea className={inputCls} rows={3} value={defaultDesc} onChange={e => setDefaultDesc(e.target.value)} />
         </Field>
         <Field label="Default Keywords" hint="Comma-separated. Modern Google ignores this but still useful for other engines.">
           <input className={inputCls} value={defaultKeywords} onChange={e => setDefaultKeywords(e.target.value)} placeholder="clothing, bangladesh, ..." />
         </Field>
         <div className="rounded-md bg-muted/40 p-3 text-[11px]">
-          <span className="font-semibold">Preview: </span>
+          <span className="font-semibold">Google Preview: </span>
           <span className="text-foreground">{titlePreview}</span>
         </div>
       </SectionCard>
