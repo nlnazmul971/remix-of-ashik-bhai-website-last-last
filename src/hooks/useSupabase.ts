@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Product, Review } from '@/data/products';
+import { gateWrite } from '@/lib/audit';
 
 export const useProducts = (
   category?: string,
