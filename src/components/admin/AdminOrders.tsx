@@ -85,7 +85,17 @@ const ProductSearchPicker = ({ products, value, displayName, onSelect }: { produ
 const AdminOrders = () => {
   const { data: orders = [] } = useOrders();
   const { data: products = [] } = useProducts();
+  const { data: storeSettings = {} } = useStoreSettings();
   const updateOrder = useUpdateOrder();
+
+  const invoiceOverrides: InvoiceOverrides = useMemo(() => ({
+    brandName: storeSettings.footer_brand_name || undefined,
+    brandWebsite: storeSettings.footer_website || undefined,
+    brandAddress: storeSettings.footer_address || undefined,
+    brandPhone: storeSettings.footer_phone || undefined,
+    brandEmail: storeSettings.footer_email || undefined,
+    brandCopyright: storeSettings.footer_copyright || undefined,
+  }), [storeSettings]);
   const [filter, setFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
