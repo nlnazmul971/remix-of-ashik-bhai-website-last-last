@@ -3,36 +3,42 @@ import { Download, Upload, Database, Loader2, AlertTriangle } from 'lucide-react
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-// Tables included in full-site backup (excludes auth/users-managed tables).
+// Tables included in full-site backup (excludes auth-managed tables).
+// Ordered so parent tables come before child tables (FK-safe for restore).
 const BACKUP_TABLES = [
   'store_settings',
+  'tracking_settings',
+  'checkout_payment_settings',
   'header_categories',
   'subcategories',
+  'delivery_zones',
+  'packaging_options',
+  'coupons',
+  'redirects',
+  'custom_pages',
+  'popups' as any,
   'products',
   'product_images',
   'product_size_stock',
   'stock_logs',
+  'profiles',
+  'user_roles',
   'orders',
   'reviews',
-  'coupons',
-  'delivery_zones',
-  'packaging_options',
-  'checkout_payment_settings',
-  'tracking_settings',
-  'redirects',
-  'custom_pages',
-  'landing_pages',
-  'landing_page_analytics',
+  'wishlist_items',
+  'newsletter_subscribers',
+  'fraud_checks',
+  'approval_requests',
+  'action_logs',
   'blog_authors',
   'blog_categories',
   'blog_tags',
   'blogs',
   'blog_comments',
-  'newsletter_subscribers',
-  'wishlist_items',
+  'landing_pages',
+  'landing_page_analytics',
   'pseo_templates',
   'pseo_pages',
-  'fraud_checks',
 ] as const;
 
 const AdminBackup = () => {
