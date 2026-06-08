@@ -1,12 +1,13 @@
 import { useState, useRef, useMemo } from 'react';
-import { useOrders, useUpdateOrder, useProducts } from '@/hooks/useSupabase';
+import { useOrders, useUpdateOrder, useProducts, useStoreSettings } from '@/hooks/useSupabase';
 import { supabase } from '@/integrations/supabase/client';
 import { callCourier, sendOrderEmail, trackOrderToMetaCapi } from '@/lib/api';
 import { fireOrderEvent } from '@/lib/gtm';
 import { ShoppingBag, Eye, X, Pencil, Save, Loader2, ShieldAlert, Send, RefreshCw, RotateCcw, Truck, Download, Upload, Trash2, Facebook, CheckSquare, Square, Store, Package, FileText, Phone, MessageSquare, StickyNote } from 'lucide-react';
 import { toast } from 'sonner';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { buildInvoiceDocument, openAndPrintInvoice } from '@/lib/invoice';
+import { buildInvoiceDocument, openAndPrintInvoice, type InvoiceOverrides } from '@/lib/invoice';
+import OrderActivityHistory from './OrderActivityHistory';
 
 const statusOptions = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Returned', 'Cancelled', 'ReturnCancel'];
 const courierOptions = [
