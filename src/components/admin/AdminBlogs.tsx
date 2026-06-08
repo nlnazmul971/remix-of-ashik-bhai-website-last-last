@@ -5,6 +5,7 @@ import { Plus, Edit2, Trash2, Loader2, Save, X, Eye, MessageSquare, FolderTree, 
 import ImageUpload from './ImageUpload';
 import { slugify, calcReadingTime } from '@/lib/blogHelpers';
 import { useStoreSettings } from '@/hooks/useSupabase';
+import { gateWrite } from '@/lib/audit';
 
 type Blog = {
   id: string;
