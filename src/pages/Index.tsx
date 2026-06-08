@@ -192,13 +192,13 @@ const Index = () => {
       <Header />
       <CartDrawer />
       {!showProducts && <Hero />}
-      {!showProducts && <HeroPosters />}
       {!showProducts && <VideoCarousel />}
       {!showProducts && <BabyKidsFashion />}
       {!showProducts && <PromoPosters />}
       {!showProducts && <NewArrivals />}
       {!showProducts && <ExploreCategories />}
       {!showProducts && <TrendingProducts />}
+      {!showProducts && <HeroPosters />}
 
       <main className={`max-w-full mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-32 sm:pt-40' : 'pt-2 sm:pt-6'}`}>
         {(searchQuery || (activeCategory && activeCategory !== 'All') || activeSub) && (
