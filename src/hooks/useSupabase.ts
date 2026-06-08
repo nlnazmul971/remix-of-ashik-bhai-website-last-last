@@ -277,13 +277,23 @@ export const useUpdateOrder = () => {
         const { logAction } = await import('@/lib/audit');
         const keys = Object.keys(updates);
         const isStatus = keys.includes('status');
+        let summary: string;
+        if (isStatus) {
+          summary = `Status → ${updates.status}`;
+        } else if (keys.includes('call_attempts')) {
+          summary = `Call attempts set to ${updates.call_attempts}`;
+        } else if (keys.includes('admin_notes')) {
+          const notes = (updates.admin_notes || '').toString();
+          const lastLine = notes.split('\n').filter((l: string) => l.trim()).pop() || '(cleared)';
+          summary = `Admin note: ${lastLine.slice(0, 120)}`;
+        } else {
+          summary = `Updated: ${keys.join(', ')}`;
+        }
         await logAction({
           entityType: 'order',
           entityId: id,
           action: isStatus ? 'status_change' : 'updated',
-          summary: isStatus
-            ? `Status → ${updates.status}`
-            : `Updated: ${keys.join(', ')}`,
+          summary,
           details: updates,
         });
       } catch {}
