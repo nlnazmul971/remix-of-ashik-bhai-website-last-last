@@ -26,6 +26,11 @@ export type InvoiceOrder = {
 export type InvoiceOverrides = {
   brandName?: string;
   brandSub?: string;
+  brandWebsite?: string;
+  brandAddress?: string;
+  brandPhone?: string;
+  brandEmail?: string;
+  brandCopyright?: string;
   customerAddressFull?: string;
   courierProviderLabel?: string;
   extraLines?: string[];
@@ -122,6 +127,11 @@ export const invoiceStyles = `
 export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {}): string {
   const items = Array.isArray(order.items) ? order.items : [];
   const brand = ov.brandName || BRAND_NAME;
+  const brandWebsite = ov.brandWebsite || BRAND_WEBSITE;
+  const brandAddress = ov.brandAddress || BRAND_ADDRESS;
+  const brandPhone = ov.brandPhone || BRAND_PHONE;
+  const brandEmail = ov.brandEmail || BRAND_EMAIL;
+  const brandCopyright = ov.brandCopyright || '';
   const subtotal = items.reduce((s: number, i: any) => s + (i.price || 0) * (i.quantity || 1), 0);
   const discount = order.discount || 0;
   const dCharge = order.delivery_charge || 0;
@@ -146,7 +156,7 @@ export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {
 
   <div class="header">
     <div class="brand-name">${escapeHtml(brand)}</div>
-    <div class="brand-website">${escapeHtml(BRAND_WEBSITE)}</div>
+    <div class="brand-website">${escapeHtml(brandWebsite)}</div>
   </div>
 
   <div class="invoice-title">Invoice</div>
@@ -201,8 +211,9 @@ export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {
     </div>
     <div class="footer">
       <div class="thanks">Thank you for shopping</div>
-      <div>${escapeHtml(BRAND_ADDRESS)}</div>
-      <div>${escapeHtml(BRAND_PHONE)} &middot; ${escapeHtml(BRAND_EMAIL)}</div>
+      <div>${escapeHtml(brandAddress)}</div>
+      <div>${escapeHtml(brandPhone)} &middot; ${escapeHtml(brandEmail)}</div>
+      ${brandCopyright ? `<div style="margin-top:4px;">${escapeHtml(brandCopyright)}</div>` : ''}
     </div>
   </div>
 </div>`;

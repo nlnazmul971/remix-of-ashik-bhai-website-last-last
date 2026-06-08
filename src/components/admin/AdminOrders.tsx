@@ -1,12 +1,13 @@
 import { useState, useRef, useMemo } from 'react';
-import { useOrders, useUpdateOrder, useProducts } from '@/hooks/useSupabase';
+import { useOrders, useUpdateOrder, useProducts, useStoreSettings } from '@/hooks/useSupabase';
 import { supabase } from '@/integrations/supabase/client';
 import { callCourier, sendOrderEmail, trackOrderToMetaCapi } from '@/lib/api';
 import { fireOrderEvent } from '@/lib/gtm';
 import { ShoppingBag, Eye, X, Pencil, Save, Loader2, ShieldAlert, Send, RefreshCw, RotateCcw, Truck, Download, Upload, Trash2, Facebook, CheckSquare, Square, Store, Package, FileText, Phone, MessageSquare, StickyNote } from 'lucide-react';
 import { toast } from 'sonner';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { buildInvoiceDocument, openAndPrintInvoice } from '@/lib/invoice';
+import { buildInvoiceDocument, openAndPrintInvoice, type InvoiceOverrides } from '@/lib/invoice';
+import OrderActivityHistory from './OrderActivityHistory';
 
 const statusOptions = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Returned', 'Cancelled', 'ReturnCancel'];
 const courierOptions = [
@@ -84,7 +85,17 @@ const ProductSearchPicker = ({ products, value, displayName, onSelect }: { produ
 const AdminOrders = () => {
   const { data: orders = [] } = useOrders();
   const { data: products = [] } = useProducts();
+  const { data: storeSettings = {} } = useStoreSettings();
   const updateOrder = useUpdateOrder();
+
+  const invoiceOverrides: InvoiceOverrides = useMemo(() => ({
+    brandName: storeSettings.footer_brand_name || undefined,
+    brandWebsite: storeSettings.footer_website || undefined,
+    brandAddress: storeSettings.footer_address || undefined,
+    brandPhone: storeSettings.footer_phone || undefined,
+    brandEmail: storeSettings.footer_email || undefined,
+    brandCopyright: storeSettings.footer_copyright || undefined,
+  }), [storeSettings]);
   const [filter, setFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -152,14 +163,14 @@ const AdminOrders = () => {
   const processingOrderCount = orders.filter(o => o.status === 'Processing').length;
 
   const downloadInvoice = (order: any) => {
-    openAndPrintInvoice(buildInvoiceDocument(order));
+    openAndPrintInvoice(buildInvoiceDocument(order, invoiceOverrides));
   };
 
   // Bulk invoice download
   const downloadBulkInvoice = () => {
     const toExport = filtered.filter(o => selectedIds.has(o.id));
     if (toExport.length === 0) { toast.error('কোনো অর্ডার সিলেক্ট করুন'); return; }
-    openAndPrintInvoice(buildInvoiceDocument(toExport as any));
+    openAndPrintInvoice(buildInvoiceDocument(toExport as any, invoiceOverrides));
     toast.success(`${toExport.length}টি ইনভয়েস প্রিন্ট হচ্ছে`);
   };
 
@@ -578,7 +589,8 @@ const AdminOrders = () => {
       total: d.total,
     };
     openAndPrintInvoice(buildInvoiceDocument(orderLike, {
-      brandName: d.brandName,
+      ...invoiceOverrides,
+      brandName: d.brandName || invoiceOverrides.brandName,
       brandSub: d.brandSub,
       customerAddressFull: d.customerAddress,
       courierProviderLabel: d.courierProvider,
@@ -1022,6 +1034,9 @@ const AdminOrders = () => {
               )}
               <p><span className="text-muted-foreground">Status:</span> <span className="luxury-badge">{selectedOrder.status}</span></p>
               <p><span className="text-muted-foreground">Date:</span> {new Date(selectedOrder.created_at).toLocaleString()}</p>
+
+              {/* Change History */}
+              <OrderActivityHistory orderId={selectedOrder.id} />
 
               {/* Call Tracking */}
               <div className="border border-border rounded-lg p-3 mt-3 space-y-2">

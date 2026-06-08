@@ -5,6 +5,7 @@ import { useStoreSettings, useUpdateStoreSetting } from '@/hooks/useSupabase';
 
 const FOOTER_FIELDS = [
   { key: 'footer_brand_name', label: 'Brand Name', placeholder: 'TWINKLE' },
+  { key: 'footer_website', label: 'Website / Domain', placeholder: 'www.example.com' },
   { key: 'footer_address', label: 'Address', placeholder: 'Your store address' },
   { key: 'footer_phone', label: 'Phone', placeholder: '+880 1234 567890' },
   { key: 'footer_email', label: 'Email', placeholder: 'info@example.com' },
