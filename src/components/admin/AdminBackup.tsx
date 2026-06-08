@@ -173,13 +173,13 @@ const AdminBackup = () => {
         <div className="flex items-start gap-3 mb-4">
           <Upload className="h-5 w-5 mt-0.5 text-foreground/70" />
           <div>
-            <h3 className="font-semibold">Restore from backup</h3>
-            <p className="text-xs text-muted-foreground">Upload a previously downloaded JSON backup.</p>
+            <h3 className="font-semibold">Restore from backup (Smart Merge)</h3>
+            <p className="text-xs text-muted-foreground">Upload a previously downloaded JSON backup. Missing rows will be added, changed rows updated. Existing extra data is kept.</p>
           </div>
         </div>
-        <div className="flex items-start gap-2 p-3 mb-3 rounded-md bg-destructive/10 text-destructive text-xs">
+        <div className="flex items-start gap-2 p-3 mb-3 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs">
           <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-          <span>This <strong>permanently overwrites</strong> existing data in every table listed in the backup. Take a fresh download first.</span>
+          <span>Safe merge mode: nothing is deleted. Rows from the backup are <strong>added or updated</strong> based on their ID.</span>
         </div>
         <label className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm font-medium rounded-md cursor-pointer hover:bg-muted">
           {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
