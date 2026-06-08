@@ -127,6 +127,11 @@ export const invoiceStyles = `
 export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {}): string {
   const items = Array.isArray(order.items) ? order.items : [];
   const brand = ov.brandName || BRAND_NAME;
+  const brandWebsite = ov.brandWebsite || BRAND_WEBSITE;
+  const brandAddress = ov.brandAddress || BRAND_ADDRESS;
+  const brandPhone = ov.brandPhone || BRAND_PHONE;
+  const brandEmail = ov.brandEmail || BRAND_EMAIL;
+  const brandCopyright = ov.brandCopyright || '';
   const subtotal = items.reduce((s: number, i: any) => s + (i.price || 0) * (i.quantity || 1), 0);
   const discount = order.discount || 0;
   const dCharge = order.delivery_charge || 0;
