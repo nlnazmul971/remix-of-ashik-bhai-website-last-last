@@ -16,6 +16,7 @@ import VideoCarousel from '@/components/VideoCarousel';
 import BabyKidsFashion from '@/components/BabyKidsFashion';
 import ExploreCategories from '@/components/ExploreCategories';
 import PromoPosters from '@/components/PromoPosters';
+import HeroPosters from '@/components/HeroPosters';
 import NewArrivals from '@/components/NewArrivals';
 import TrendingProducts from '@/components/TrendingProducts';
 import ProductCard from '@/components/ProductCard';
@@ -191,6 +192,7 @@ const Index = () => {
       <Header />
       <CartDrawer />
       {!showProducts && <Hero />}
+      {!showProducts && <HeroPosters />}
       {!showProducts && <VideoCarousel />}
       {!showProducts && <BabyKidsFashion />}
       {!showProducts && <PromoPosters />}
