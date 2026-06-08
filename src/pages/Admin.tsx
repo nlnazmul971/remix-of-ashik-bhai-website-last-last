@@ -179,7 +179,7 @@ const Admin = () => {
             {activeTab === 'landing-pages' && <AdminLandingPages />}
             {activeTab === 'backup' && <AdminBackup />}
             {activeTab === 'approvals' && <AdminApprovals />}
-            {activeTab === 'activity-log' && <AdminActivityLog />}
+            {activeTab === 'activity-log' && <AdminActivityLog onNavigate={setActiveTab} />}
 
 
 
