@@ -123,7 +123,7 @@ const Trust = ({ data }: { data: any }) => (
       <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-60">
         {(data.items || []).map((t: any, i: number) =>
           t.image ? (
-            <img key={i} src={t.image} alt={t.name || ''} className="h-8 md:h-10 object-contain" />
+            <img key={i} src={t.image} alt={t.image_alt || t.name || ''} className="h-8 md:h-10 object-contain" />
           ) : (
             <span key={i} className="text-sm font-semibold tracking-wider">{t.name}</span>
           )
