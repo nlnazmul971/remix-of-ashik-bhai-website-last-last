@@ -156,7 +156,7 @@ export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {
 
   <div class="header">
     <div class="brand-name">${escapeHtml(brand)}</div>
-    <div class="brand-website">${escapeHtml(BRAND_WEBSITE)}</div>
+    <div class="brand-website">${escapeHtml(brandWebsite)}</div>
   </div>
 
   <div class="invoice-title">Invoice</div>
