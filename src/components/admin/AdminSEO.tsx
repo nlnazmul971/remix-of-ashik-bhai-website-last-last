@@ -259,6 +259,16 @@ const AdminSEO = () => {
       </SectionCard>
 
       <SectionCard icon={Code2} title="Organization JSON-LD (Schema.org)" desc="Structured data for Google's Knowledge Graph & rich results.">
+        <SEOHelp
+          title="JSON-LD ki? Kothay banabo?"
+          steps={[
+            { text: 'Eta Google ke bole apnar dokan-er detail — naam, logo, address, phone, social links. Result-e brand panel hisebe dekhabe.' },
+            { text: 'Niche default template debe — apnar info bosheye nin. Ba Schema.org generator use kore banate paren.', link: { label: 'Generator khulun', href: 'https://technicalseo.com/tools/schema-markup-generator/' } },
+            { text: '"Organization" select korun → naam, URL, logo, phone, address, sameAs (Facebook/Instagram link) dite hobe → JSON copy kore ekhane paste korun.' },
+            { text: 'Save korar por Google Rich Results Test-e check korun.', link: { label: 'Rich Results Test', href: 'https://search.google.com/test/rich-results' } },
+          ]}
+          tips={['JSON valid kina test korun — ekta comma missing thakleo kaaj korbe na.']}
+        />
         <Field label="JSON" hint="Paste a valid JSON object or array. Leave blank to skip.">
           <textarea className={textareaCls} rows={10} value={orgJsonLd} onChange={e => setOrgJsonLd(e.target.value)}
             placeholder={`{\n  "@context": "https://schema.org",\n  "@type": "Organization",\n  "name": "${brand}",\n  "url": "${baseUrl || 'https://...'}",\n  "logo": "${ogImage || 'https://.../logo.png'}",\n  "sameAs": ["https://facebook.com/..."]\n}`} />
@@ -266,6 +276,16 @@ const AdminSEO = () => {
       </SectionCard>
 
       <SectionCard icon={FileText} title="Per-Page Overrides" desc="Override title / description / image / noIndex for specific routes.">
+        <SEOHelp
+          title="Per-page override ki? Kkn use korbo?"
+          steps={[
+            { text: 'Default title/description sob page-e onyo. Kintu /about ba /contact er moto page-er nijer title chaile ekhane override din.' },
+            { text: 'Preset path button click korun (eg. /about) ba "Custom" diye nijer path likhun.' },
+            { text: 'Title, description, image, keywords — ja override korte chan, oitai bharun. Khali field default theke nibe.' },
+            { text: 'No-index check korle oi specific page Google search-e ashbe na (eg. private /admin page).' },
+          ]}
+          tips={['Product page er title automatic product naam theke ase — manually override lagbe na.']}
+        />
         <div className="flex flex-wrap gap-2">
           {PRESET_PATHS.map(p => (
             <button key={p} onClick={() => addOverride(p)} className="text-[11px] px-2 py-1 border border-border rounded hover:bg-muted">
