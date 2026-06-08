@@ -8,8 +8,7 @@ export type LandingBlock = { type: string; data: any };
 const Hero = ({ data }: { data: any }) => (
   <section className="relative bg-muted/30 py-20 md:py-32 px-4">
     {data.image && (
-      <div className="absolute inset-0 -z-10 opacity-30">
-        <img src={data.image} alt="" className="w-full h-full object-cover" />
+      <img src={data.image} alt={data.image_alt || data.headline || ''} className="w-full h-full object-cover" />
       </div>
     )}
     <div className="max-w-5xl mx-auto text-center">
