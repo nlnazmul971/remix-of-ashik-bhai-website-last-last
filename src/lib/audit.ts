@@ -74,3 +74,44 @@ export function clearActorCache() {
   cache.uid = undefined;
   cache.ts = undefined;
 }
+
+export async function getActorRole(): Promise<string | null> {
+  const a = await currentActor();
+  return a.role ?? null;
+}
+
+/**
+ * Gate a write behind admin approval.
+ * If actor is a moderator: queues an approval request and returns { gated: true }.
+ * Otherwise runs the supplied function.
+ */
+export async function gateWrite<T>(opts: {
+  entityType: string;
+  entityId?: string | null;
+  action: 'create' | 'update' | 'delete';
+  payload?: any;
+  reason?: string;
+  run: () => Promise<T>;
+}): Promise<{ gated: boolean; result?: T }> {
+  const role = await getActorRole();
+  if (role === 'moderator') {
+    const { toast } = await import('sonner');
+    try {
+      await requestApproval({
+        entityType: opts.entityType,
+        entityId: opts.entityId ?? null,
+        action: opts.action,
+        payload: opts.payload,
+        reason: opts.reason,
+      });
+      toast.info('Sent to admin for approval');
+    } catch (e: any) {
+      const { toast: t } = await import('sonner');
+      t.error('Approval request failed: ' + (e?.message || 'unknown'));
+      throw e;
+    }
+    return { gated: true };
+  }
+  const result = await opts.run();
+  return { gated: false, result };
+}
