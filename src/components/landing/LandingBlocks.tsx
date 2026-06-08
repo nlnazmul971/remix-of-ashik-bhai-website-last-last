@@ -9,7 +9,7 @@ const Hero = ({ data }: { data: any }) => (
   <section className="relative bg-muted/30 py-20 md:py-32 px-4">
     {data.image && (
       <div className="absolute inset-0 -z-10 opacity-30">
-        <img src={data.image} alt="" className="w-full h-full object-cover" />
+        <img src={data.image} alt={data.image_alt || data.headline || ''} className="w-full h-full object-cover" />
       </div>
     )}
     <div className="max-w-5xl mx-auto text-center">
@@ -123,7 +123,7 @@ const Trust = ({ data }: { data: any }) => (
       <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-60">
         {(data.items || []).map((t: any, i: number) =>
           t.image ? (
-            <img key={i} src={t.image} alt={t.name || ''} className="h-8 md:h-10 object-contain" />
+            <img key={i} src={t.image} alt={t.image_alt || t.name || ''} className="h-8 md:h-10 object-contain" />
           ) : (
             <span key={i} className="text-sm font-semibold tracking-wider">{t.name}</span>
           )

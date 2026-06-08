@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useStoreSettings, useUpdateStoreSetting } from '@/hooks/useSupabase';
 import { toast } from 'sonner';
 import { Save, Plus, Trash2, Search, Globe, FileText, Tag, Image as ImageIcon, Shield, Code2 } from 'lucide-react';
+import SEOHelp from './SEOHelp';
 
 type Override = {
   path: string;
@@ -156,66 +157,118 @@ const AdminSEO = () => {
       </div>
 
       <SectionCard icon={Globe} title="Brand & Defaults" desc="Used when a page doesn't override these values.">
+        <SEOHelp
+          title="Ki info dite hobe? — Bujhe nin"
+          defaultOpen
+          steps={[
+            { text: 'Brand Name — apnar dokaner naam (eg. "Highlights BD"). Eta protita page er title-e add hobe.' },
+            { text: 'Title Template — {title} | {brand} format. Mane: page er nijer title aage, tarpor pipe ( | ), tarpor brand naam. Google search-e ei kotha gula dekhabe.' },
+            { text: 'Default Page Title — homepage ba je page-er nijer title nai, oi page-e ei title dekhabe. 50–60 character-er moddhe rakhun.' },
+            { text: 'Base URL — apnar website-er purno address. Eta canonical link banate use hoy (duplicate content thekey banchaye).' },
+            { text: 'Meta Description — Google search result-e title er niche je summary dekha jay. 140–160 character somporkito.' },
+          ]}
+          tips={[
+            'Title-e main keyword aage rakhun (eg. "Baby Clothes BD | Highlights").',
+            'Description-e CTA dile click-through bare (eg. "Free delivery! Order now").',
+          ]}
+        />
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Brand Name"><input className={inputCls} value={brand} onChange={e => setBrand(e.target.value)} /></Field>
+          <Field label="Brand Name" hint="Apnar dokan / website naam"><input className={inputCls} value={brand} onChange={e => setBrand(e.target.value)} placeholder="Highlights BD" /></Field>
           <Field label="Title Template" hint="Tokens: {title}, {brand}">
             <input className={inputCls} value={titleTemplate} onChange={e => setTitleTemplate(e.target.value)} placeholder="{title} | {brand}" />
           </Field>
-          <Field label="Default Page Title"><input className={inputCls} value={defaultTitle} onChange={e => setDefaultTitle(e.target.value)} /></Field>
+          <Field label="Default Page Title" hint="50–60 character recommended"><input className={inputCls} value={defaultTitle} onChange={e => setDefaultTitle(e.target.value)} /></Field>
           <Field label="Base URL (canonical root)" hint="e.g. https://www.highlightsbd.shop">
             <input className={inputCls} value={baseUrl} onChange={e => setBaseUrl(e.target.value)} placeholder="https://..." />
           </Field>
         </div>
-        <Field label={`Default Meta Description (${defaultDesc.length}/160 recommended)`}>
+        <Field label={`Default Meta Description (${defaultDesc.length}/160 recommended)`} hint="Google search result-e title er niche dekhabe">
           <textarea className={inputCls} rows={3} value={defaultDesc} onChange={e => setDefaultDesc(e.target.value)} />
         </Field>
         <Field label="Default Keywords" hint="Comma-separated. Modern Google ignores this but still useful for other engines.">
           <input className={inputCls} value={defaultKeywords} onChange={e => setDefaultKeywords(e.target.value)} placeholder="clothing, bangladesh, ..." />
         </Field>
         <div className="rounded-md bg-muted/40 p-3 text-[11px]">
-          <span className="font-semibold">Preview: </span>
+          <span className="font-semibold">Google Preview: </span>
           <span className="text-foreground">{titlePreview}</span>
         </div>
       </SectionCard>
 
       <SectionCard icon={ImageIcon} title="Social Sharing (Open Graph & Twitter)" desc="Image shown when your link is shared on Facebook, WhatsApp, Twitter, LinkedIn.">
+        <SEOHelp
+          title="Social share image kothay banabo? — Step by step"
+          steps={[
+            { text: 'Canva khule "Custom size" select korun. Width: 1200, Height: 630 px.' , link: { label: 'Canva khulun', href: 'https://www.canva.com/' } },
+            { text: 'Apnar logo, brand naam, ar attractive tagline boshan. JPG format-e download korun (size 500KB er moddhe).' },
+            { text: 'Image ta upload korun (eg. Products section-er kono product image-e add korun) ba public URL ta paste korun ekhane.' },
+            { text: 'Twitter Handle: apnar Twitter/X account username dite hobe @ shoho (eg. @highlightsbd).' },
+          ]}
+          tips={[
+            'OG image na thakle Facebook/WhatsApp link blank dekhabe — eta khub joruri.',
+            '1200x630 ratio na hole crop hoye jabe.',
+          ]}
+        />
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Default OG Image URL" hint="1200x630 px recommended">
+          <Field label="Default OG Image URL" hint="1200x630 px recommended. JPG/PNG.">
             <input className={inputCls} value={ogImage} onChange={e => setOgImage(e.target.value)} placeholder="https://.../og.jpg" />
           </Field>
-          <Field label="Twitter Handle" hint="Include @">
+          <Field label="Twitter Handle" hint="Include @ symbol">
             <input className={inputCls} value={twitterHandle} onChange={e => setTwitterHandle(e.target.value)} placeholder="@yourbrand" />
           </Field>
         </div>
         {ogImage && (
-          <div className="mt-2"><img src={ogImage} alt="OG preview" className="max-h-32 rounded border border-border" /></div>
+          <div className="mt-2"><img src={ogImage} alt={`${brand} social sharing preview`} className="max-h-32 rounded border border-border" /></div>
         )}
       </SectionCard>
 
       <SectionCard icon={Shield} title="Crawler & Verification" desc="Control how search engines crawl and verify ownership.">
-        <Field label="Robots Directive" hint="Default: index, follow, max-image-preview:large">
+        <SEOHelp
+          title="Verification code kothay pabo? — Google, Bing, Facebook, Pinterest"
+          steps={[
+            { text: 'Google: Search Console-e jaan → Property add korun (apnar domain dilei hobe) → "HTML tag" method select korun → "content=" er bhitor je code thakbe, oita copy kore Google Site Verification field-e paste korun.', link: { label: 'Google Search Console', href: 'https://search.google.com/search-console' } },
+            { text: 'Bing: Bing Webmaster Tools-e site add korun → "Meta tag" option select korun → content value ta copy korun.', link: { label: 'Bing Webmaster', href: 'https://www.bing.com/webmasters' } },
+            { text: 'Facebook: Business Manager → Brand Safety → Domains → apnar domain add korun → "Meta-tag verification" → code copy korun.', link: { label: 'FB Business Manager', href: 'https://business.facebook.com/' } },
+            { text: 'Pinterest: Pinterest Business account → Settings → Claim → Website → "Add HTML tag" → content value copy korun.', link: { label: 'Pinterest Business', href: 'https://www.pinterest.com/business/hub/' } },
+            { text: 'Code paste korar por "Save All" press korun. Tarpor je site-e add korechen oikhane "Verify" button click korun.' },
+          ]}
+          tips={[
+            'Robots Directive — default ta ("index, follow") rakhle Google sob page crawl korbe. Site hide korte chaile "noindex, nofollow" diben.',
+            'Locale — Bangladesh-e Bangla site hole "bn_BD" diben, English hole "en_US".',
+          ]}
+        />
+        <Field label="Robots Directive" hint='Default: "index, follow" — Google ke sob page crawl korte dey'>
           <input className={inputCls} value={robots} onChange={e => setRobots(e.target.value)} />
         </Field>
-        <Field label="Content Locale" hint="e.g. en_US, bn_BD">
+        <Field label="Content Locale" hint="Bangla: bn_BD · English: en_US">
           <input className={inputCls} value={locale} onChange={e => setLocale(e.target.value)} placeholder="en_US" />
         </Field>
         <div className="grid sm:grid-cols-2 gap-4">
-          <Field label="Google Site Verification" hint="The content value of google-site-verification meta">
-            <input className={inputCls} value={googleVerif} onChange={e => setGoogleVerif(e.target.value)} />
+          <Field label="Google Site Verification" hint='Meta tag-er content="..." value ta paste korun'>
+            <input className={inputCls} value={googleVerif} onChange={e => setGoogleVerif(e.target.value)} placeholder="abc123XyZ..." />
           </Field>
-          <Field label="Bing Site Verification">
+          <Field label="Bing Site Verification" hint="Bing Webmaster Tools theke">
             <input className={inputCls} value={bingVerif} onChange={e => setBingVerif(e.target.value)} />
           </Field>
-          <Field label="Facebook Domain Verification">
+          <Field label="Facebook Domain Verification" hint="FB Business Manager → Brand Safety → Domains">
             <input className={inputCls} value={fbVerif} onChange={e => setFbVerif(e.target.value)} />
           </Field>
-          <Field label="Pinterest Domain Verification">
+          <Field label="Pinterest Domain Verification" hint="Pinterest Business → Settings → Claim">
             <input className={inputCls} value={pinVerif} onChange={e => setPinVerif(e.target.value)} />
           </Field>
         </div>
       </SectionCard>
 
       <SectionCard icon={Code2} title="Organization JSON-LD (Schema.org)" desc="Structured data for Google's Knowledge Graph & rich results.">
+        <SEOHelp
+          title="JSON-LD ki? Kothay banabo?"
+          steps={[
+            { text: 'Eta Google ke bole apnar dokan-er detail — naam, logo, address, phone, social links. Result-e brand panel hisebe dekhabe.' },
+            { text: 'Niche default template debe — apnar info bosheye nin. Ba Schema.org generator use kore banate paren.', link: { label: 'Generator khulun', href: 'https://technicalseo.com/tools/schema-markup-generator/' } },
+            { text: '"Organization" select korun → naam, URL, logo, phone, address, sameAs (Facebook/Instagram link) dite hobe → JSON copy kore ekhane paste korun.' },
+            { text: 'Save korar por Google Rich Results Test-e check korun.', link: { label: 'Rich Results Test', href: 'https://search.google.com/test/rich-results' } },
+          ]}
+          tips={['JSON valid kina test korun — ekta comma missing thakleo kaaj korbe na.']}
+        />
         <Field label="JSON" hint="Paste a valid JSON object or array. Leave blank to skip.">
           <textarea className={textareaCls} rows={10} value={orgJsonLd} onChange={e => setOrgJsonLd(e.target.value)}
             placeholder={`{\n  "@context": "https://schema.org",\n  "@type": "Organization",\n  "name": "${brand}",\n  "url": "${baseUrl || 'https://...'}",\n  "logo": "${ogImage || 'https://.../logo.png'}",\n  "sameAs": ["https://facebook.com/..."]\n}`} />
@@ -223,6 +276,16 @@ const AdminSEO = () => {
       </SectionCard>
 
       <SectionCard icon={FileText} title="Per-Page Overrides" desc="Override title / description / image / noIndex for specific routes.">
+        <SEOHelp
+          title="Per-page override ki? Kkn use korbo?"
+          steps={[
+            { text: 'Default title/description sob page-e onyo. Kintu /about ba /contact er moto page-er nijer title chaile ekhane override din.' },
+            { text: 'Preset path button click korun (eg. /about) ba "Custom" diye nijer path likhun.' },
+            { text: 'Title, description, image, keywords — ja override korte chan, oitai bharun. Khali field default theke nibe.' },
+            { text: 'No-index check korle oi specific page Google search-e ashbe na (eg. private /admin page).' },
+          ]}
+          tips={['Product page er title automatic product naam theke ase — manually override lagbe na.']}
+        />
         <div className="flex flex-wrap gap-2">
           {PRESET_PATHS.map(p => (
             <button key={p} onClick={() => addOverride(p)} className="text-[11px] px-2 py-1 border border-border rounded hover:bg-muted">

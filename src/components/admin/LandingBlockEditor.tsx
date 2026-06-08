@@ -49,7 +49,13 @@ const LandingBlockEditor = ({ type, data, onChange }: Props) => {
             <Field label="Button link"><Input value={data.cta_link || ''} onChange={(e) => set({ cta_link: e.target.value })} placeholder="/" /></Field>
           </div>
           <Field label="Background image (optional)">
-            <ImageUpload value={data.image || ''} onChange={(url) => set({ image: url })} folder="landing" />
+            <ImageUpload
+              value={data.image || ''}
+              onChange={(url) => set({ image: url })}
+              altValue={data.image_alt || ''}
+              onAltChange={(alt) => set({ image_alt: alt })}
+              folder="landing"
+            />
           </Field>
         </div>
       );
@@ -157,7 +163,14 @@ const LandingBlockEditor = ({ type, data, onChange }: Props) => {
               <div key={i} className="border border-border p-3 rounded space-y-2">
                 <ItemHeader idx={i} onRemove={() => removeItem('items', i)} />
                 <Input placeholder="Brand name" value={it.name || ''} onChange={(e) => setItem('items', i, { name: e.target.value })} />
-                <ImageUpload value={it.image || ''} onChange={(url) => setItem('items', i, { image: url })} folder="landing" />
+                <ImageUpload
+                  value={it.image || ''}
+                  onChange={(url) => setItem('items', i, { image: url })}
+                  altValue={it.image_alt || it.name || ''}
+                  onAltChange={(alt) => setItem('items', i, { image_alt: alt })}
+                  altLabel="Brand logo alt text"
+                  folder="landing"
+                />
               </div>
             ))}
             <Button size="sm" variant="outline" onClick={() => addItem('items', { name: '', image: '' })}><Plus className="w-3 h-3 mr-1" />Add brand</Button>

@@ -9,9 +9,12 @@ type Props = {
   onMultiUpload?: (urls: string[]) => void;
   folder?: string;
   multiple?: boolean;
+  altValue?: string;
+  onAltChange?: (alt: string) => void;
+  altLabel?: string;
 };
 
-const ImageUpload = ({ value, onChange, onMultiUpload, folder = 'products', multiple = false }: Props) => {
+const ImageUpload = ({ value, onChange, onMultiUpload, folder = 'products', multiple = false, altValue, onAltChange, altLabel = 'Alt text (SEO)' }: Props) => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [dragOver, setDragOver] = useState(false);
@@ -148,6 +151,21 @@ const ImageUpload = ({ value, onChange, onMultiUpload, folder = 'products', mult
         {uploading ? <Loader2 size={12} className="animate-spin" /> : <Upload size={12} />}
         {uploading ? 'Uploading…' : value ? 'Replace Image' : multiple ? 'Choose Files' : 'Choose File'}
       </button>
+
+      {onAltChange && (
+        <div className="space-y-1">
+          <label className="text-[10px] uppercase tracking-widest text-muted-foreground">{altLabel}</label>
+          <input
+            type="text"
+            value={altValue || ''}
+            onChange={(e) => onAltChange(e.target.value)}
+            placeholder="eg. Red baby dress with white polka dots"
+            className="w-full max-w-md px-2 py-1.5 text-xs border border-border bg-background focus:outline-none focus:ring-1 focus:ring-primary/40"
+            maxLength={125}
+          />
+          <p className="text-[10px] text-muted-foreground">Image-er short description — blind reader o Google ke bole image-e ki ache. 5–15 word + main keyword.</p>
+        </div>
+      )}
     </div>
   );
 };
