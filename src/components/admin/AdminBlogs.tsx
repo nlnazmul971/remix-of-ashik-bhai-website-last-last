@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { Plus, Edit2, Trash2, Loader2, Save, X, Eye, MessageSquare, FolderTree, UserCircle2 } from 'lucide-react';
 import ImageUpload from './ImageUpload';
+import RichTextEditor from './RichTextEditor';
 import { slugify, calcReadingTime } from '@/lib/blogHelpers';
 import { useStoreSettings } from '@/hooks/useSupabase';
 import { gateWrite } from '@/lib/audit';
@@ -165,9 +166,9 @@ const AdminBlogs = () => {
             <textarea value={editing.excerpt} onChange={e => setEditing({ ...editing, excerpt: e.target.value })} placeholder="Short excerpt (140–160 chars)" rows={2} className="w-full px-3 py-2 text-sm border border-border bg-background resize-y" />
           </div>
           <div>
-            <label className="text-xs text-muted-foreground block mb-1">Content (HTML)</label>
-            <textarea value={editing.content} onChange={e => setEditing({ ...editing, content: e.target.value })} placeholder="<p>...</p>" rows={18} className="w-full px-3 py-2 text-sm border border-border bg-background font-mono resize-y" />
-            <p className="text-[10px] text-muted-foreground mt-1">≈ {calcReadingTime(editing.content)} min read</p>
+            <label className="text-xs text-muted-foreground block mb-1">Content</label>
+            <RichTextEditor value={editing.content} onChange={(html) => setEditing({ ...editing, content: html })} placeholder="Apnar blog post ekhane likhun…" />
+            <p className="text-[10px] text-muted-foreground mt-1">≈ {calcReadingTime(editing.content)} min read · Toolbar use korun ba HTML mode-e shift korun</p>
           </div>
           <div>
             <label className="text-xs text-muted-foreground block mb-2">Cover Image</label>
