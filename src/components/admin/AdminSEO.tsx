@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useStoreSettings, useUpdateStoreSetting } from '@/hooks/useSupabase';
 import { toast } from 'sonner';
 import { Save, Plus, Trash2, Search, Globe, FileText, Tag, Image as ImageIcon, Shield, Code2 } from 'lucide-react';
+import SEOHelp from './SEOHelp';
 
 type Override = {
   path: string;
