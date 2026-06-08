@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { useOrders, useUpdateOrder, useProducts, useStoreSettings } from '@/hooks/useSupabase';
 import { supabase } from '@/integrations/supabase/client';
 import { callCourier, sendOrderEmail, trackOrderToMetaCapi } from '@/lib/api';
