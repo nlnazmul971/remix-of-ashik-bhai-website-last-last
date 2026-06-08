@@ -163,7 +163,14 @@ const LandingBlockEditor = ({ type, data, onChange }: Props) => {
               <div key={i} className="border border-border p-3 rounded space-y-2">
                 <ItemHeader idx={i} onRemove={() => removeItem('items', i)} />
                 <Input placeholder="Brand name" value={it.name || ''} onChange={(e) => setItem('items', i, { name: e.target.value })} />
-                <ImageUpload value={it.image || ''} onChange={(url) => setItem('items', i, { image: url })} folder="landing" />
+                <ImageUpload
+                  value={it.image || ''}
+                  onChange={(url) => setItem('items', i, { image: url })}
+                  altValue={it.image_alt || it.name || ''}
+                  onAltChange={(alt) => setItem('items', i, { image_alt: alt })}
+                  altLabel="Brand logo alt text"
+                  folder="landing"
+                />
               </div>
             ))}
             <Button size="sm" variant="outline" onClick={() => addItem('items', { name: '', image: '' })}><Plus className="w-3 h-3 mr-1" />Add brand</Button>
