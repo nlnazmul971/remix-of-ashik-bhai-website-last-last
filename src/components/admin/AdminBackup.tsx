@@ -3,36 +3,42 @@ import { Download, Upload, Database, Loader2, AlertTriangle } from 'lucide-react
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
-// Tables included in full-site backup (excludes auth/users-managed tables).
+// Tables included in full-site backup (excludes auth-managed tables).
+// Ordered so parent tables come before child tables (FK-safe for restore).
 const BACKUP_TABLES = [
   'store_settings',
+  'tracking_settings',
+  'checkout_payment_settings',
   'header_categories',
   'subcategories',
+  'delivery_zones',
+  'packaging_options',
+  'coupons',
+  'redirects',
+  'custom_pages',
+  
   'products',
   'product_images',
   'product_size_stock',
   'stock_logs',
+  'profiles',
+  'user_roles',
   'orders',
   'reviews',
-  'coupons',
-  'delivery_zones',
-  'packaging_options',
-  'checkout_payment_settings',
-  'tracking_settings',
-  'redirects',
-  'custom_pages',
-  'landing_pages',
-  'landing_page_analytics',
+  'wishlist_items',
+  'newsletter_subscribers',
+  'fraud_checks',
+  'approval_requests',
+  'action_logs',
   'blog_authors',
   'blog_categories',
   'blog_tags',
   'blogs',
   'blog_comments',
-  'newsletter_subscribers',
-  'wishlist_items',
+  'landing_pages',
+  'landing_page_analytics',
   'pseo_templates',
   'pseo_pages',
-  'fraud_checks',
 ] as const;
 
 const AdminBackup = () => {
@@ -40,22 +46,45 @@ const AdminBackup = () => {
   const [importing, setImporting] = useState(false);
   const [progress, setProgress] = useState<string>('');
 
+  // Tables that don't have an `id` primary key — use a different conflict column
+  const CONFLICT_COL: Record<string, string> = {
+    store_settings: 'key',
+    tracking_settings: 'key',
+    checkout_payment_settings: 'method',
+    user_roles: 'user_id,role',
+    newsletter_subscribers: 'email',
+    fraud_checks: 'phone',
+  };
+
   const handleExport = async () => {
     setExporting(true);
     try {
       const dump: Record<string, any[]> = {};
       for (const table of BACKUP_TABLES) {
         setProgress(`Exporting ${table}…`);
-        const { data, error } = await supabase.from(table as any).select('*');
-        if (error) {
-          console.error(`[backup] ${table}`, error);
-          dump[table] = [];
-          continue;
+        // Paginate to get ALL rows (Supabase default cap is 1000)
+        const all: any[] = [];
+        const PAGE = 1000;
+        let from = 0;
+        while (true) {
+          const { data, error } = await supabase
+            .from(table as any)
+            .select('*')
+            .range(from, from + PAGE - 1);
+          if (error) {
+            console.error(`[backup] ${table}`, error);
+            break;
+          }
+          if (!data || data.length === 0) break;
+          all.push(...data);
+          if (data.length < PAGE) break;
+          from += PAGE;
+          setProgress(`Exporting ${table}… (${all.length})`);
         }
-        dump[table] = data || [];
+        dump[table] = all;
       }
       const payload = {
-        version: 1,
+        version: 2,
         exported_at: new Date().toISOString(),
         tables: dump,
       };
@@ -76,31 +105,35 @@ const AdminBackup = () => {
   };
 
   const handleImport = async (file: File) => {
-    if (!confirm('⚠️ This will REPLACE all existing website data with the uploaded backup. Continue?')) return;
+    if (!confirm('This will MERGE the backup into your site: missing rows will be added, changed rows will be updated. Existing extra rows will NOT be deleted. Continue?')) return;
     setImporting(true);
     try {
       const text = await file.text();
       const parsed = JSON.parse(text);
       const tables: Record<string, any[]> = parsed.tables || parsed;
-      // Restore in given order; child tables after parents.
+      let totalInserted = 0;
+      let totalUpdated = 0;
       for (const table of BACKUP_TABLES) {
         const rows = tables[table];
-        if (!Array.isArray(rows)) continue;
-        setProgress(`Restoring ${table} (${rows.length})…`);
-        // Wipe table first
-        await supabase.from(table as any).delete().neq('id', '00000000-0000-0000-0000-000000000000');
-        if (rows.length === 0) continue;
-        // Insert in chunks of 500
+        if (!Array.isArray(rows) || rows.length === 0) continue;
+        const conflict = CONFLICT_COL[table] || 'id';
+        setProgress(`Merging ${table} (${rows.length})…`);
+        // Upsert in chunks — inserts missing rows and updates changed ones
         for (let i = 0; i < rows.length; i += 500) {
           const chunk = rows.slice(i, i + 500);
-          const { error } = await supabase.from(table as any).insert(chunk);
+          const { error } = await supabase
+            .from(table as any)
+            .upsert(chunk, { onConflict: conflict, ignoreDuplicates: false });
           if (error) {
             console.error(`[restore] ${table}`, error);
             toast.error(`${table}: ${error.message}`);
+          } else {
+            totalUpdated += chunk.length;
           }
         }
+        totalInserted += rows.length;
       }
-      toast.success('Backup restored. Refresh the site to see changes.');
+      toast.success(`Backup merged: ${totalInserted} rows processed. Refresh the site to see changes.`);
     } catch (e: any) {
       toast.error(`Restore failed: ${e.message}`);
     } finally {
@@ -140,13 +173,13 @@ const AdminBackup = () => {
         <div className="flex items-start gap-3 mb-4">
           <Upload className="h-5 w-5 mt-0.5 text-foreground/70" />
           <div>
-            <h3 className="font-semibold">Restore from backup</h3>
-            <p className="text-xs text-muted-foreground">Upload a previously downloaded JSON backup.</p>
+            <h3 className="font-semibold">Restore from backup (Smart Merge)</h3>
+            <p className="text-xs text-muted-foreground">Upload a previously downloaded JSON backup. Missing rows will be added, changed rows updated. Existing extra data is kept.</p>
           </div>
         </div>
-        <div className="flex items-start gap-2 p-3 mb-3 rounded-md bg-destructive/10 text-destructive text-xs">
+        <div className="flex items-start gap-2 p-3 mb-3 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs">
           <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
-          <span>This <strong>permanently overwrites</strong> existing data in every table listed in the backup. Take a fresh download first.</span>
+          <span>Safe merge mode: nothing is deleted. Rows from the backup are <strong>added or updated</strong> based on their ID.</span>
         </div>
         <label className="inline-flex items-center gap-2 border border-border px-4 py-2 text-sm font-medium rounded-md cursor-pointer hover:bg-muted">
           {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
