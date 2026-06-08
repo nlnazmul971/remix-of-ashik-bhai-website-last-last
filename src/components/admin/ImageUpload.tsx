@@ -9,9 +9,12 @@ type Props = {
   onMultiUpload?: (urls: string[]) => void;
   folder?: string;
   multiple?: boolean;
+  altValue?: string;
+  onAltChange?: (alt: string) => void;
+  altLabel?: string;
 };
 
-const ImageUpload = ({ value, onChange, onMultiUpload, folder = 'products', multiple = false }: Props) => {
+const ImageUpload = ({ value, onChange, onMultiUpload, folder = 'products', multiple = false, altValue, onAltChange, altLabel = 'Alt text (SEO)' }: Props) => {
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [dragOver, setDragOver] = useState(false);
