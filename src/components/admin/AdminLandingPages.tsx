@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink, Edit, Save, Eye } from 'lucide-react';
 import { BLOCK_TYPES } from '@/components/landing/LandingBlocks';
 import { gateWrite } from '@/lib/audit';
+import LandingBlockEditor from './LandingBlockEditor';
 
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
@@ -186,14 +187,7 @@ const AdminLandingPages = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <Textarea
-                      value={JSON.stringify(b.data, null, 2)}
-                      onChange={(e) => {
-                        try { updateBlock(i, JSON.parse(e.target.value)); } catch { /* ignore until valid */ }
-                      }}
-                      rows={Math.min(20, JSON.stringify(b.data, null, 2).split('\n').length + 1)}
-                      className="font-mono text-xs"
-                    />
+                    <LandingBlockEditor type={b.type} data={b.data} onChange={(d) => updateBlock(i, d)} />
                   </CardContent>
                 </Card>
               ))}
