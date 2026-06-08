@@ -163,14 +163,14 @@ const AdminOrders = () => {
   const processingOrderCount = orders.filter(o => o.status === 'Processing').length;
 
   const downloadInvoice = (order: any) => {
-    openAndPrintInvoice(buildInvoiceDocument(order));
+    openAndPrintInvoice(buildInvoiceDocument(order, invoiceOverrides));
   };
 
   // Bulk invoice download
   const downloadBulkInvoice = () => {
     const toExport = filtered.filter(o => selectedIds.has(o.id));
     if (toExport.length === 0) { toast.error('কোনো অর্ডার সিলেক্ট করুন'); return; }
-    openAndPrintInvoice(buildInvoiceDocument(toExport as any));
+    openAndPrintInvoice(buildInvoiceDocument(toExport as any, invoiceOverrides));
     toast.success(`${toExport.length}টি ইনভয়েস প্রিন্ট হচ্ছে`);
   };
 
