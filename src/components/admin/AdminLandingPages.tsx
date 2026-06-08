@@ -234,30 +234,50 @@ const AdminLandingPages = () => {
           <TabsContent value="seo" className="space-y-4">
             <Card>
               <CardContent className="pt-6 space-y-4">
+                <SEOHelp
+                  title="Landing page SEO — kothay ki dite hobe?"
+                  defaultOpen
+                  steps={[
+                    { text: 'SEO Title — Google search-e dekha jay. Main keyword + offer + brand format (eg. "Eid Collection 2026 — 50% Off | Highlights BD"). 50–60 character.' },
+                    { text: 'Meta Description — title-er niche dekha summary. Offer + CTA likhe lekha bhalo (eg. "Free home delivery! Order now"). 140–160 character.' },
+                    { text: 'Focus Keyword — main je 1ta keyword er jonno rank korte chan (eg. "eid collection bangladesh").' },
+                    { text: 'Keywords — focus keyword + related 4–6 ta keyword, comma diye separate.' },
+                    { text: 'OG Image — Facebook/WhatsApp/Twitter-e link share hole je image dekhabe. 1200x630 px JPG.' },
+                    { text: 'No-index — eta on korle Google search-e ei page ashbe na. Sudhu paid ad er landing page hole on rakhun.' },
+                  ]}
+                  tips={[
+                    'Title-e main keyword aage rakhun.',
+                    'Description-e number/percent dile (eg. "50% Off") CTR bare.',
+                  ]}
+                />
                 <div>
-                  <Label>SEO Title (50-60 chars)</Label>
-                  <Input value={editing.seo_title || ''} onChange={(e) => setEditing({ ...editing, seo_title: e.target.value })} />
+                  <Label>SEO Title <span className="text-muted-foreground text-xs">(50-60 chars)</span></Label>
+                  <Input value={editing.seo_title || ''} onChange={(e) => setEditing({ ...editing, seo_title: e.target.value })} placeholder="Eid Collection 2026 — 50% Off | Brand" />
                   <p className="text-xs text-muted-foreground mt-1">{(editing.seo_title || '').length} chars</p>
                 </div>
                 <div>
-                  <Label>Meta Description (140-160 chars)</Label>
-                  <Textarea value={editing.seo_description || ''} onChange={(e) => setEditing({ ...editing, seo_description: e.target.value })} rows={3} />
+                  <Label>Meta Description <span className="text-muted-foreground text-xs">(140-160 chars)</span></Label>
+                  <Textarea value={editing.seo_description || ''} onChange={(e) => setEditing({ ...editing, seo_description: e.target.value })} rows={3} placeholder="Premium Eid outfits at 50% off. Free home delivery across BD. Order now!" />
                   <p className="text-xs text-muted-foreground mt-1">{(editing.seo_description || '').length} chars</p>
                 </div>
                 <div>
-                  <Label>Focus Keyword</Label>
-                  <Input value={editing.seo_focus_keyword || ''} onChange={(e) => setEditing({ ...editing, seo_focus_keyword: e.target.value })} />
+                  <Label>Focus Keyword <span className="text-muted-foreground text-xs">(main 1ta keyword)</span></Label>
+                  <Input value={editing.seo_focus_keyword || ''} onChange={(e) => setEditing({ ...editing, seo_focus_keyword: e.target.value })} placeholder="eid collection bangladesh" />
                 </div>
                 <div>
-                  <Label>Keywords (comma separated)</Label>
-                  <Input value={editing.seo_keywords || ''} onChange={(e) => setEditing({ ...editing, seo_keywords: e.target.value })} />
+                  <Label>Keywords <span className="text-muted-foreground text-xs">(comma separated)</span></Label>
+                  <Input value={editing.seo_keywords || ''} onChange={(e) => setEditing({ ...editing, seo_keywords: e.target.value })} placeholder="eid dress, panjabi, eid collection 2026" />
                 </div>
                 <div>
-                  <Label>OG Image URL</Label>
-                  <Input value={editing.seo_og_image || ''} onChange={(e) => setEditing({ ...editing, seo_og_image: e.target.value })} />
+                  <Label>OG Image URL <span className="text-muted-foreground text-xs">(1200x630 px)</span></Label>
+                  <Input value={editing.seo_og_image || ''} onChange={(e) => setEditing({ ...editing, seo_og_image: e.target.value })} placeholder="https://..." />
+                  {editing.seo_og_image && <img src={editing.seo_og_image} alt={`${editing.title} social preview`} className="mt-2 max-h-32 rounded border border-border" />}
                 </div>
                 <div className="flex items-center justify-between">
-                  <Label>No-index this page</Label>
+                  <div>
+                    <Label>No-index this page</Label>
+                    <p className="text-[10px] text-muted-foreground">On korle Google search-e ei page ashbe na</p>
+                  </div>
                   <Switch checked={!!editing.seo_no_index} onCheckedChange={(v) => setEditing({ ...editing, seo_no_index: v })} />
                 </div>
               </CardContent>
