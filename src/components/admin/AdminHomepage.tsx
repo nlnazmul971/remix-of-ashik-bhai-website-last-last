@@ -56,6 +56,16 @@ const AdminHomepage = () => {
         toast.success('Slider updated!');
       }} />
 
+      {/* 1b. Hero Posters (2 vertical posters below slider) */}
+      <HeroPostersManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Hero posters updated!');
+      }} />
+
+
       {/* 2. Video Carousel */}
       <VideoManager videos={videos} onSave={async (newVideos) => {
         await updateSetting.mutateAsync({ key: 'homepage_videos', value: JSON.stringify(newVideos) });
@@ -922,6 +932,78 @@ const PromoPostersManager = ({ settings, onSave }: { settings: Record<string, an
             </div>
             <HomepageImageUpload value={p.image} onChange={(url) => update(i, 'image', url)} folder="promo-poster" />
             <input value={p.alt} onChange={e => update(i, 'alt', e.target.value)} className="luxury-input text-xs" placeholder="Alt text (e.g. Boys Collection)" />
+            <input value={p.link} onChange={e => update(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Boys" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+type HeroPosterItem = { image: string; link: string; alt: string; title?: string; subtitle?: string };
+
+const HeroPostersManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
+  const [enabled, setEnabled] = useState(settings['hero_posters_enabled'] !== 'false');
+  const initial: HeroPosterItem[] = (() => {
+    try { return settings['hero_posters_items'] ? JSON.parse(settings['hero_posters_items']) : []; } catch { return []; }
+  })();
+  const [posters, setPosters] = useState<HeroPosterItem[]>(initial);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEnabled(settings['hero_posters_enabled'] !== 'false');
+    try { if (settings['hero_posters_items']) setPosters(JSON.parse(settings['hero_posters_items'])); } catch {}
+  }, [settings['hero_posters_enabled'], settings['hero_posters_items']]);
+
+  const add = () => {
+    if (posters.length >= 2) { toast.error('Max 2 posters'); return; }
+    setPosters([...posters, { image: '', link: '/', alt: '', title: '', subtitle: '' }]);
+  };
+  const remove = (i: number) => setPosters(posters.filter((_, idx) => idx !== i));
+  const update = (i: number, field: keyof HeroPosterItem, value: string) =>
+    setPosters(posters.map((p, idx) => idx === i ? { ...p, [field]: value } : p));
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave({
+        hero_posters_enabled: enabled ? 'true' : 'false',
+        hero_posters_items: JSON.stringify(posters),
+      });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Hero Posters (Below Slider)</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">Max 2 vertical posters • 3:4 portrait (800×1066px)</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} /> Enabled
+          </label>
+          <button onClick={add} disabled={posters.length >= 2} className="luxury-button-outline text-[10px] py-2 px-3 disabled:opacity-50">+ Add Poster</button>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />} Save
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {posters.map((p, i) => (
+          <div key={i} className="border border-border p-4 space-y-3 relative">
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-muted-foreground font-medium">Poster {i + 1}</p>
+              <button onClick={() => remove(i)} className="inline-flex items-center gap-1 text-[10px] text-destructive hover:bg-destructive/10 px-2 py-1">
+                <Trash2 size={12} /> Delete
+              </button>
+            </div>
+            <HomepageImageUpload value={p.image} onChange={(url) => update(i, 'image', url)} folder="hero-poster" />
+            <input value={p.title || ''} onChange={e => update(i, 'title', e.target.value)} className="luxury-input text-xs" placeholder="Title (optional overlay)" />
+            <input value={p.subtitle || ''} onChange={e => update(i, 'subtitle', e.target.value)} className="luxury-input text-xs" placeholder="Subtitle (optional)" />
+            <input value={p.alt} onChange={e => update(i, 'alt', e.target.value)} className="luxury-input text-xs" placeholder="Alt text (SEO)" />
             <input value={p.link} onChange={e => update(i, 'link', e.target.value)} className="luxury-input text-xs" placeholder="/?category=Boys" />
           </div>
         ))}
