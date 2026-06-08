@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { Plus, Trash2, ArrowUp, ArrowDown, ExternalLink, Edit, Save, Eye } from 'lucide-react';
 import { BLOCK_TYPES } from '@/components/landing/LandingBlocks';
 import { gateWrite } from '@/lib/audit';
+import LandingBlockEditor from './LandingBlockEditor';
 
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
