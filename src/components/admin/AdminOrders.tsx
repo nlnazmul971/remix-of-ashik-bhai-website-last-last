@@ -589,7 +589,8 @@ const AdminOrders = () => {
       total: d.total,
     };
     openAndPrintInvoice(buildInvoiceDocument(orderLike, {
-      brandName: d.brandName,
+      ...invoiceOverrides,
+      brandName: d.brandName || invoiceOverrides.brandName,
       brandSub: d.brandSub,
       customerAddressFull: d.customerAddress,
       courierProviderLabel: d.courierProvider,
