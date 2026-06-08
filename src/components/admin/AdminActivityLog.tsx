@@ -93,8 +93,15 @@ const AdminActivityLog = ({ onNavigate }: { onNavigate?: (tab: string) => void }
         {!isLoading && filtered.length === 0 && (
           <div className="p-8 text-center text-sm text-muted-foreground">No activity yet</div>
         )}
-        {filtered.map(l => (
-          <div key={l.id} className="p-4 flex items-start gap-3 hover:bg-muted/30 transition-colors">
+        {filtered.map(l => {
+          const clickable = l.entity_type === 'order' && !!l.entity_id;
+          return (
+          <div
+            key={l.id}
+            onClick={clickable ? () => openEntity(l) : undefined}
+            className={`p-4 flex items-start gap-3 transition-colors ${clickable ? 'cursor-pointer hover:bg-muted/50' : 'hover:bg-muted/30'}`}
+            title={clickable ? 'Open order' : undefined}
+          >
             <div className="flex-1 min-w-0 space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
                 <span className={`px-2 py-0.5 text-[10px] uppercase tracking-widest border rounded-full ${actionTone[l.action] || 'bg-muted text-foreground border-border'}`}>
@@ -108,6 +115,9 @@ const AdminActivityLog = ({ onNavigate }: { onNavigate?: (tab: string) => void }
                     {l.actor_role}
                   </span>
                 )}
+                {clickable && (
+                  <span className="text-[10px] uppercase tracking-widest text-primary ml-auto">Open →</span>
+                )}
               </div>
               <p className="text-sm">{l.summary || <span className="text-muted-foreground italic">No summary</span>}</p>
               <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
@@ -117,7 +127,8 @@ const AdminActivityLog = ({ onNavigate }: { onNavigate?: (tab: string) => void }
               </div>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
