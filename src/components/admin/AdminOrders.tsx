@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, useEffect } from 'react';
 import { useOrders, useUpdateOrder, useProducts, useStoreSettings } from '@/hooks/useSupabase';
 import { supabase } from '@/integrations/supabase/client';
 import { callCourier, sendOrderEmail, trackOrderToMetaCapi } from '@/lib/api';
@@ -111,6 +111,17 @@ const AdminOrders = () => {
   const [returnLoading, setReturnLoading] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const importRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const focusId = sessionStorage.getItem('focusOrderId');
+    if (focusId && orders.length) {
+      const match = orders.find((o: any) => o.id === focusId);
+      if (match) {
+        setSelectedOrder(match);
+        sessionStorage.removeItem('focusOrderId');
+      }
+    }
+  }, [orders]);
 
   // Item editing state
   const [editingItems, setEditingItems] = useState(false);
