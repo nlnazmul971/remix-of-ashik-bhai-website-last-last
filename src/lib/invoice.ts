@@ -211,8 +211,9 @@ export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {
     </div>
     <div class="footer">
       <div class="thanks">Thank you for shopping</div>
-      <div>${escapeHtml(BRAND_ADDRESS)}</div>
-      <div>${escapeHtml(BRAND_PHONE)} &middot; ${escapeHtml(BRAND_EMAIL)}</div>
+      <div>${escapeHtml(brandAddress)}</div>
+      <div>${escapeHtml(brandPhone)} &middot; ${escapeHtml(brandEmail)}</div>
+      ${brandCopyright ? `<div style="margin-top:4px;">${escapeHtml(brandCopyright)}</div>` : ''}
     </div>
   </div>
 </div>`;
