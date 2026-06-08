@@ -157,12 +157,36 @@ const AdminLandingPages = () => {
               <CardContent className="pt-6 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label>Title</Label>
-                    <Input value={editing.title} onChange={(e) => setEditing({ ...editing, title: e.target.value, slug: editing.slug || slugify(e.target.value) })} />
+                    <Label>Title <span className="text-muted-foreground text-xs">(page-er naam)</span></Label>
+                    <Input
+                      value={editing.title}
+                      onChange={(e) => {
+                        const newTitle = e.target.value;
+                        // Auto-sync slug from title only when slug is empty OR still matches the prior auto-generated slug
+                        const prevAuto = slugify(editing.title || '');
+                        const shouldSync = !editing.slug || editing.slug === prevAuto;
+                        setEditing({
+                          ...editing,
+                          title: newTitle,
+                          slug: shouldSync ? slugify(newTitle) : editing.slug,
+                        });
+                      }}
+                      placeholder="Eg. Eid Collection 2026"
+                    />
                   </div>
                   <div>
-                    <Label>Slug (URL: /l/{editing.slug || 'your-slug'})</Label>
-                    <Input value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: slugify(e.target.value) })} />
+                    <Label className="flex items-center justify-between">
+                      <span>URL Slug <span className="text-muted-foreground text-xs">(iccha moto change korte paren)</span></span>
+                      <button
+                        type="button"
+                        onClick={() => setEditing({ ...editing, slug: slugify(editing.title) })}
+                        className="text-[10px] text-primary hover:underline"
+                      >
+                        Title theke regenerate
+                      </button>
+                    </Label>
+                    <Input value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: slugify(e.target.value) })} placeholder="eid-collection-2026" />
+                    <p className="text-[10px] text-muted-foreground mt-1">Live URL: <span className="font-mono">/l/{editing.slug || 'your-slug'}</span></p>
                   </div>
                 </div>
                 <div>
