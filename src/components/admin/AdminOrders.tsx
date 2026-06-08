@@ -112,6 +112,17 @@ const AdminOrders = () => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const importRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    const focusId = sessionStorage.getItem('focusOrderId');
+    if (focusId && orders.length) {
+      const match = orders.find((o: any) => o.id === focusId);
+      if (match) {
+        setSelectedOrder(match);
+        sessionStorage.removeItem('focusOrderId');
+      }
+    }
+  }, [orders]);
+
   // Item editing state
   const [editingItems, setEditingItems] = useState(false);
   const [editItems, setEditItems] = useState<any[]>([]);
