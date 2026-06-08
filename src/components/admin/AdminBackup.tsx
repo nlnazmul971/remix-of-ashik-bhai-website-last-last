@@ -16,7 +16,7 @@ const BACKUP_TABLES = [
   'coupons',
   'redirects',
   'custom_pages',
-  'popups' as any,
+  
   'products',
   'product_images',
   'product_size_stock',
