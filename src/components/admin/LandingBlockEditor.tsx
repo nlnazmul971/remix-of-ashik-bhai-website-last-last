@@ -49,7 +49,13 @@ const LandingBlockEditor = ({ type, data, onChange }: Props) => {
             <Field label="Button link"><Input value={data.cta_link || ''} onChange={(e) => set({ cta_link: e.target.value })} placeholder="/" /></Field>
           </div>
           <Field label="Background image (optional)">
-            <ImageUpload value={data.image || ''} onChange={(url) => set({ image: url })} folder="landing" />
+            <ImageUpload
+              value={data.image || ''}
+              onChange={(url) => set({ image: url })}
+              altValue={data.image_alt || ''}
+              onAltChange={(alt) => set({ image_alt: alt })}
+              folder="landing"
+            />
           </Field>
         </div>
       );
