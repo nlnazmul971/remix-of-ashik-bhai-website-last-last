@@ -35,6 +35,7 @@ import AdminSEOHub from '@/components/admin/AdminSEOHub';
 import AdminRedirects from '@/components/admin/AdminRedirects';
 import AdminBlogs from '@/components/admin/AdminBlogs';
 import AdminLandingPages from '@/components/admin/AdminLandingPages';
+import AdminStaticPages from '@/components/admin/AdminStaticPages';
 import AdminBackup from '@/components/admin/AdminBackup';
 import AdminApprovals from '@/components/admin/AdminApprovals';
 import AdminActivityLog from '@/components/admin/AdminActivityLog';
@@ -177,6 +178,7 @@ const Admin = () => {
             {activeTab === 'redirects' && <AdminRedirects />}
             {activeTab === 'blog' && <AdminBlogs />}
             {activeTab === 'landing-pages' && <AdminLandingPages />}
+            {activeTab === 'static-pages' && <AdminStaticPages />}
             {activeTab === 'backup' && <AdminBackup />}
             {activeTab === 'approvals' && <AdminApprovals />}
             {activeTab === 'activity-log' && <AdminActivityLog onNavigate={setActiveTab} />}

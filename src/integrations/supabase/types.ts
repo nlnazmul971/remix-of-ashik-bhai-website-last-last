@@ -547,6 +547,8 @@ export type Database = {
           blocks: Json
           conversion_count: number
           created_at: string
+          custom_domain: string | null
+          custom_path: string | null
           description: string | null
           id: string
           published_at: string | null
@@ -568,6 +570,8 @@ export type Database = {
           blocks?: Json
           conversion_count?: number
           created_at?: string
+          custom_domain?: string | null
+          custom_path?: string | null
           description?: string | null
           id?: string
           published_at?: string | null
@@ -589,6 +593,8 @@ export type Database = {
           blocks?: Json
           conversion_count?: number
           created_at?: string
+          custom_domain?: string | null
+          custom_path?: string | null
           description?: string | null
           id?: string
           published_at?: string | null

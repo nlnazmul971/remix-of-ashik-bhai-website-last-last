@@ -58,7 +58,7 @@ const Hero = () => {
           >
             <img
               src={imageSrc}
-              alt={`TWINKLE ${s.title} Collection`}
+              alt={s.title || 'Hero slide'}
               className="w-full h-full object-cover block"
               loading={isFirst ? 'eager' : 'lazy'}
               fetchPriority={isFirst ? 'high' : 'auto' as any}

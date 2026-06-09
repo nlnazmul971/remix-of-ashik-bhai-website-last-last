@@ -1,4 +1,5 @@
 // Clean minimalist invoice — single A4 page, order-id barcode only.
+// All brand info comes from admin store_settings (footer_*). No hardcoded brand.
 
 export type InvoiceOrder = {
   id: string;
@@ -36,12 +37,6 @@ export type InvoiceOverrides = {
   extraLines?: string[];
 };
 
-const BRAND_NAME = 'TWINKLE';
-const BRAND_WEBSITE = 'www.highlightsbd.shop';
-const BRAND_ADDRESS = 'Mirpur Section - 6, Block - A, Lane - 2, Dhaka 1216';
-const BRAND_PHONE = '+8801338918891';
-const BRAND_EMAIL = 'highlightsbdofficial@gmail.com';
-
 const courierLabel = (p?: string | null) => {
   if (!p) return '';
   if (p === 'steadfast') return 'Steadfast Courier';
@@ -62,28 +57,16 @@ const fmtDateShort = (d: string | Date) => {
   return `${dd}/${mm}/${yyyy}`;
 };
 
-const fmtDateTime = (d: string | Date) => {
-  const dt = new Date(d);
-  const hh = String(dt.getHours()).padStart(2, '0');
-  const mi = String(dt.getMinutes()).padStart(2, '0');
-  return `${fmtDateShort(dt)}, ${hh}:${mi}`;
-};
-
 export const invoiceStyles = `
   @page { size: A4; margin: 12mm 14mm; }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body { font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; color: #111; background: #eeeeee; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .sheet { width: 190mm; min-height: 273mm; margin: 10mm auto; background: #fff; padding: 14mm 16mm 12mm; position: relative; display: flex; flex-direction: column; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .topbar { display: flex; justify-content: space-between; font-size: 9.5px; color: #666; margin-bottom: 18px; }
-  .topbar .center { position: absolute; left: 50%; transform: translateX(-50%); }
   .header { text-align: center; padding-bottom: 14px; border-bottom: 1px solid #d4d4d4; margin-bottom: 22px; position: relative; }
   .brand-name { font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 500; letter-spacing: 0.5em; color: #111; line-height: 1; padding-right: 0.5em; }
   .brand-website { font-size: 10px; color: #555; margin-top: 10px; letter-spacing: 0.32em; text-transform: lowercase; }
-  .invoice-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
   .invoice-title { font-size: 18px; letter-spacing: 0.18em; color: #111; text-transform: uppercase; font-weight: 400; }
-  .invoice-row .order-no { font-size: 11.5px; color: #444; }
-  .invoice-row .date { font-size: 11.5px; color: #555; }
   .section { margin-top: 18px; }
   .sec-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.22em; color: #888; font-weight: 600; margin-bottom: 6px; }
   .cust-name { font-size: 13px; font-weight: 700; color: #111; }
@@ -126,11 +109,11 @@ export const invoiceStyles = `
 
 export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {}): string {
   const items = Array.isArray(order.items) ? order.items : [];
-  const brand = ov.brandName || BRAND_NAME;
-  const brandWebsite = ov.brandWebsite || BRAND_WEBSITE;
-  const brandAddress = ov.brandAddress || BRAND_ADDRESS;
-  const brandPhone = ov.brandPhone || BRAND_PHONE;
-  const brandEmail = ov.brandEmail || BRAND_EMAIL;
+  const brand = ov.brandName || '';
+  const brandWebsite = ov.brandWebsite || '';
+  const brandAddress = ov.brandAddress || '';
+  const brandPhone = ov.brandPhone || '';
+  const brandEmail = ov.brandEmail || '';
   const brandCopyright = ov.brandCopyright || '';
   const subtotal = items.reduce((s: number, i: any) => s + (i.price || 0) * (i.quantity || 1), 0);
   const discount = order.discount || 0;
@@ -154,10 +137,10 @@ export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {
   return `
 <div class="sheet">
 
-  <div class="header">
-    <div class="brand-name">${escapeHtml(brand)}</div>
-    <div class="brand-website">${escapeHtml(brandWebsite)}</div>
-  </div>
+  ${brand || brandWebsite ? `<div class="header">
+    ${brand ? `<div class="brand-name">${escapeHtml(brand)}</div>` : ''}
+    ${brandWebsite ? `<div class="brand-website">${escapeHtml(brandWebsite)}</div>` : ''}
+  </div>` : ''}
 
   <div class="invoice-title">Invoice</div>
 
@@ -211,8 +194,8 @@ export function renderInvoiceSheet(order: InvoiceOrder, ov: InvoiceOverrides = {
     </div>
     <div class="footer">
       <div class="thanks">Thank you for shopping</div>
-      <div>${escapeHtml(brandAddress)}</div>
-      <div>${escapeHtml(brandPhone)} &middot; ${escapeHtml(brandEmail)}</div>
+      ${brandAddress ? `<div>${escapeHtml(brandAddress)}</div>` : ''}
+      ${(brandPhone || brandEmail) ? `<div>${escapeHtml(brandPhone)}${brandPhone && brandEmail ? ' &middot; ' : ''}${escapeHtml(brandEmail)}</div>` : ''}
       ${brandCopyright ? `<div style="margin-top:4px;">${escapeHtml(brandCopyright)}</div>` : ''}
     </div>
   </div>
@@ -255,4 +238,17 @@ export function openAndPrintInvoice(html: string) {
   if (w) {
     setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }
+}
+
+// Helper to build invoice overrides from store_settings (footer_*) so callers
+// don't have to duplicate the mapping. Returns empty strings for missing keys.
+export function overridesFromSettings(s: Record<string, string> = {}): InvoiceOverrides {
+  return {
+    brandName: s.footer_brand_name || '',
+    brandWebsite: s.footer_website || s.seo_base_url || '',
+    brandAddress: s.footer_address || '',
+    brandPhone: s.footer_phone || '',
+    brandEmail: s.footer_email || '',
+    brandCopyright: s.footer_copyright || '',
+  };
 }

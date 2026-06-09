@@ -49,6 +49,7 @@ const buildMenuGroups = (role: 'admin' | 'moderator') => {
       items: [
         { title: 'Blog', key: 'blog', icon: BookOpen },
         { title: 'Landing Pages', key: 'landing-pages', icon: Rocket },
+        { title: 'Static Pages', key: 'static-pages', icon: FileImage },
       ],
     },
     {

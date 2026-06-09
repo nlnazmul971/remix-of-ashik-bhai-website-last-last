@@ -25,7 +25,7 @@ const SEO = ({ title, description, path = "/", image, type = "website", noIndex,
   const { lang } = useLanguage();
 
   // All defaults sourced from admin settings — no hardcoded brand identity.
-  const brand = s["seo_brand_name"] || "Baby Store";
+  const brand = s["seo_brand_name"] || s["footer_brand_name"] || "";
   const template = s["seo_title_template"] || "{title} | {brand}";
   const defaultTitle = s["seo_default_title"] || brand;
   const defaultDesc = s["seo_default_description"] || "";

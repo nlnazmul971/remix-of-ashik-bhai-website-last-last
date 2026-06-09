@@ -4,16 +4,16 @@ import { toast } from 'sonner';
 import { useStoreSettings, useUpdateStoreSetting } from '@/hooks/useSupabase';
 
 const FOOTER_FIELDS = [
-  { key: 'footer_brand_name', label: 'Brand Name', placeholder: 'TWINKLE' },
-  { key: 'footer_website', label: 'Website / Domain', placeholder: 'www.example.com' },
+  { key: 'footer_brand_name', label: 'Brand Name', placeholder: 'Your Brand' },
+  { key: 'footer_website', label: 'Website / Domain', placeholder: 'www.yourdomain.com' },
   { key: 'footer_address', label: 'Address', placeholder: 'Your store address' },
-  { key: 'footer_phone', label: 'Phone', placeholder: '+880 1234 567890' },
-  { key: 'footer_email', label: 'Email', placeholder: 'info@example.com' },
+  { key: 'footer_phone', label: 'Phone', placeholder: '+880 1XXXXXXXXX' },
+  { key: 'footer_email', label: 'Email', placeholder: 'info@yourdomain.com' },
   { key: 'footer_facebook', label: 'Facebook URL', placeholder: 'https://facebook.com/...' },
   { key: 'footer_instagram', label: 'Instagram URL', placeholder: 'https://instagram.com/...' },
   { key: 'footer_messenger', label: 'Messenger Link', placeholder: 'https://m.me/yourpage' },
   { key: 'footer_whatsapp', label: 'WhatsApp Link', placeholder: 'https://wa.me/8801XXXXXXXXX' },
-  { key: 'footer_copyright', label: 'Copyright Text', placeholder: '© 2026 TWINKLE. All rights reserved.' },
+  { key: 'footer_copyright', label: 'Copyright Text', placeholder: '© 2026 Your Brand. All rights reserved.' },
   { key: 'product_message_link', label: 'Product Page "Message Now" Link', placeholder: 'https://m.me/yourpage' },
 ];
 

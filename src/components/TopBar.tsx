@@ -3,9 +3,9 @@ import { useStoreSettings } from '@/hooks/useSupabase';
 
 const TopBar = () => {
   const { data: s = {} } = useStoreSettings();
-  const email = s['footer_email'] || 'ptexfashion@gmail.com';
-  const facebook = s['footer_facebook'] || '#';
-  const instagram = s['footer_instagram'] || '#';
+  const email = s['footer_email'] || '';
+  const facebook = s['footer_facebook'] || '';
+  const instagram = s['footer_instagram'] || '';
 
   return (
     <div className="hidden border-b border-border bg-background">

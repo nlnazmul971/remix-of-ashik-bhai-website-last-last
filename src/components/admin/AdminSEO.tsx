@@ -62,11 +62,11 @@ const AdminSEO = () => {
 
   useEffect(() => {
     if (isLoading) return;
-    setBrand(settings['seo_brand_name'] || 'Baby Store');
+    setBrand(settings['seo_brand_name'] || '');
     setTitleTemplate(settings['seo_title_template'] || '{title} | {brand}');
-    setDefaultTitle(settings['seo_default_title'] || 'Baby Store — Quality Baby Products');
-    setDefaultDesc(settings['seo_default_description'] || 'Shop trusted baby products — clothing, gear, toys & essentials. Safe, gentle and made for little ones. Fast delivery & cash on delivery available.');
-    setDefaultKeywords(settings['seo_default_keywords'] || 'baby products, baby clothing, baby toys, baby gear, baby essentials, newborn, infant, toddler');
+    setDefaultTitle(settings['seo_default_title'] || '');
+    setDefaultDesc(settings['seo_default_description'] || '');
+    setDefaultKeywords(settings['seo_default_keywords'] || '');
     setOgImage(settings['seo_og_image'] || '');
     setTwitterHandle(settings['seo_twitter_handle'] || '');
     setBaseUrl(settings['seo_base_url'] || '');
@@ -178,8 +178,8 @@ const AdminSEO = () => {
             <input className={inputCls} value={titleTemplate} onChange={e => setTitleTemplate(e.target.value)} placeholder="{title} | {brand}" />
           </Field>
           <Field label="Default Page Title" hint="50–60 character recommended"><input className={inputCls} value={defaultTitle} onChange={e => setDefaultTitle(e.target.value)} /></Field>
-          <Field label="Base URL (canonical root)" hint="e.g. https://www.highlightsbd.shop">
-            <input className={inputCls} value={baseUrl} onChange={e => setBaseUrl(e.target.value)} placeholder="https://..." />
+          <Field label="Base URL (canonical root)" hint="Apnar website-er purno address. Sob page/sitemap/invoice ekhane theke link banabe.">
+            <input className={inputCls} value={baseUrl} onChange={e => setBaseUrl(e.target.value)} placeholder="https://yourdomain.com" />
           </Field>
         </div>
         <Field label={`Default Meta Description (${defaultDesc.length}/160 recommended)`} hint="Google search result-e title er niche dekhabe">
@@ -201,7 +201,7 @@ const AdminSEO = () => {
             { text: 'Canva khule "Custom size" select korun. Width: 1200, Height: 630 px.' , link: { label: 'Canva khulun', href: 'https://www.canva.com/' } },
             { text: 'Apnar logo, brand naam, ar attractive tagline boshan. JPG format-e download korun (size 500KB er moddhe).' },
             { text: 'Image ta upload korun (eg. Products section-er kono product image-e add korun) ba public URL ta paste korun ekhane.' },
-            { text: 'Twitter Handle: apnar Twitter/X account username dite hobe @ shoho (eg. @highlightsbd).' },
+            { text: 'Twitter Handle: apnar Twitter/X account username dite hobe @ shoho (eg. @yourbrand).' },
           ]}
           tips={[
             'OG image na thakle Facebook/WhatsApp link blank dekhabe — eta khub joruri.',
