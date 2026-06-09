@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Header from '@/components/Header';
-import HeroWithSidePoster from '@/components/HeroWithSidePoster';
+import Hero from '@/components/Hero';
 import VideoCarousel from '@/components/VideoCarousel';
 import BabyKidsFashion from '@/components/BabyKidsFashion';
 import ExploreCategories from '@/components/ExploreCategories';
@@ -191,7 +191,7 @@ const Index = () => {
       <SEO path="/" />
       <Header />
       <CartDrawer />
-      {!showProducts && <HeroWithSidePoster />}
+      {!showProducts && <Hero />}
       {!showProducts && <VideoCarousel />}
       {!showProducts && <BabyKidsFashion />}
       {!showProducts && <PromoPosters />}
@@ -200,7 +200,7 @@ const Index = () => {
       {!showProducts && <TrendingProducts />}
       {!showProducts && <HeroPosters />}
 
-      <main className={`max-w-full mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-32 sm:pt-40' : 'pt-2 sm:pt-6'}`}>
+      <main className={`max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 ${showProducts ? 'pt-32 sm:pt-40' : 'pt-2 sm:pt-6'}`}>
         {(searchQuery || (activeCategory && activeCategory !== 'All') || activeSub) && (
           <div className="text-center mb-6 sm:mb-8">
             <h2

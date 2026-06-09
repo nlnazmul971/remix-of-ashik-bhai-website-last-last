@@ -56,14 +56,6 @@ const AdminHomepage = () => {
         toast.success('Slider updated!');
       }} />
 
-      {/* 1a. Hero Side Poster (PC only, right of slider) */}
-      <HeroSidePosterManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Side poster updated!');
-      }} />
 
       {/* 1b. Hero Posters (2 vertical posters below slider) */}
       <HeroPostersManager settings={settings} onSave={async (patch) => {
