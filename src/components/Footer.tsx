@@ -169,30 +169,33 @@ const Footer = () => {
 
 
         {/* Copyright */}
-        <div className="mt-6 sm:mt-8 text-center">
-          <p className="text-[9px] tracking-[0.3em] text-muted-foreground uppercase">
-            {(() => {
-              const re = /md\.?\s*nazmul\s+hasan\s+limon/i;
-              const match = copyright.match(re);
-              if (!match) return copyright;
-              const idx = match.index!;
-              return (
-                <>
-                  {copyright.slice(0, idx)}
-                  <a
-                    href="https://www.facebook.com/nazmul.hasan.limon.432704"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
-                  >
-                    {copyright.slice(idx, idx + match[0].length)}
-                  </a>
-                  {copyright.slice(idx + match[0].length)}
-                </>
-              );
-            })()}
-          </p>
-        </div>
+        {copyright && (
+          <div className="mt-6 sm:mt-8 text-center">
+            <p className="text-[9px] tracking-[0.3em] text-muted-foreground uppercase">
+              {(() => {
+                const re = /md\.?\s*nazmul\s+hasan\s+limon/i;
+                const match = copyright.match(re);
+                if (!match) return copyright;
+                const idx = match.index!;
+                return (
+                  <>
+                    {copyright.slice(0, idx)}
+                    <a
+                      href="https://www.facebook.com/nazmul.hasan.limon.432704"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
+                    >
+                      {copyright.slice(idx, idx + match[0].length)}
+                    </a>
+                    {copyright.slice(idx + match[0].length)}
+                  </>
+                );
+              })()}
+            </p>
+          </div>
+        )}
+
 
       </div>
     </footer>
