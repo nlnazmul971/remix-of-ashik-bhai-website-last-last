@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import ScrollToTop from "./components/ScrollToTop";
 import AddToCartPopup from "./components/AddToCartPopup";
 import RedirectHandler from "./components/RedirectHandler";
+import ThemeLoader from "./components/ThemeLoader";
 
 // Lazy load non-critical UI (off-screen / interactive popups)
 const TrackingScripts = lazy(() => import("./components/TrackingScripts"));
@@ -64,6 +65,7 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
+              <ThemeLoader />
               <ScrollToTop />
               <RedirectHandler />
               <Suspense fallback={null}>
