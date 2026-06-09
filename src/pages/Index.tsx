@@ -187,7 +187,7 @@ const Index = () => {
   const hasMoreHome = !showProducts && filteredProducts.length > HOME_GRID_LIMIT;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background mx-auto w-full max-w-[1400px]">
       <SEO path="/" />
       <Header />
       <CartDrawer />
