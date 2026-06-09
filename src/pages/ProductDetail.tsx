@@ -169,7 +169,7 @@ const ProductDetail = () => {
   const { addView } = useRecentlyViewed();
   const { data: storeSettings } = useStoreSettings();
   const { data: allSizeStock = [] } = useAllSizeStock();
-  const baseMessageLink = storeSettings?.product_message_link || storeSettings?.footer_messenger || 'https://m.me/highlightbd';
+  const baseMessageLink = storeSettings?.product_message_link || storeSettings?.footer_messenger || '';
   const buildMessageLink = () => {
     if (!product) return baseMessageLink;
     const productUrl = `${window.location.origin}${buildProductPath(product)}`;
