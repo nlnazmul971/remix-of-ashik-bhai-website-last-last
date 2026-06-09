@@ -32,9 +32,11 @@ type Page = {
   seo_og_image?: string;
   seo_no_index?: boolean;
   view_count?: number;
+  custom_path?: string | null;
+  custom_domain?: string | null;
 };
 
-const empty: Page = { id: '', slug: '', title: '', description: '', blocks: [], status: 'draft' };
+const empty: Page = { id: '', slug: '', title: '', description: '', blocks: [], status: 'draft', custom_path: '', custom_domain: '' };
 
 const AdminLandingPages = () => {
   const [pages, setPages] = useState<Page[]>([]);
@@ -57,6 +59,11 @@ const AdminLandingPages = () => {
       return;
     }
     setSaving(true);
+    const normalizePath = (v?: string | null) => {
+      const t = (v || '').trim();
+      if (!t) return null;
+      return t.startsWith('/') ? t : '/' + t;
+    };
     const payload: any = {
       slug: editing.slug,
       title: editing.title,
@@ -69,6 +76,8 @@ const AdminLandingPages = () => {
       seo_focus_keyword: editing.seo_focus_keyword || null,
       seo_og_image: editing.seo_og_image || null,
       seo_no_index: !!editing.seo_no_index,
+      custom_path: normalizePath(editing.custom_path),
+      custom_domain: (editing.custom_domain || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') || null,
       published_at: editing.status === 'published' ? new Date().toISOString() : null,
     };
     const gate = await gateWrite({
@@ -297,6 +306,39 @@ const AdminLandingPages = () => {
                       <SelectItem value="published">Published</SelectItem>
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div className="border-t border-border pt-4 space-y-3">
+                  <div>
+                    <h4 className="text-sm font-semibold">Custom URL & Subdomain (optional)</h4>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      Default e ei page <span className="font-mono">/l/{editing.slug || 'slug'}</span> URL e dekha jabe.
+                      Niche custom path ba subdomain dile shei address eo open hobe.
+                    </p>
+                  </div>
+                  <div>
+                    <Label>Custom Path <span className="text-muted-foreground text-xs">(eg. /eid ba /promo/2026)</span></Label>
+                    <Input
+                      value={editing.custom_path || ''}
+                      onChange={(e) => setEditing({ ...editing, custom_path: e.target.value })}
+                      placeholder="/eid-collection"
+                    />
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      Khali rakhle just <span className="font-mono">/l/{editing.slug}</span> kaaj korbe.
+                    </p>
+                  </div>
+                  <div>
+                    <Label>Custom Domain / Subdomain <span className="text-muted-foreground text-xs">(eg. promo.yourdomain.com)</span></Label>
+                    <Input
+                      value={editing.custom_domain || ''}
+                      onChange={(e) => setEditing({ ...editing, custom_domain: e.target.value })}
+                      placeholder="promo.yourdomain.com"
+                    />
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      ⚠ DNS theke ei subdomain ke ei app er hosting e CNAME diye point korte hobe.
+                      Tarpor ei subdomain visit korle ei landing page-ei load hobe.
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
