@@ -275,7 +275,7 @@ const ProductDetail = () => {
     image: [productImg],
     description: product.description,
     sku: product.sku || product.id,
-    brand: { "@type": "Brand", name: product.brand || "Baby Store" },
+    brand: { "@type": "Brand", name: product.brand || undefined },
     category: product.category,
     offers: {
       "@type": "Offer",

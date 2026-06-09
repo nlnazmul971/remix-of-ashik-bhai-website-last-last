@@ -10,15 +10,15 @@ const Footer = () => {
   const [subscribing, setSubscribing] = useState(false);
   const { data: s } = useStoreSettings();
 
-  const brandName = s?.footer_brand_name || 'TWINKLE';
-  const address = s?.footer_address || 'House 12, Road 5, Sector 3, Uttara, Dhaka';
-  const phone = s?.footer_phone || '+880 1234 567890';
-  const footerEmail = s?.footer_email || 'info@twinkle.com';
+  const brandName = s?.footer_brand_name || '';
+  const address = s?.footer_address || '';
+  const phone = s?.footer_phone || '';
+  const footerEmail = s?.footer_email || '';
   const facebookUrl = s?.footer_facebook || '';
   const instagramUrl = s?.footer_instagram || '';
   const messengerUrl = s?.footer_messenger || '';
   const whatsappUrl = s?.footer_whatsapp || '';
-  const copyright = s?.footer_copyright || `© 2026 ${brandName}. All rights reserved.`;
+  const copyright = s?.footer_copyright || (brandName ? `© ${new Date().getFullYear()} ${brandName}. All rights reserved.` : '');
 
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -14,7 +14,7 @@ const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
   const { data: settings = {} } = useStoreSettings();
   const baseUrl = (settings['seo_base_url'] || '').replace(/\/+$/, '');
-  const brand = settings['seo_brand_name'] || 'Baby Store';
+  const brand = settings['seo_brand_name'] || settings['footer_brand_name'] || '';
 
   const [post, setPost] = useState<any>(null);
   const [author, setAuthor] = useState<any>(null);
