@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.highlightsbd.shop/</loc>
+    <loc>https://www.yourdomain.com/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/about</loc>
+    <loc>https://www.yourdomain.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/contact</loc>
+    <loc>https://www.yourdomain.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/privacy-policy</loc>
+    <loc>https://www.yourdomain.com/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/terms</loc>
+    <loc>https://www.yourdomain.com/terms</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/refund-policy</loc>
+    <loc>https://www.yourdomain.com/refund-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/shipping-policy</loc>
+    <loc>https://www.yourdomain.com/shipping-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/product/1e09830a-f57f-4ac8-82b7-ffd5d3845914</loc>
+    <loc>https://www.yourdomain.com/product/1e09830a-f57f-4ac8-82b7-ffd5d3845914</loc>
     <lastmod>2026-06-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/blog</loc>
+    <loc>https://www.yourdomain.com/blog</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.highlightsbd.shop/l/eid-collection</loc>
+    <loc>https://www.yourdomain.com/l/eid-collection</loc>
     <lastmod>2026-06-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

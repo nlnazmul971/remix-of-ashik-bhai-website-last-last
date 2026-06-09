@@ -3,7 +3,7 @@ import { writeFileSync } from "fs";
 import { resolve } from "path";
 import { createClient } from "@supabase/supabase-js";
 
-const BASE_URL = "https://www.highlightsbd.shop";
+const BASE_URL = "www.yourdomain.com";
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || "https://jvvdyfgegzxgmwrttgnl.supabase.co";
 const SUPABASE_KEY =
