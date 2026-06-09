@@ -1,6 +1,6 @@
 -- ============================================================
 -- FULL DATABASE SCHEMA (public schema)
--- Generated: 2026-06-07T13:14:19Z
+-- Generated: 2026-06-09T19:19:45Z
 -- Includes: tables, types, functions, triggers, RLS policies, grants
 -- ============================================================
 
@@ -8,7 +8,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict af9LM1nV7dIshyZcw7BQHa6HoBiQYLzwAabOxfvdYY392FDlgS5uP278rwCS24F
+\restrict V5gmYbS0nAHGjDK0keVAzLmHVaoOUmXgEo0mvwQZ8d2u08mKj9tGY7x3vLbcTJm
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.9
@@ -17,13 +17,12 @@ SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET transaction_timeout = 0;
-SET client_encoding = 'SQL_ASCII';
-SET standard_conforming_strings = off;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 SET row_security = off;
 
 --
@@ -190,6 +189,46 @@ BEGIN
   RETURN NEW;
 END;
 $$;
+
+
+--
+-- Name: action_logs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.action_logs (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    actor_id uuid,
+    actor_email text,
+    actor_role text,
+    entity_type text NOT NULL,
+    entity_id text,
+    action text NOT NULL,
+    summary text,
+    details jsonb,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: approval_requests; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.approval_requests (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    requested_by uuid,
+    requester_email text,
+    entity_type text NOT NULL,
+    entity_id text,
+    action text NOT NULL,
+    payload jsonb,
+    reason text,
+    status text DEFAULT 'pending'::text NOT NULL,
+    reviewed_by uuid,
+    reviewer_note text,
+    reviewed_at timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
 
 
 --
@@ -422,7 +461,9 @@ CREATE TABLE public.landing_pages (
     view_count integer DEFAULT 0 NOT NULL,
     conversion_count integer DEFAULT 0 NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    custom_domain text,
+    custom_path text
 );
 
 
@@ -711,6 +752,22 @@ CREATE TABLE public.wishlist_items (
     product_id uuid NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL
 );
+
+
+--
+-- Name: action_logs action_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.action_logs
+    ADD CONSTRAINT action_logs_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: approval_requests approval_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.approval_requests
+    ADD CONSTRAINT approval_requests_pkey PRIMARY KEY (id);
 
 
 --
@@ -1122,6 +1179,41 @@ ALTER TABLE ONLY public.wishlist_items
 
 
 --
+-- Name: action_logs_actor_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX action_logs_actor_idx ON public.action_logs USING btree (actor_id);
+
+
+--
+-- Name: action_logs_created_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX action_logs_created_idx ON public.action_logs USING btree (created_at DESC);
+
+
+--
+-- Name: action_logs_entity_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX action_logs_entity_idx ON public.action_logs USING btree (entity_type, entity_id);
+
+
+--
+-- Name: approval_requests_requester_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX approval_requests_requester_idx ON public.approval_requests USING btree (requested_by);
+
+
+--
+-- Name: approval_requests_status_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX approval_requests_status_idx ON public.approval_requests USING btree (status, created_at DESC);
+
+
+--
 -- Name: idx_blogs_author; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -1255,10 +1347,31 @@ CREATE INDEX idx_subcategories_parent_active_order ON public.subcategories USING
 
 
 --
+-- Name: landing_pages_custom_domain_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX landing_pages_custom_domain_idx ON public.landing_pages USING btree (custom_domain) WHERE (custom_domain IS NOT NULL);
+
+
+--
+-- Name: landing_pages_custom_path_unique; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX landing_pages_custom_path_unique ON public.landing_pages USING btree (custom_path) WHERE (custom_path IS NOT NULL);
+
+
+--
 -- Name: products_seo_slug_unique; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX products_seo_slug_unique ON public.products USING btree (seo_slug) WHERE ((seo_slug IS NOT NULL) AND (seo_slug <> ''::text));
+
+
+--
+-- Name: approval_requests trg_approval_requests_updated_at; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_approval_requests_updated_at BEFORE UPDATE ON public.approval_requests FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 
 --
@@ -1378,6 +1491,30 @@ CREATE TRIGGER update_redirects_updated_at BEFORE UPDATE ON public.redirects FOR
 --
 
 CREATE TRIGGER update_subcategories_updated_at BEFORE UPDATE ON public.subcategories FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+
+--
+-- Name: action_logs action_logs_actor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.action_logs
+    ADD CONSTRAINT action_logs_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES auth.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: approval_requests approval_requests_requested_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.approval_requests
+    ADD CONSTRAINT approval_requests_requested_by_fkey FOREIGN KEY (requested_by) REFERENCES auth.users(id) ON DELETE SET NULL;
+
+
+--
+-- Name: approval_requests approval_requests_reviewed_by_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.approval_requests
+    ADD CONSTRAINT approval_requests_reviewed_by_fkey FOREIGN KEY (reviewed_by) REFERENCES auth.users(id) ON DELETE SET NULL;
 
 
 --
@@ -1854,6 +1991,13 @@ CREATE POLICY "Admins can view stock logs" ON public.stock_logs FOR SELECT TO au
 
 
 --
+-- Name: approval_requests Admins create requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins create requests" ON public.approval_requests FOR INSERT TO authenticated WITH CHECK (((requested_by = auth.uid()) AND public.has_role(auth.uid(), 'admin'::public.app_role)));
+
+
+--
 -- Name: blog_authors Admins manage blog authors; Type: POLICY; Schema: public; Owner: -
 --
 
@@ -1914,6 +2058,27 @@ CREATE POLICY "Admins manage pseo pages" ON public.pseo_pages USING (public.has_
 --
 
 CREATE POLICY "Admins manage pseo templates" ON public.pseo_templates USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
+
+
+--
+-- Name: action_logs Admins read all logs; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins read all logs" ON public.action_logs FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
+
+
+--
+-- Name: approval_requests Admins read all requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins read all requests" ON public.approval_requests FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role));
+
+
+--
+-- Name: approval_requests Admins update requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Admins update requests" ON public.approval_requests FOR UPDATE TO authenticated USING (public.has_role(auth.uid(), 'admin'::public.app_role)) WITH CHECK (public.has_role(auth.uid(), 'admin'::public.app_role));
 
 
 --
@@ -2022,6 +2187,27 @@ CREATE POLICY "Header categories are viewable by everyone" ON public.header_cate
 
 
 --
+-- Name: approval_requests Moderators create requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Moderators create requests" ON public.approval_requests FOR INSERT TO authenticated WITH CHECK (((requested_by = auth.uid()) AND public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: action_logs Moderators read own logs; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Moderators read own logs" ON public.action_logs FOR SELECT TO authenticated USING ((public.has_role(auth.uid(), 'moderator'::public.app_role) AND (actor_id = auth.uid())));
+
+
+--
+-- Name: approval_requests Moderators read own requests; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Moderators read own requests" ON public.approval_requests FOR SELECT TO authenticated USING ((public.has_role(auth.uid(), 'moderator'::public.app_role) AND (requested_by = auth.uid())));
+
+
+--
 -- Name: packaging_options Packaging options viewable by everyone; Type: POLICY; Schema: public; Owner: -
 --
 
@@ -2089,6 +2275,83 @@ CREATE POLICY "Redirects viewable by everyone" ON public.redirects FOR SELECT US
 --
 
 CREATE POLICY "Reviews are viewable by everyone" ON public.reviews FOR SELECT USING (true);
+
+
+--
+-- Name: action_logs Staff can insert their own logs; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff can insert their own logs" ON public.action_logs FOR INSERT TO authenticated WITH CHECK (((actor_id = auth.uid()) AND (public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role))));
+
+
+--
+-- Name: products Staff insert products; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff insert products" ON public.products FOR INSERT TO authenticated WITH CHECK ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: product_size_stock Staff insert stock; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff insert stock" ON public.product_size_stock FOR INSERT TO authenticated WITH CHECK ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: stock_logs Staff insert stock logs; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff insert stock logs" ON public.stock_logs FOR INSERT TO authenticated WITH CHECK ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: product_images Staff manage product images insert; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff manage product images insert" ON public.product_images FOR INSERT TO authenticated WITH CHECK ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: product_images Staff manage product images update; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff manage product images update" ON public.product_images FOR UPDATE TO authenticated USING ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role))) WITH CHECK ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: orders Staff update orders; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff update orders" ON public.orders FOR UPDATE TO authenticated USING ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role))) WITH CHECK ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: products Staff update products; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff update products" ON public.products FOR UPDATE TO authenticated USING ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role))) WITH CHECK ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: product_size_stock Staff update stock; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff update stock" ON public.product_size_stock FOR UPDATE TO authenticated USING ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role))) WITH CHECK ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: orders Staff view all orders; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff view all orders" ON public.orders FOR SELECT TO authenticated USING ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
+
+
+--
+-- Name: stock_logs Staff view stock logs; Type: POLICY; Schema: public; Owner: -
+--
+
+CREATE POLICY "Staff view stock logs" ON public.stock_logs FOR SELECT TO authenticated USING ((public.has_role(auth.uid(), 'admin'::public.app_role) OR public.has_role(auth.uid(), 'moderator'::public.app_role)));
 
 
 --
@@ -2167,6 +2430,18 @@ CREATE POLICY "Users can view own role" ON public.user_roles FOR SELECT TO authe
 
 CREATE POLICY "Users can view own wishlist" ON public.wishlist_items FOR SELECT TO authenticated USING ((auth.uid() = user_id));
 
+
+--
+-- Name: action_logs; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.action_logs ENABLE ROW LEVEL SECURITY;
+
+--
+-- Name: approval_requests; Type: ROW SECURITY; Schema: public; Owner: -
+--
+
+ALTER TABLE public.approval_requests ENABLE ROW LEVEL SECURITY;
 
 --
 -- Name: blog_authors; Type: ROW SECURITY; Schema: public; Owner: -
@@ -2355,148 +2630,452 @@ ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.wishlist_items ENABLE ROW LEVEL SECURITY;
 
 --
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: -
+--
+
+GRANT USAGE ON SCHEMA public TO postgres;
+GRANT USAGE ON SCHEMA public TO anon;
+GRANT USAGE ON SCHEMA public TO authenticated;
+GRANT USAGE ON SCHEMA public TO service_role;
+GRANT USAGE ON SCHEMA public TO sandbox_exec;
+
+
+--
+-- Name: TABLE orders; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.orders TO anon;
+GRANT ALL ON TABLE public.orders TO authenticated;
+GRANT ALL ON TABLE public.orders TO service_role;
+GRANT SELECT,INSERT ON TABLE public.orders TO sandbox_exec;
+
+
+--
+-- Name: FUNCTION create_order(_order jsonb); Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON FUNCTION public.create_order(_order jsonb) TO anon;
+GRANT ALL ON FUNCTION public.create_order(_order jsonb) TO authenticated;
+GRANT ALL ON FUNCTION public.create_order(_order jsonb) TO service_role;
+GRANT ALL ON FUNCTION public.create_order(_order jsonb) TO sandbox_exec;
+
+
+--
+-- Name: FUNCTION handle_new_user(); Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON FUNCTION public.handle_new_user() TO anon;
+GRANT ALL ON FUNCTION public.handle_new_user() TO authenticated;
+GRANT ALL ON FUNCTION public.handle_new_user() TO service_role;
+GRANT ALL ON FUNCTION public.handle_new_user() TO sandbox_exec;
+
+
+--
+-- Name: FUNCTION has_role(_user_id uuid, _role public.app_role); Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON FUNCTION public.has_role(_user_id uuid, _role public.app_role) TO anon;
+GRANT ALL ON FUNCTION public.has_role(_user_id uuid, _role public.app_role) TO authenticated;
+GRANT ALL ON FUNCTION public.has_role(_user_id uuid, _role public.app_role) TO service_role;
+GRANT ALL ON FUNCTION public.has_role(_user_id uuid, _role public.app_role) TO sandbox_exec;
+
+
+--
+-- Name: FUNCTION update_updated_at_column(); Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON FUNCTION public.update_updated_at_column() TO anon;
+GRANT ALL ON FUNCTION public.update_updated_at_column() TO authenticated;
+GRANT ALL ON FUNCTION public.update_updated_at_column() TO service_role;
+GRANT ALL ON FUNCTION public.update_updated_at_column() TO sandbox_exec;
+
+
+--
+-- Name: TABLE action_logs; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.action_logs TO anon;
+GRANT ALL ON TABLE public.action_logs TO authenticated;
+GRANT ALL ON TABLE public.action_logs TO service_role;
+GRANT SELECT,INSERT ON TABLE public.action_logs TO sandbox_exec;
+
+
+--
+-- Name: TABLE approval_requests; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.approval_requests TO anon;
+GRANT ALL ON TABLE public.approval_requests TO authenticated;
+GRANT ALL ON TABLE public.approval_requests TO service_role;
+GRANT SELECT,INSERT ON TABLE public.approval_requests TO sandbox_exec;
+
+
+--
+-- Name: TABLE blog_authors; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.blog_authors TO anon;
+GRANT ALL ON TABLE public.blog_authors TO authenticated;
+GRANT ALL ON TABLE public.blog_authors TO service_role;
+GRANT SELECT,INSERT ON TABLE public.blog_authors TO sandbox_exec;
+
+
+--
+-- Name: TABLE blog_categories; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.blog_categories TO anon;
+GRANT ALL ON TABLE public.blog_categories TO authenticated;
+GRANT ALL ON TABLE public.blog_categories TO service_role;
+GRANT SELECT,INSERT ON TABLE public.blog_categories TO sandbox_exec;
+
+
+--
+-- Name: TABLE blog_comments; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.blog_comments TO anon;
+GRANT ALL ON TABLE public.blog_comments TO authenticated;
+GRANT ALL ON TABLE public.blog_comments TO service_role;
+GRANT SELECT,INSERT ON TABLE public.blog_comments TO sandbox_exec;
+
+
+--
+-- Name: TABLE blog_tags; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.blog_tags TO anon;
+GRANT ALL ON TABLE public.blog_tags TO authenticated;
+GRANT ALL ON TABLE public.blog_tags TO service_role;
+GRANT SELECT,INSERT ON TABLE public.blog_tags TO sandbox_exec;
+
+
+--
+-- Name: TABLE blogs; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.blogs TO anon;
+GRANT ALL ON TABLE public.blogs TO authenticated;
+GRANT ALL ON TABLE public.blogs TO service_role;
+GRANT SELECT,INSERT ON TABLE public.blogs TO sandbox_exec;
+
+
+--
+-- Name: TABLE checkout_payment_settings; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.checkout_payment_settings TO anon;
+GRANT ALL ON TABLE public.checkout_payment_settings TO authenticated;
+GRANT ALL ON TABLE public.checkout_payment_settings TO service_role;
+GRANT SELECT,INSERT ON TABLE public.checkout_payment_settings TO sandbox_exec;
+
+
+--
+-- Name: TABLE coupons; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.coupons TO anon;
+GRANT ALL ON TABLE public.coupons TO authenticated;
+GRANT ALL ON TABLE public.coupons TO service_role;
+GRANT SELECT,INSERT ON TABLE public.coupons TO sandbox_exec;
+
+
+--
+-- Name: TABLE custom_pages; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.custom_pages TO anon;
+GRANT ALL ON TABLE public.custom_pages TO authenticated;
+GRANT ALL ON TABLE public.custom_pages TO service_role;
+GRANT SELECT,INSERT ON TABLE public.custom_pages TO sandbox_exec;
+
+
+--
+-- Name: TABLE delivery_zones; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.delivery_zones TO anon;
+GRANT ALL ON TABLE public.delivery_zones TO authenticated;
+GRANT ALL ON TABLE public.delivery_zones TO service_role;
+GRANT SELECT,INSERT ON TABLE public.delivery_zones TO sandbox_exec;
+
+
+--
+-- Name: TABLE fraud_checks; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.fraud_checks TO anon;
+GRANT ALL ON TABLE public.fraud_checks TO authenticated;
+GRANT ALL ON TABLE public.fraud_checks TO service_role;
+GRANT SELECT,INSERT ON TABLE public.fraud_checks TO sandbox_exec;
+
+
+--
+-- Name: TABLE header_categories; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.header_categories TO anon;
+GRANT ALL ON TABLE public.header_categories TO authenticated;
+GRANT ALL ON TABLE public.header_categories TO service_role;
+GRANT SELECT,INSERT ON TABLE public.header_categories TO sandbox_exec;
+
+
+--
+-- Name: TABLE landing_page_analytics; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.landing_page_analytics TO anon;
+GRANT ALL ON TABLE public.landing_page_analytics TO authenticated;
+GRANT ALL ON TABLE public.landing_page_analytics TO service_role;
+GRANT SELECT,INSERT ON TABLE public.landing_page_analytics TO sandbox_exec;
+
+
+--
+-- Name: TABLE landing_pages; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.landing_pages TO anon;
+GRANT ALL ON TABLE public.landing_pages TO authenticated;
+GRANT ALL ON TABLE public.landing_pages TO service_role;
+GRANT SELECT,INSERT ON TABLE public.landing_pages TO sandbox_exec;
+
+
+--
+-- Name: TABLE newsletter_subscribers; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.newsletter_subscribers TO anon;
+GRANT ALL ON TABLE public.newsletter_subscribers TO authenticated;
+GRANT ALL ON TABLE public.newsletter_subscribers TO service_role;
+GRANT SELECT,INSERT ON TABLE public.newsletter_subscribers TO sandbox_exec;
+
+
+--
+-- Name: TABLE packaging_options; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.packaging_options TO anon;
+GRANT ALL ON TABLE public.packaging_options TO authenticated;
+GRANT ALL ON TABLE public.packaging_options TO service_role;
+GRANT SELECT,INSERT ON TABLE public.packaging_options TO sandbox_exec;
+
+
+--
+-- Name: TABLE product_images; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.product_images TO anon;
+GRANT ALL ON TABLE public.product_images TO authenticated;
+GRANT ALL ON TABLE public.product_images TO service_role;
+GRANT SELECT,INSERT ON TABLE public.product_images TO sandbox_exec;
+
+
+--
+-- Name: TABLE product_size_stock; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.product_size_stock TO anon;
+GRANT ALL ON TABLE public.product_size_stock TO authenticated;
+GRANT ALL ON TABLE public.product_size_stock TO service_role;
+GRANT SELECT,INSERT ON TABLE public.product_size_stock TO sandbox_exec;
+
+
+--
+-- Name: TABLE products; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.products TO anon;
+GRANT ALL ON TABLE public.products TO authenticated;
+GRANT ALL ON TABLE public.products TO service_role;
+GRANT SELECT,INSERT ON TABLE public.products TO sandbox_exec;
+
+
+--
+-- Name: TABLE profiles; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.profiles TO anon;
+GRANT ALL ON TABLE public.profiles TO authenticated;
+GRANT ALL ON TABLE public.profiles TO service_role;
+GRANT SELECT,INSERT ON TABLE public.profiles TO sandbox_exec;
+
+
+--
+-- Name: TABLE pseo_pages; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.pseo_pages TO anon;
+GRANT ALL ON TABLE public.pseo_pages TO authenticated;
+GRANT ALL ON TABLE public.pseo_pages TO service_role;
+GRANT SELECT,INSERT ON TABLE public.pseo_pages TO sandbox_exec;
+
+
+--
+-- Name: TABLE pseo_templates; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.pseo_templates TO anon;
+GRANT ALL ON TABLE public.pseo_templates TO authenticated;
+GRANT ALL ON TABLE public.pseo_templates TO service_role;
+GRANT SELECT,INSERT ON TABLE public.pseo_templates TO sandbox_exec;
+
+
+--
+-- Name: TABLE redirects; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.redirects TO anon;
+GRANT ALL ON TABLE public.redirects TO authenticated;
+GRANT ALL ON TABLE public.redirects TO service_role;
+GRANT SELECT,INSERT ON TABLE public.redirects TO sandbox_exec;
+
+
+--
+-- Name: TABLE reviews; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.reviews TO anon;
+GRANT ALL ON TABLE public.reviews TO authenticated;
+GRANT ALL ON TABLE public.reviews TO service_role;
+GRANT SELECT,INSERT ON TABLE public.reviews TO sandbox_exec;
+
+
+--
+-- Name: TABLE stock_logs; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.stock_logs TO anon;
+GRANT ALL ON TABLE public.stock_logs TO authenticated;
+GRANT ALL ON TABLE public.stock_logs TO service_role;
+GRANT SELECT,INSERT ON TABLE public.stock_logs TO sandbox_exec;
+
+
+--
+-- Name: TABLE store_settings; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.store_settings TO anon;
+GRANT ALL ON TABLE public.store_settings TO authenticated;
+GRANT ALL ON TABLE public.store_settings TO service_role;
+GRANT SELECT,INSERT ON TABLE public.store_settings TO sandbox_exec;
+
+
+--
+-- Name: TABLE subcategories; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.subcategories TO anon;
+GRANT ALL ON TABLE public.subcategories TO authenticated;
+GRANT ALL ON TABLE public.subcategories TO service_role;
+GRANT SELECT,INSERT ON TABLE public.subcategories TO sandbox_exec;
+
+
+--
+-- Name: TABLE tracking_settings; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.tracking_settings TO anon;
+GRANT ALL ON TABLE public.tracking_settings TO authenticated;
+GRANT ALL ON TABLE public.tracking_settings TO service_role;
+GRANT SELECT,INSERT ON TABLE public.tracking_settings TO sandbox_exec;
+
+
+--
+-- Name: TABLE trash_users; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.trash_users TO anon;
+GRANT ALL ON TABLE public.trash_users TO authenticated;
+GRANT ALL ON TABLE public.trash_users TO service_role;
+GRANT SELECT,INSERT ON TABLE public.trash_users TO sandbox_exec;
+
+
+--
+-- Name: TABLE user_roles; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.user_roles TO anon;
+GRANT ALL ON TABLE public.user_roles TO authenticated;
+GRANT ALL ON TABLE public.user_roles TO service_role;
+GRANT SELECT,INSERT ON TABLE public.user_roles TO sandbox_exec;
+
+
+--
+-- Name: TABLE wishlist_items; Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON TABLE public.wishlist_items TO anon;
+GRANT ALL ON TABLE public.wishlist_items TO authenticated;
+GRANT ALL ON TABLE public.wishlist_items TO service_role;
+GRANT SELECT,INSERT ON TABLE public.wishlist_items TO sandbox_exec;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON SEQUENCES TO service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT,USAGE ON SEQUENCES TO sandbox_exec;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS TO service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON FUNCTIONS TO sandbox_exec;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR FUNCTIONS; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON FUNCTIONS TO service_role;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES TO service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT SELECT,INSERT ON TABLES TO sandbox_exec;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: -
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO anon;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO authenticated;
+ALTER DEFAULT PRIVILEGES FOR ROLE supabase_admin IN SCHEMA public GRANT ALL ON TABLES TO service_role;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict af9LM1nV7dIshyZcw7BQHa6HoBiQYLzwAabOxfvdYY392FDlgS5uP278rwCS24F
+\unrestrict V5gmYbS0nAHGjDK0keVAzLmHVaoOUmXgEo0mvwQZ8d2u08mKj9tGY7x3vLbcTJm
 
-
--- ============================================================
--- DEFAULT GRANTS (Data API access)
--- ============================================================
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.blog_tags TO authenticated; GRANT ALL ON public.blog_tags TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.reviews TO authenticated; GRANT ALL ON public.reviews TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.pseo_pages TO authenticated; GRANT ALL ON public.pseo_pages TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.delivery_zones TO authenticated; GRANT ALL ON public.delivery_zones TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.fraud_checks TO authenticated; GRANT ALL ON public.fraud_checks TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.header_categories TO authenticated; GRANT ALL ON public.header_categories TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.checkout_payment_settings TO authenticated; GRANT ALL ON public.checkout_payment_settings TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.coupons TO authenticated; GRANT ALL ON public.coupons TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.custom_pages TO authenticated; GRANT ALL ON public.custom_pages TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.redirects TO authenticated; GRANT ALL ON public.redirects TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.pseo_templates TO authenticated; GRANT ALL ON public.pseo_templates TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.blog_comments TO authenticated; GRANT ALL ON public.blog_comments TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.blog_categories TO authenticated; GRANT ALL ON public.blog_categories TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.orders TO authenticated; GRANT ALL ON public.orders TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.blog_authors TO authenticated; GRANT ALL ON public.blog_authors TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.blogs TO authenticated; GRANT ALL ON public.blogs TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.store_settings TO authenticated; GRANT ALL ON public.store_settings TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.products TO authenticated; GRANT ALL ON public.products TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.stock_logs TO authenticated; GRANT ALL ON public.stock_logs TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.profiles TO authenticated; GRANT ALL ON public.profiles TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.packaging_options TO authenticated; GRANT ALL ON public.packaging_options TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.product_images TO authenticated; GRANT ALL ON public.product_images TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.newsletter_subscribers TO authenticated; GRANT ALL ON public.newsletter_subscribers TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.landing_pages TO authenticated; GRANT ALL ON public.landing_pages TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.landing_page_analytics TO authenticated; GRANT ALL ON public.landing_page_analytics TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.user_roles TO authenticated; GRANT ALL ON public.user_roles TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.wishlist_items TO authenticated; GRANT ALL ON public.wishlist_items TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.product_size_stock TO authenticated; GRANT ALL ON public.product_size_stock TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.tracking_settings TO authenticated; GRANT ALL ON public.tracking_settings TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.trash_users TO authenticated; GRANT ALL ON public.trash_users TO service_role;
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.subcategories TO authenticated; GRANT ALL ON public.subcategories TO service_role;
-
-
--- ============================================================
--- RLS POLICIES
--- ============================================================
-CREATE POLICY "Admins can delete checkout payment settings" ON public.checkout_payment_settings FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete coupons" ON public.coupons FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete custom pages" ON public.custom_pages FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete delivery zones" ON public.delivery_zones FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete header categories" ON public.header_categories FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete newsletter subscribers" ON public.newsletter_subscribers FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete orders" ON public.orders FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete product images" ON public.product_images FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete products" ON public.products FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete profiles" ON public.profiles FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete reviews" ON public.reviews FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete stock" ON public.product_size_stock FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete store settings" ON public.store_settings FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete subcategories" ON public.subcategories FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete user roles" ON public.user_roles FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert checkout payment settings" ON public.checkout_payment_settings FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert coupons" ON public.coupons FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert custom pages" ON public.custom_pages FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert delivery zones" ON public.delivery_zones FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert fraud checks" ON public.fraud_checks FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert header categories" ON public.header_categories FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert product images" ON public.product_images FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert products" ON public.products FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert stock" ON public.product_size_stock FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert stock logs" ON public.stock_logs FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert store settings" ON public.store_settings FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert subcategories" ON public.subcategories FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can insert user roles" ON public.user_roles FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can manage tracking_settings" ON public.tracking_settings FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can manage trash_users" ON public.trash_users FOR ALL TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update checkout payment settings" ON public.checkout_payment_settings FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update coupons" ON public.coupons FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update custom pages" ON public.custom_pages FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update delivery zones" ON public.delivery_zones FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update fraud checks" ON public.fraud_checks FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update header categories" ON public.header_categories FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update orders" ON public.orders FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update product images" ON public.product_images FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update products" ON public.products FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update stock" ON public.product_size_stock FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Anyone can create reviews" ON public.reviews FOR INSERT TO public USING (true) WITH CHECK (true);
-CREATE POLICY "Admins can update store settings" ON public.store_settings FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update subcategories" ON public.subcategories FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update user roles" ON public.user_roles FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can view all orders" ON public.orders FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can view all profiles" ON public.profiles FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can view all roles" ON public.user_roles FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can view all wishlist items" ON public.wishlist_items FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can view fraud checks" ON public.fraud_checks FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can view newsletter subscribers" ON public.newsletter_subscribers FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can view stock logs" ON public.stock_logs FOR SELECT TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins manage packaging options" ON public.packaging_options FOR ALL TO public USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Anon can validate coupon by code" ON public.coupons FOR SELECT TO anon USING ((is_active = true));
-CREATE POLICY "Anyone can create orders" ON public.orders FOR INSERT TO authenticated, anon USING (true) WITH CHECK (true);
-CREATE POLICY "Anyone can subscribe to newsletter" ON public.newsletter_subscribers FOR INSERT TO public USING (true) WITH CHECK (true);
-CREATE POLICY "Authenticated users can view active coupons" ON public.coupons FOR SELECT TO authenticated USING ((is_active = true));
-CREATE POLICY "Checkout payment settings are viewable by everyone" ON public.checkout_payment_settings FOR SELECT TO public USING (true);
-CREATE POLICY "Custom pages viewable by everyone" ON public.custom_pages FOR SELECT TO public USING (true);
-CREATE POLICY "Delivery zones are viewable by everyone" ON public.delivery_zones FOR SELECT TO public USING (true);
-CREATE POLICY "Header categories are viewable by everyone" ON public.header_categories FOR SELECT TO public USING (true);
-CREATE POLICY "Packaging options viewable by everyone" ON public.packaging_options FOR SELECT TO public USING (true);
-CREATE POLICY "Product images are viewable by everyone" ON public.product_images FOR SELECT TO public USING (true);
-CREATE POLICY "Products are viewable by everyone" ON public.products FOR SELECT TO public USING (true);
-CREATE POLICY "Public can read tracking_settings" ON public.tracking_settings FOR SELECT TO authenticated, anon USING (true);
-CREATE POLICY "Reviews are viewable by everyone" ON public.reviews FOR SELECT TO public USING (true);
-CREATE POLICY "Stock viewable by everyone" ON public.product_size_stock FOR SELECT TO public USING (true);
-CREATE POLICY "Store settings viewable by everyone" ON public.store_settings FOR SELECT TO public USING (true);
-CREATE POLICY "Subcategories viewable by everyone" ON public.subcategories FOR SELECT TO public USING (true);
-CREATE POLICY "Users can add to wishlist" ON public.wishlist_items FOR INSERT TO authenticated USING (true) WITH CHECK ((auth.uid() = user_id));
-CREATE POLICY "Users can insert own profile" ON public.profiles FOR INSERT TO authenticated USING (true) WITH CHECK ((auth.uid() = user_id));
-CREATE POLICY "Users can remove from wishlist" ON public.wishlist_items FOR DELETE TO authenticated USING ((auth.uid() = user_id));
-CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE TO authenticated USING ((auth.uid() = user_id));
-CREATE POLICY "Users can view own orders" ON public.orders FOR SELECT TO authenticated USING ((auth.uid() = user_id));
-CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT TO authenticated USING ((auth.uid() = user_id));
-CREATE POLICY "Users can view own role" ON public.user_roles FOR SELECT TO authenticated USING ((auth.uid() = user_id));
-CREATE POLICY "Users can view own wishlist" ON public.wishlist_items FOR SELECT TO authenticated USING ((auth.uid() = user_id));
-CREATE POLICY "Redirects viewable by everyone" ON public.redirects FOR SELECT TO public USING (true);
-CREATE POLICY "Admins can insert redirects" ON public.redirects FOR INSERT TO authenticated USING (true) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can update redirects" ON public.redirects FOR UPDATE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete redirects" ON public.redirects FOR DELETE TO authenticated USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Blog categories viewable by everyone" ON public.blog_categories FOR SELECT TO public USING (true);
-CREATE POLICY "Admins manage blog categories" ON public.blog_categories FOR ALL TO public USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Blog tags viewable by everyone" ON public.blog_tags FOR SELECT TO public USING (true);
-CREATE POLICY "Admins manage blog tags" ON public.blog_tags FOR ALL TO public USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Blog authors viewable by everyone" ON public.blog_authors FOR SELECT TO public USING (true);
-CREATE POLICY "Admins manage blog authors" ON public.blog_authors FOR ALL TO public USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Published blogs viewable by everyone" ON public.blogs FOR SELECT TO public USING (((status = 'published'::text) OR has_role(auth.uid(), 'admin'::app_role)));
-CREATE POLICY "Admins manage blogs" ON public.blogs FOR ALL TO public USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Approved comments viewable by everyone" ON public.blog_comments FOR SELECT TO public USING (((is_approved = true) OR has_role(auth.uid(), 'admin'::app_role)));
-CREATE POLICY "Anyone can submit comments" ON public.blog_comments FOR INSERT TO public USING (true) WITH CHECK (true);
-CREATE POLICY "Admins manage blog comments" ON public.blog_comments FOR UPDATE TO public USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins can delete blog comments" ON public.blog_comments FOR DELETE TO public USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Published landing pages viewable by everyone" ON public.landing_pages FOR SELECT TO public USING (((status = 'published'::text) OR has_role(auth.uid(), 'admin'::app_role)));
-CREATE POLICY "Admins manage landing pages" ON public.landing_pages FOR ALL TO public USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Anyone can insert landing page analytics" ON public.landing_page_analytics FOR INSERT TO public USING (true) WITH CHECK (true);
-CREATE POLICY "Admins can view landing page analytics" ON public.landing_page_analytics FOR SELECT TO public USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Admins manage pseo templates" ON public.pseo_templates FOR ALL TO public USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Pseo templates viewable by admins for management" ON public.pseo_templates FOR SELECT TO public USING (has_role(auth.uid(), 'admin'::app_role));
-CREATE POLICY "Published pseo pages viewable by everyone" ON public.pseo_pages FOR SELECT TO public USING (((status = 'published'::text) OR has_role(auth.uid(), 'admin'::app_role)));
-CREATE POLICY "Admins manage pseo pages" ON public.pseo_pages FOR ALL TO public USING (has_role(auth.uid(), 'admin'::app_role)) WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
