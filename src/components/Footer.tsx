@@ -20,19 +20,19 @@ const Footer = () => {
   const [subscribing, setSubscribing] = useState(false);
   const { data: s } = useStoreSettings();
 
-  // If store settings haven't loaded (DB not connected / empty) hide footer entirely.
-  if (!s || Object.keys(s).length === 0) return null;
+  // Always render footer with fallbacks (even if DB is empty)
+  const settings = s || {};
 
-  const brandName = s?.footer_brand_name || '';
-  const address = s?.footer_address || '';
-  const phone = s?.footer_phone || '';
-  const footerEmail = s?.footer_email || '';
-  const facebookUrl = s?.footer_facebook || '';
-  const instagramUrl = s?.footer_instagram || '';
-  const messengerUrl = s?.footer_messenger || '';
-  const whatsappUrl = s?.footer_whatsapp || '';
-  const copyright = s?.footer_copyright || '';
-  const newsletterText = s?.footer_newsletter_text || '';
+  const brandName = settings.footer_brand_name || 'Your Store';
+  const address = settings.footer_address || '';
+  const phone = settings.footer_phone || '';
+  const footerEmail = settings.footer_email || '';
+  const facebookUrl = settings.footer_facebook || '';
+  const instagramUrl = settings.footer_instagram || '';
+  const messengerUrl = settings.footer_messenger || '';
+  const whatsappUrl = settings.footer_whatsapp || '';
+  const copyright = settings.footer_copyright || `© ${new Date().getFullYear()} ${brandName}. All rights reserved.`;
+  const newsletterText = settings.footer_newsletter_text || 'Subscribe to receive updates, access to exclusive deals, and more.';
 
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,13 +56,32 @@ const Footer = () => {
     }
   };
 
-  const trustItems = safeJson<Array<{ icon?: string; title?: string; title2?: string }>>(
-    s?.footer_trust_items, []
-  );
-  const collectionLinks = safeJson<Array<{ label: string; to: string }>>(s?.footer_collection_links, []);
-  const policyLinks = safeJson<Array<{ label: string; to: string }>>(s?.footer_policy_links, []);
-  const collectionHeading = s?.footer_collection_heading || '';
-  const policyHeading = s?.footer_policy_heading || '';
+  const DEFAULT_TRUST = [
+    { icon: 'truck', title: 'Cash on', title2: 'Delivery' },
+    { icon: 'rotate', title: 'Easy', title2: 'Returns' },
+    { icon: 'shield', title: 'Secure', title2: 'Checkout' },
+    { icon: 'headphones', title: '24/7', title2: 'Support' },
+  ];
+  const DEFAULT_COLLECTIONS = [
+    { label: 'All Products', to: '/?category=All' },
+    { label: 'New Arrivals', to: '/?category=All' },
+  ];
+  const DEFAULT_POLICIES = [
+    { label: 'Privacy Policy', to: '/privacy-policy' },
+    { label: 'Refund Policy', to: '/refund-policy' },
+    { label: 'Shipping Policy', to: '/shipping-policy' },
+    { label: 'Terms & Conditions', to: '/terms' },
+  ];
+
+  const trustItemsRaw = safeJson<Array<{ icon?: string; title?: string; title2?: string }>>(settings.footer_trust_items, []);
+  const trustItems = trustItemsRaw.length > 0 ? trustItemsRaw : DEFAULT_TRUST;
+  const collectionLinksRaw = safeJson<Array<{ label: string; to: string }>>(settings.footer_collection_links, []);
+  const collectionLinks = collectionLinksRaw.length > 0 ? collectionLinksRaw : DEFAULT_COLLECTIONS;
+  const policyLinksRaw = safeJson<Array<{ label: string; to: string }>>(settings.footer_policy_links, []);
+  const policyLinks = policyLinksRaw.length > 0 ? policyLinksRaw : DEFAULT_POLICIES;
+  const collectionHeading = settings.footer_collection_heading || 'Shop';
+  const policyHeading = settings.footer_policy_heading || 'Policies';
+
 
 
   return (
