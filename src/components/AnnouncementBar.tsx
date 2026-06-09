@@ -6,7 +6,7 @@ const AnnouncementBar = () => {
   const { data: s = {} } = useStoreSettings();
   const [dismissed, setDismissed] = useState(true);
 
-  const message = s['announcement_text'] || 'SUMMER SALE | 20% OFF on orders above 2000 BDT';
+  const message = s['announcement_text'] || '';
   const enabled = s['announcement_enabled'] !== 'false';
 
   useEffect(() => {
@@ -14,7 +14,7 @@ const AnnouncementBar = () => {
     setDismissed(v === '1');
   }, []);
 
-  if (!enabled || dismissed) return null;
+  if (!enabled || dismissed || !message) return null;
 
   return (
     <div
