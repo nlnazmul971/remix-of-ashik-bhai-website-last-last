@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import AdminFooterSettings from './AdminFooterSettings';
 import AdminAnnouncementBar from './AdminAnnouncementBar';
+import AdminThemeSettings from './AdminThemeSettings';
 
 const AdminSettings = () => {
   const { user } = useAuth();
@@ -117,6 +118,8 @@ const AdminSettings = () => {
           Update Password
         </button>
       </div>
+
+      <AdminThemeSettings />
 
       <AdminAnnouncementBar />
 
