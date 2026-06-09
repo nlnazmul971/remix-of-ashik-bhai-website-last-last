@@ -11,7 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import Header from '@/components/Header';
-import Hero from '@/components/Hero';
+import HeroWithSidePoster from '@/components/HeroWithSidePoster';
 import VideoCarousel from '@/components/VideoCarousel';
 import BabyKidsFashion from '@/components/BabyKidsFashion';
 import ExploreCategories from '@/components/ExploreCategories';
@@ -191,7 +191,7 @@ const Index = () => {
       <SEO path="/" />
       <Header />
       <CartDrawer />
-      {!showProducts && <Hero />}
+      {!showProducts && <HeroWithSidePoster />}
       {!showProducts && <VideoCarousel />}
       {!showProducts && <BabyKidsFashion />}
       {!showProducts && <PromoPosters />}

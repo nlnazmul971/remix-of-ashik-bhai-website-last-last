@@ -56,6 +56,15 @@ const AdminHomepage = () => {
         toast.success('Slider updated!');
       }} />
 
+      {/* 1a. Hero Side Poster (PC only, right of slider) */}
+      <HeroSidePosterManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Side poster updated!');
+      }} />
+
       {/* 1b. Hero Posters (2 vertical posters below slider) */}
       <HeroPostersManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
@@ -64,6 +73,7 @@ const AdminHomepage = () => {
         }
         toast.success('Hero posters updated!');
       }} />
+
 
 
       {/* 2. Video Carousel */}
@@ -1011,6 +1021,67 @@ const HeroPostersManager = ({ settings, onSave }: { settings: Record<string, any
     </div>
   );
 };
+
+const HeroSidePosterManager = ({ settings, onSave }: { settings: Record<string, any>; onSave: (patch: Record<string, string>) => Promise<void> }) => {
+  const [enabled, setEnabled] = useState(settings['hero_side_poster_enabled'] !== 'false');
+  const [image, setImage] = useState(settings['hero_side_poster_image'] || '');
+  const [link, setLink] = useState(settings['hero_side_poster_link'] || '/');
+  const [alt, setAlt] = useState(settings['hero_side_poster_alt'] || '');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEnabled(settings['hero_side_poster_enabled'] !== 'false');
+    setImage(settings['hero_side_poster_image'] || '');
+    setLink(settings['hero_side_poster_link'] || '/');
+    setAlt(settings['hero_side_poster_alt'] || '');
+  }, [settings['hero_side_poster_enabled'], settings['hero_side_poster_image'], settings['hero_side_poster_link'], settings['hero_side_poster_alt']]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave({
+        hero_side_poster_enabled: enabled ? 'true' : 'false',
+        hero_side_poster_image: image,
+        hero_side_poster_link: link,
+        hero_side_poster_alt: alt,
+      });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="border border-border p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-sm font-medium tracking-wider uppercase">Hero Side Poster (PC only)</h3>
+          <p className="text-[10px] text-muted-foreground mt-1">Slider er pashe desktop view-te show hobe • Recommended 800×1200px (portrait) • Mobile-e show korbe na</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <label className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider cursor-pointer">
+            <input type="checkbox" checked={enabled} onChange={e => setEnabled(e.target.checked)} /> Enabled
+          </label>
+          <button onClick={handleSave} disabled={saving} className="luxury-button-primary text-[10px] py-2 px-3 inline-flex items-center gap-1.5">
+            {saving ? <Loader2 size={11} className="animate-spin" /> : <Save size={11} />} Save
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <HomepageImageUpload value={image} onChange={setImage} folder="hero-side-poster" />
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Link</label>
+            <input value={link} onChange={e => setLink(e.target.value)} className="luxury-input text-xs" placeholder="/?category=Offer" />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] text-muted-foreground uppercase tracking-wider">Alt text (SEO)</label>
+            <input value={alt} onChange={e => setAlt(e.target.value)} className="luxury-input text-xs" placeholder="100% Organic Food promotion" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 
 const ProductPicker = ({ selectedIds, onChange }: { selectedIds: string[]; onChange: (ids: string[]) => void }) => {
   const { data: products = [] } = useProducts();
