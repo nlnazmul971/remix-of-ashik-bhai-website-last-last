@@ -1,14 +1,27 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Truck, RotateCcw, Headphones, ShieldCheck } from 'lucide-react';
+import { Truck, RotateCcw, Headphones, ShieldCheck, Award, Heart, Sparkles, Gift, Star, ShoppingBag } from 'lucide-react';
 import { toast } from 'sonner';
 import { useStoreSettings } from '@/hooks/useSupabase';
 import { supabase } from '@/integrations/supabase/client';
+
+const ICONS: Record<string, any> = {
+  truck: Truck, rotate: RotateCcw, headphones: Headphones, shield: ShieldCheck,
+  award: Award, heart: Heart, sparkles: Sparkles, gift: Gift, star: Star, bag: ShoppingBag,
+};
+
+const safeJson = <T,>(raw: string | undefined, fallback: T): T => {
+  if (!raw) return fallback;
+  try { return JSON.parse(raw) as T; } catch { return fallback; }
+};
 
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [subscribing, setSubscribing] = useState(false);
   const { data: s } = useStoreSettings();
+
+  // If store settings haven't loaded (DB not connected / empty) hide footer entirely.
+  if (!s || Object.keys(s).length === 0) return null;
 
   const brandName = s?.footer_brand_name || '';
   const address = s?.footer_address || '';
@@ -18,7 +31,8 @@ const Footer = () => {
   const instagramUrl = s?.footer_instagram || '';
   const messengerUrl = s?.footer_messenger || '';
   const whatsappUrl = s?.footer_whatsapp || '';
-  const copyright = s?.footer_copyright || (brandName ? `© ${new Date().getFullYear()} ${brandName}. All rights reserved.` : '');
+  const copyright = s?.footer_copyright || '';
+  const newsletterText = s?.footer_newsletter_text || '';
 
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,12 +56,14 @@ const Footer = () => {
     }
   };
 
-  const trustItems = [
-    { icon: Truck, title: 'Cash on', title2: 'Delivery' },
-    { icon: RotateCcw, title: '7 Day', title2: 'Returns' },
-    { icon: Headphones, title: 'Expert', title2: 'Support' },
-    { icon: ShieldCheck, title: 'Quality', title2: 'Guarantee' },
-  ];
+  const trustItems = safeJson<Array<{ icon?: string; title?: string; title2?: string }>>(
+    s?.footer_trust_items, []
+  );
+  const collectionLinks = safeJson<Array<{ label: string; to: string }>>(s?.footer_collection_links, []);
+  const policyLinks = safeJson<Array<{ label: string; to: string }>>(s?.footer_policy_links, []);
+  const collectionHeading = s?.footer_collection_heading || '';
+  const policyHeading = s?.footer_policy_heading || '';
+
 
   return (
     <footer className="bg-background text-foreground border-t border-border mt-12 pb-[120px] sm:pb-0">
