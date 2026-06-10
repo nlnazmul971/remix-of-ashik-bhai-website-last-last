@@ -1,5 +1,6 @@
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, DatabaseBackup, ShieldCheck, Activity, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, DatabaseBackup, ShieldCheck, Activity, ChevronRight } from 'lucide-react';
 import adminLogo from '@/assets/admin-logo.png';
+import { useStoreSettings } from '@/hooks/useSupabase';
 import {
   Sidebar,
   SidebarContent,
@@ -14,23 +15,25 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-type SubItem = { title: string; key: string };
+type SubItem = { title: string; key: string; titleSettingKey?: string };
 type MenuItem = { title: string; key: string; icon: any; badge?: number; children?: SubItem[] };
 
+// `titleSettingKey` points to the store_settings field each section editor already
+// writes to — changing it there updates the sidebar (and the storefront) everywhere.
 export const HOMEPAGE_SECTIONS: SubItem[] = [
   { title: 'Announcement Bar', key: 'announcement' },
   { title: 'Site Logo', key: 'logo' },
-  { title: '1. Hero Slider', key: 'hero-slider' },
-  { title: '2. Video Carousel', key: 'video' },
-  { title: '3. Baby & Kids Fashion', key: 'baby-kids' },
-  { title: '4. Promo Posters', key: 'promo-posters' },
-  { title: '5. New Arrivals', key: 'new-arrivals' },
-  { title: '6. Explore Categories', key: 'explore-categories' },
-  { title: '7. Trending Products', key: 'trending' },
-  { title: '8. Hero Posters (Bottom)', key: 'hero-posters-bottom' },
-  { title: '9. Category Banners', key: 'category-banners' },
-  { title: '10. Fancy Posters', key: 'fancy-posters' },
-  { title: 'Categories Popup', key: 'categories-popup' },
+  { title: 'Hero Slider', key: 'hero-slider' },
+  { title: 'Video Carousel', key: 'video' },
+  { title: 'Baby & Kids Fashion', key: 'baby-kids', titleSettingKey: 'baby_kids_title' },
+  { title: 'Promo Posters', key: 'promo-posters' },
+  { title: 'New Arrivals', key: 'new-arrivals', titleSettingKey: 'new_arrivals_title' },
+  { title: 'Explore Categories', key: 'explore-categories', titleSettingKey: 'explore_cats_title' },
+  { title: 'Trending Products', key: 'trending', titleSettingKey: 'trending_title' },
+  { title: 'Hero Posters (Bottom)', key: 'hero-posters-bottom' },
+  { title: 'Category Banners', key: 'category-banners' },
+  { title: 'Fancy Posters', key: 'fancy-posters' },
+  { title: 'Categories Popup', key: 'categories-popup', titleSettingKey: 'categories_popup_title' },
 ];
 
 export const SETTINGS_SECTIONS: SubItem[] = [
@@ -126,6 +129,9 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
   const collapsed = state === 'collapsed';
   const menuGroups = buildMenuGroups(role);
   const [parentKey, childKey] = activeTab.split(':');
+  const { data: settings = {} } = useStoreSettings();
+  const resolveTitle = (sub: SubItem) =>
+    (sub.titleSettingKey && (settings as any)[sub.titleSettingKey]) || sub.title;
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
@@ -179,25 +185,31 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
                           </span>
                         )}
                         {item.children && !collapsed && (
-                          <ChevronDown className={`h-3.5 w-3.5 text-foreground/60 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+                          <ChevronRight className={`h-3.5 w-3.5 text-foreground/60 transition-transform ${expanded ? 'rotate-90' : ''}`} />
                         )}
                       </SidebarMenuButton>
 
                       {expanded && (
-                        <div className="ml-6 mt-0.5 mb-1 border-l border-border pl-2 flex flex-col gap-px">
+                        <div className="relative ml-[18px] mt-1 mb-1.5 pl-3 flex flex-col gap-0.5 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-px before:bg-border">
                           {item.children!.map((sub) => {
                             const subActive = childKey === sub.key;
+                            const label = resolveTitle(sub);
                             return (
                               <button
                                 key={sub.key}
                                 onClick={() => onTabChange(`${item.key}:${sub.key}`)}
-                                className={`text-left text-[12px] leading-tight rounded-md px-2 py-1.5 transition-colors ${
+                                className={`group/sub relative text-left text-[12.5px] leading-tight rounded-md pl-3 pr-2 py-1.5 transition-all ${
                                   subActive
-                                    ? 'bg-muted text-foreground font-semibold'
-                                    : 'text-foreground/75 hover:bg-muted/60 hover:text-foreground'
+                                    ? 'bg-primary/10 text-primary font-semibold'
+                                    : 'text-foreground/70 hover:bg-muted/70 hover:text-foreground'
                                 }`}
                               >
-                                {sub.title}
+                                <span
+                                  className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full transition-all ${
+                                    subActive ? 'bg-primary scale-150' : 'bg-foreground/30 group-hover/sub:bg-foreground/60'
+                                  }`}
+                                />
+                                <span className="truncate block">{label}</span>
                               </button>
                             );
                           })}
