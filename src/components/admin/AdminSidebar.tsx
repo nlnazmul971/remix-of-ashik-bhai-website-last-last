@@ -177,11 +177,11 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
                 {group.items.map((item) => {
                   const isActive = parentKey === item.key;
                   const badge = item.key === 'approvals' && role === 'admin' ? pendingApprovals : 0;
-                  const expanded = isActive && !collapsed && !!item.children;
+                  const expanded = isExpanded(item);
                   return (
                     <SidebarMenuItem key={item.key}>
                       <SidebarMenuButton
-                        onClick={() => onTabChange(item.key)}
+                        onClick={() => handleParentClick(item)}
                         isActive={isActive}
                         tooltip={item.title}
                         className={`group h-8 rounded-md px-2 transition-colors ${
