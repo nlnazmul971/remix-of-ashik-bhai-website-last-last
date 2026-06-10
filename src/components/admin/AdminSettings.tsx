@@ -4,8 +4,8 @@ import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import AdminFooterSettings from './AdminFooterSettings';
-
 import AdminThemeSettings from './AdminThemeSettings';
+import CollapsibleSection from './CollapsibleSection';
 
 const AdminSettings = () => {
   const { user } = useAuth();
@@ -63,65 +63,66 @@ const AdminSettings = () => {
   };
 
   return (
-    <div className="space-y-8 max-w-3xl">
-      <div className="border border-border p-6 space-y-5">
-        <div className="space-y-2">
-          <h3 className="text-lg font-light tracking-wide flex items-center gap-2" style={{ fontFamily: 'var(--font-display)' }}>
-            <KeyRound size={18} /> Change Admin Password
-          </h3>
+    <div className="space-y-3 max-w-3xl">
+      <CollapsibleSection title="Change Admin Password" subtitle="Update your login password">
+        <div className="space-y-5">
           <p className="text-xs text-muted-foreground">Current password verify করার পর new password set হবে।</p>
-        </div>
 
-        <div>
-          <label className="text-xs text-muted-foreground tracking-wider uppercase block mb-1.5">Current Password</label>
-          <input
-            type="password"
-            value={currentPassword}
-            onChange={e => setCurrentPassword(e.target.value)}
-            className="luxury-input"
-            placeholder="••••••••"
-            autoComplete="current-password"
-          />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-muted-foreground tracking-wider uppercase block mb-1.5">New Password</label>
+            <label className="text-xs text-muted-foreground tracking-wider uppercase block mb-1.5">Current Password</label>
             <input
               type="password"
-              value={newPassword}
-              onChange={e => setNewPassword(e.target.value)}
+              value={currentPassword}
+              onChange={e => setCurrentPassword(e.target.value)}
               className="luxury-input"
               placeholder="••••••••"
-              autoComplete="new-password"
+              autoComplete="current-password"
             />
           </div>
-          <div>
-            <label className="text-xs text-muted-foreground tracking-wider uppercase block mb-1.5">Confirm New Password</label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
-              className="luxury-input"
-              placeholder="••••••••"
-              autoComplete="new-password"
-            />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs text-muted-foreground tracking-wider uppercase block mb-1.5">New Password</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                className="luxury-input"
+                placeholder="••••••••"
+                autoComplete="new-password"
+              />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground tracking-wider uppercase block mb-1.5">Confirm New Password</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                className="luxury-input"
+                placeholder="••••••••"
+                autoComplete="new-password"
+              />
+            </div>
           </div>
+
+          <button
+            onClick={handleChangePassword}
+            disabled={saving || !currentPassword || !newPassword || !confirmPassword}
+            className="luxury-button-primary inline-flex h-11 items-center justify-center gap-2 px-6 text-[10px] disabled:opacity-50"
+          >
+            {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+            Update Password
+          </button>
         </div>
+      </CollapsibleSection>
 
-        <button
-          onClick={handleChangePassword}
-          disabled={saving || !currentPassword || !newPassword || !confirmPassword}
-          className="luxury-button-primary inline-flex h-11 items-center justify-center gap-2 px-6 text-[10px] disabled:opacity-50"
-        >
-          {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-          Update Password
-        </button>
-      </div>
+      <CollapsibleSection title="Theme & Colors" subtitle="Site color palette">
+        <AdminThemeSettings />
+      </CollapsibleSection>
 
-      <AdminThemeSettings />
-
-      <AdminFooterSettings />
+      <CollapsibleSection title="Footer Settings" subtitle="Footer content and links">
+        <AdminFooterSettings />
+      </CollapsibleSection>
     </div>
   );
 };

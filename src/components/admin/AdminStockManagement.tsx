@@ -34,6 +34,8 @@ const useProductSizeStock = () => {
       if (error) throw error;
       return (data || []) as SizeStock[];
     },
+    staleTime: 10_000,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -138,20 +140,32 @@ const AdminStockManagement = () => {
           const stocks = stockByProduct[p.id] || [];
           const productSizes = Array.isArray(p.sizes) ? p.sizes.filter(Boolean) : [];
           const norm = (v: any) => String(v ?? '').trim().toLowerCase();
-          // Prefer product.sizes ordering, but fall back to ALL existing stock rows
-          // if nothing matches (so admin can see real data).
+          // Always render from product.sizes when defined; otherwise fall back to whatever stock rows exist.
+          // Deduplicate by normalized size to avoid duplicate pills from legacy/extra rows.
           let displayStocks: { id: string; size: string; available: number }[] = [];
           if (productSizes.length) {
-            displayStocks = productSizes.map((size: string) => {
-              const match = stocks.find(s => norm(s.size) === norm(size));
-              return { id: match?.id || `${p.id}-${size}`, size: match?.size || size, available: match ? getAvailable(match) : 0 };
-            });
-            const anyMatched = displayStocks.some(d => d.available > 0);
-            if (!anyMatched && stocks.some(s => getAvailable(s) > 0)) {
-              displayStocks = stocks.map(s => ({ id: s.id, size: s.size || '—', available: getAvailable(s) }));
-            }
+            const seen = new Set<string>();
+            displayStocks = productSizes
+              .filter((size: string) => {
+                const k = norm(size);
+                if (seen.has(k)) return false;
+                seen.add(k);
+                return true;
+              })
+              .map((size: string) => {
+                const match = stocks.find(s => norm(s.size) === norm(size));
+                return { id: match?.id || `${p.id}-${size}`, size, available: match ? getAvailable(match) : 0 };
+              });
           } else {
-            displayStocks = stocks.map(s => ({ id: s.id, size: s.size || '—', available: getAvailable(s) }));
+            const seen = new Set<string>();
+            displayStocks = stocks
+              .filter(s => {
+                const k = norm(s.size);
+                if (seen.has(k)) return false;
+                seen.add(k);
+                return true;
+              })
+              .map(s => ({ id: s.id, size: s.size || '—', available: getAvailable(s) }));
           }
           const total = stocks.reduce((sum, s) => sum + getAvailable(s), 0);
           const isOut = total <= 0 && stocks.length > 0;
@@ -280,6 +294,7 @@ const StockEditDrawer = ({ product, stocks, onClose, onSaved }: { product: any; 
       }
       toast.success('Stock updated');
       qc.invalidateQueries({ queryKey: ['stock-logs'] });
+      qc.invalidateQueries({ queryKey: ['product-size-stock'] });
       onSaved();
     } catch (e: any) { toast.error(e.message); }
     finally { setSaving(false); }
