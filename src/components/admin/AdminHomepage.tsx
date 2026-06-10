@@ -35,126 +35,139 @@ const AdminHomepage = ({ section }: { section?: string } = {}) => {
     );
   }
 
+  const sections: { key: string; title: string; subtitle?: string; render: () => JSX.Element }[] = [
+    {
+      key: 'announcement', title: 'Announcement Bar', subtitle: 'Top scrolling text bar',
+      render: () => <AdminAnnouncementBar />,
+    },
+    {
+      key: 'logo', title: 'Site Logo', subtitle: 'Header logo image',
+      render: () => <LogoManager logo={siteLogo} onSave={async (url) => {
+        await updateSetting.mutateAsync({ key: 'site_logo', value: url });
+        toast.success('Logo updated!');
+      }} />,
+    },
+    {
+      key: 'hero-slider', title: '1. Hero Slider', subtitle: `${slides.length} slide(s)`,
+      render: () => <SliderManager slides={slides} onSave={async (newSlides) => {
+        await updateSetting.mutateAsync({ key: 'hero_slides', value: JSON.stringify(newSlides) });
+        toast.success('Slider updated!');
+      }} />,
+    },
+    {
+      key: 'video', title: '2. Video Carousel', subtitle: `${videos.length} video(s)`,
+      render: () => <VideoManager videos={videos} onSave={async (newVideos) => {
+        await updateSetting.mutateAsync({ key: 'homepage_videos', value: JSON.stringify(newVideos) });
+        toast.success('Videos updated!');
+      }} />,
+    },
+    {
+      key: 'baby-kids', title: '3. Baby & Kids Fashion',
+      render: () => <BabyKidsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Baby & Kids section updated!');
+      }} />,
+    },
+    {
+      key: 'promo-posters', title: '4. Promo Posters',
+      render: () => <PromoPostersManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Promo posters updated!');
+      }} />,
+    },
+    {
+      key: 'new-arrivals', title: '5. New Arrivals',
+      render: () => <NewArrivalsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('New Arrivals section updated!');
+      }} />,
+    },
+    {
+      key: 'explore-categories', title: '6. Explore Categories',
+      render: () => <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Explore Categories updated!');
+      }} />,
+    },
+    {
+      key: 'trending', title: '7. Trending Products',
+      render: () => <TrendingProductsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Trending Products section updated!');
+      }} />,
+    },
+    {
+      key: 'hero-posters-bottom', title: '8. Hero Posters (Bottom)',
+      render: () => <HeroPostersManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Hero posters updated!');
+      }} />,
+    },
+    {
+      key: 'category-banners', title: '9. Category Banners', subtitle: `${categoryBanners.length} banner(s)`,
+      render: () => <CategoryBannerManager banners={categoryBanners} onSave={async (newBanners) => {
+        await updateSetting.mutateAsync({ key: 'homepage_category_banners', value: JSON.stringify(newBanners) });
+        toast.success('Category banners updated!');
+      }} />,
+    },
+    {
+      key: 'fancy-posters', title: '10. Fancy Posters (Bottom)', subtitle: `${posters.length} poster(s)`,
+      render: () => <PosterManager posters={posters} onSave={async (newPosters) => {
+        await updateSetting.mutateAsync({ key: 'homepage_posters', value: JSON.stringify(newPosters) });
+        toast.success('Posters updated!');
+      }} />,
+    },
+    {
+      key: 'categories-popup', title: 'Categories Popup',
+      render: () => <CategoriesPopupManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Categories Popup updated!');
+      }} />,
+    },
+  ];
+
+  const visible = section ? sections.filter(s => s.key === section) : sections;
+
   return (
     <div className="space-y-3">
-      <div className="border border-border p-4 bg-secondary/20 flex items-start gap-3">
-        <Info size={16} className="text-muted-foreground shrink-0 mt-0.5" />
-        <div className="text-xs text-muted-foreground space-y-1">
-          <p><strong>Image Guidelines:</strong></p>
-          <p>• Hero Slider PC: <strong>1920×1080px</strong> (16:9), Mobile: <strong>1920×1080px</strong> (16:9), Max <strong>10MB</strong></p>
-          <p>• Posters: <strong>800×1000px</strong> recommended (4:5 ratio), Max <strong>10MB</strong></p>
-          <p>• Supported formats: JPG, PNG, WebP</p>
+      {!section && (
+        <div className="border border-border p-4 bg-secondary/20 flex items-start gap-3">
+          <Info size={16} className="text-muted-foreground shrink-0 mt-0.5" />
+          <div className="text-xs text-muted-foreground space-y-1">
+            <p><strong>Image Guidelines:</strong></p>
+            <p>• Hero Slider PC: <strong>1920×1080px</strong> (16:9), Mobile: <strong>1920×1080px</strong> (16:9), Max <strong>10MB</strong></p>
+            <p>• Posters: <strong>800×1000px</strong> recommended (4:5 ratio), Max <strong>10MB</strong></p>
+            <p>• Supported formats: JPG, PNG, WebP</p>
+          </div>
         </div>
-      </div>
+      )}
 
-      <CollapsibleSection title="Announcement Bar" subtitle="Top scrolling text bar">
-        <AdminAnnouncementBar />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="Site Logo" subtitle="Header logo image">
-        <LogoManager logo={siteLogo} onSave={async (url) => {
-          await updateSetting.mutateAsync({ key: 'site_logo', value: url });
-          toast.success('Logo updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="1. Hero Slider" subtitle={`${slides.length} slide(s)`}>
-        <SliderManager slides={slides} onSave={async (newSlides) => {
-          await updateSetting.mutateAsync({ key: 'hero_slides', value: JSON.stringify(newSlides) });
-          toast.success('Slider updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="2. Video Carousel" subtitle={`${videos.length} video(s)`}>
-        <VideoManager videos={videos} onSave={async (newVideos) => {
-          await updateSetting.mutateAsync({ key: 'homepage_videos', value: JSON.stringify(newVideos) });
-          toast.success('Videos updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="3. Baby & Kids Fashion">
-        <BabyKidsManager settings={settings} onSave={async (patch) => {
-          for (const [k, v] of Object.entries(patch)) {
-            // @ts-ignore
-            await updateSetting.mutateAsync({ key: k, value: v });
-          }
-          toast.success('Baby & Kids section updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="4. Promo Posters">
-        <PromoPostersManager settings={settings} onSave={async (patch) => {
-          for (const [k, v] of Object.entries(patch)) {
-            // @ts-ignore
-            await updateSetting.mutateAsync({ key: k, value: v });
-          }
-          toast.success('Promo posters updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="5. New Arrivals">
-        <NewArrivalsManager settings={settings} onSave={async (patch) => {
-          for (const [k, v] of Object.entries(patch)) {
-            // @ts-ignore
-            await updateSetting.mutateAsync({ key: k, value: v });
-          }
-          toast.success('New Arrivals section updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="6. Explore Categories">
-        <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
-          for (const [k, v] of Object.entries(patch)) {
-            // @ts-ignore
-            await updateSetting.mutateAsync({ key: k, value: v });
-          }
-          toast.success('Explore Categories updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="7. Trending Products">
-        <TrendingProductsManager settings={settings} onSave={async (patch) => {
-          for (const [k, v] of Object.entries(patch)) {
-            // @ts-ignore
-            await updateSetting.mutateAsync({ key: k, value: v });
-          }
-          toast.success('Trending Products section updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="8. Hero Posters (Bottom)">
-        <HeroPostersManager settings={settings} onSave={async (patch) => {
-          for (const [k, v] of Object.entries(patch)) {
-            // @ts-ignore
-            await updateSetting.mutateAsync({ key: k, value: v });
-          }
-          toast.success('Hero posters updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="9. Category Banners" subtitle={`${categoryBanners.length} banner(s)`}>
-        <CategoryBannerManager banners={categoryBanners} onSave={async (newBanners) => {
-          await updateSetting.mutateAsync({ key: 'homepage_category_banners', value: JSON.stringify(newBanners) });
-          toast.success('Category banners updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="10. Fancy Posters (Bottom)" subtitle={`${posters.length} poster(s)`}>
-        <PosterManager posters={posters} onSave={async (newPosters) => {
-          await updateSetting.mutateAsync({ key: 'homepage_posters', value: JSON.stringify(newPosters) });
-          toast.success('Posters updated!');
-        }} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="Categories Popup">
-        <CategoriesPopupManager settings={settings} onSave={async (patch) => {
-          for (const [k, v] of Object.entries(patch)) {
-            // @ts-ignore
-            await updateSetting.mutateAsync({ key: k, value: v });
-          }
-          toast.success('Categories Popup updated!');
-        }} />
-      </CollapsibleSection>
+      {visible.map(s => (
+        <CollapsibleSection key={s.key} title={s.title} subtitle={s.subtitle} defaultOpen={!!section}>
+          {s.render()}
+        </CollapsibleSection>
+      ))}
     </div>
   );
 };
