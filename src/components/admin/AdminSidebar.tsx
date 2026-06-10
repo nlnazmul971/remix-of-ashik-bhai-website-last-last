@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, Layers, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, Globe, TrendingUp, DatabaseBackup, ShieldCheck, Activity } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, DatabaseBackup, ShieldCheck, Activity, ChevronDown } from 'lucide-react';
 import adminLogo from '@/assets/admin-logo.png';
 import {
   Sidebar,
@@ -14,13 +14,38 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
+type SubItem = { title: string; key: string };
+type MenuItem = { title: string; key: string; icon: any; badge?: number; children?: SubItem[] };
+
+export const HOMEPAGE_SECTIONS: SubItem[] = [
+  { title: 'Announcement Bar', key: 'announcement' },
+  { title: 'Site Logo', key: 'logo' },
+  { title: '1. Hero Slider', key: 'hero-slider' },
+  { title: '2. Video Carousel', key: 'video' },
+  { title: '3. Baby & Kids Fashion', key: 'baby-kids' },
+  { title: '4. Promo Posters', key: 'promo-posters' },
+  { title: '5. New Arrivals', key: 'new-arrivals' },
+  { title: '6. Explore Categories', key: 'explore-categories' },
+  { title: '7. Trending Products', key: 'trending' },
+  { title: '8. Hero Posters (Bottom)', key: 'hero-posters-bottom' },
+  { title: '9. Category Banners', key: 'category-banners' },
+  { title: '10. Fancy Posters', key: 'fancy-posters' },
+  { title: 'Categories Popup', key: 'categories-popup' },
+];
+
+export const SETTINGS_SECTIONS: SubItem[] = [
+  { title: 'Change Password', key: 'password' },
+  { title: 'Theme & Colors', key: 'theme' },
+  { title: 'Footer Settings', key: 'footer' },
+];
+
 const buildMenuGroups = (role: 'admin' | 'moderator') => {
-  const groups: { label: string; items: { title: string; key: string; icon: any; badge?: number }[] }[] = [
+  const groups: { label: string; items: MenuItem[] }[] = [
     {
       label: 'Overview',
       items: [
         { title: 'Dashboard', key: 'dashboard', icon: LayoutDashboard },
-        { title: 'Homepage', key: 'homepage', icon: Home },
+        { title: 'Homepage', key: 'homepage', icon: Home, children: HOMEPAGE_SECTIONS },
         { title: 'Custom Pages', key: 'custom-pages', icon: FileImage },
         { title: 'Popups', key: 'popups', icon: Megaphone },
       ],
@@ -80,7 +105,7 @@ const buildMenuGroups = (role: 'admin' | 'moderator') => {
         { title: 'Redirects', key: 'redirects', icon: ArrowRightLeft },
         { title: 'Backup & Restore', key: 'backup', icon: DatabaseBackup },
         { title: 'Trash', key: 'trash', icon: Trash2 },
-        { title: 'Settings', key: 'settings', icon: Settings },
+        { title: 'Settings', key: 'settings', icon: Settings, children: SETTINGS_SECTIONS },
       ],
     },
   ];
@@ -100,6 +125,7 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const menuGroups = buildMenuGroups(role);
+  const [parentKey, childKey] = activeTab.split(':');
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
@@ -130,8 +156,9 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
             <SidebarGroupContent>
               <SidebarMenu className="gap-px">
                 {group.items.map((item) => {
-                  const isActive = activeTab === item.key;
+                  const isActive = parentKey === item.key;
                   const badge = item.key === 'approvals' && role === 'admin' ? pendingApprovals : 0;
+                  const expanded = isActive && !collapsed && !!item.children;
                   return (
                     <SidebarMenuItem key={item.key}>
                       <SidebarMenuButton
@@ -151,7 +178,31 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
                             {badge}
                           </span>
                         )}
+                        {item.children && !collapsed && (
+                          <ChevronDown className={`h-3.5 w-3.5 text-foreground/60 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+                        )}
                       </SidebarMenuButton>
+
+                      {expanded && (
+                        <div className="ml-6 mt-0.5 mb-1 border-l border-border pl-2 flex flex-col gap-px">
+                          {item.children!.map((sub) => {
+                            const subActive = childKey === sub.key;
+                            return (
+                              <button
+                                key={sub.key}
+                                onClick={() => onTabChange(`${item.key}:${sub.key}`)}
+                                className={`text-left text-[12px] leading-tight rounded-md px-2 py-1.5 transition-colors ${
+                                  subActive
+                                    ? 'bg-muted text-foreground font-semibold'
+                                    : 'text-foreground/75 hover:bg-muted/60 hover:text-foreground'
+                                }`}
+                              >
+                                {sub.title}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
                     </SidebarMenuItem>
                   );
                 })}
