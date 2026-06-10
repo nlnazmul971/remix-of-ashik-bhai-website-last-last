@@ -36,10 +36,7 @@ const AdminHomepage = () => {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Announcement Bar — moved to top of Homepage */}
-      <AdminAnnouncementBar />
-
+    <div className="space-y-3">
       <div className="border border-border p-4 bg-secondary/20 flex items-start gap-3">
         <Info size={16} className="text-muted-foreground shrink-0 mt-0.5" />
         <div className="text-xs text-muted-foreground space-y-1">
@@ -50,97 +47,114 @@ const AdminHomepage = () => {
         </div>
       </div>
 
-      <LogoManager logo={siteLogo} onSave={async (url) => {
-        await updateSetting.mutateAsync({ key: 'site_logo', value: url });
-        toast.success('Logo updated!');
-      }} />
+      <CollapsibleSection title="Announcement Bar" subtitle="Top scrolling text bar">
+        <AdminAnnouncementBar />
+      </CollapsibleSection>
 
-      {/* 1. Hero Slider */}
-      <SliderManager slides={slides} onSave={async (newSlides) => {
-        await updateSetting.mutateAsync({ key: 'hero_slides', value: JSON.stringify(newSlides) });
-        toast.success('Slider updated!');
-      }} />
+      <CollapsibleSection title="Site Logo" subtitle="Header logo image">
+        <LogoManager logo={siteLogo} onSave={async (url) => {
+          await updateSetting.mutateAsync({ key: 'site_logo', value: url });
+          toast.success('Logo updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 2. Video Carousel */}
-      <VideoManager videos={videos} onSave={async (newVideos) => {
-        await updateSetting.mutateAsync({ key: 'homepage_videos', value: JSON.stringify(newVideos) });
-        toast.success('Videos updated!');
-      }} />
+      <CollapsibleSection title="1. Hero Slider" subtitle={`${slides.length} slide(s)`}>
+        <SliderManager slides={slides} onSave={async (newSlides) => {
+          await updateSetting.mutateAsync({ key: 'hero_slides', value: JSON.stringify(newSlides) });
+          toast.success('Slider updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 3. Baby & Kids Fashion */}
-      <BabyKidsManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Baby & Kids section updated!');
-      }} />
+      <CollapsibleSection title="2. Video Carousel" subtitle={`${videos.length} video(s)`}>
+        <VideoManager videos={videos} onSave={async (newVideos) => {
+          await updateSetting.mutateAsync({ key: 'homepage_videos', value: JSON.stringify(newVideos) });
+          toast.success('Videos updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 4. Promo Posters */}
-      <PromoPostersManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Promo posters updated!');
-      }} />
+      <CollapsibleSection title="3. Baby & Kids Fashion">
+        <BabyKidsManager settings={settings} onSave={async (patch) => {
+          for (const [k, v] of Object.entries(patch)) {
+            // @ts-ignore
+            await updateSetting.mutateAsync({ key: k, value: v });
+          }
+          toast.success('Baby & Kids section updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 5. New Arrivals */}
-      <NewArrivalsManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('New Arrivals section updated!');
-      }} />
+      <CollapsibleSection title="4. Promo Posters">
+        <PromoPostersManager settings={settings} onSave={async (patch) => {
+          for (const [k, v] of Object.entries(patch)) {
+            // @ts-ignore
+            await updateSetting.mutateAsync({ key: k, value: v });
+          }
+          toast.success('Promo posters updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 6. Explore Categories */}
-      <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Explore Categories updated!');
-      }} />
+      <CollapsibleSection title="5. New Arrivals">
+        <NewArrivalsManager settings={settings} onSave={async (patch) => {
+          for (const [k, v] of Object.entries(patch)) {
+            // @ts-ignore
+            await updateSetting.mutateAsync({ key: k, value: v });
+          }
+          toast.success('New Arrivals section updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 7. Trending Products */}
-      <TrendingProductsManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Trending Products section updated!');
-      }} />
+      <CollapsibleSection title="6. Explore Categories">
+        <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
+          for (const [k, v] of Object.entries(patch)) {
+            // @ts-ignore
+            await updateSetting.mutateAsync({ key: k, value: v });
+          }
+          toast.success('Explore Categories updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 8. Hero Posters (Below Slider) — actually renders at bottom of homepage */}
-      <HeroPostersManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Hero posters updated!');
-      }} />
+      <CollapsibleSection title="7. Trending Products">
+        <TrendingProductsManager settings={settings} onSave={async (patch) => {
+          for (const [k, v] of Object.entries(patch)) {
+            // @ts-ignore
+            await updateSetting.mutateAsync({ key: k, value: v });
+          }
+          toast.success('Trending Products section updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 9. Category Banners (3 horizontal) */}
-      <CategoryBannerManager banners={categoryBanners} onSave={async (newBanners) => {
-        await updateSetting.mutateAsync({ key: 'homepage_category_banners', value: JSON.stringify(newBanners) });
-        toast.success('Category banners updated!');
-      }} />
+      <CollapsibleSection title="8. Hero Posters (Bottom)">
+        <HeroPostersManager settings={settings} onSave={async (patch) => {
+          for (const [k, v] of Object.entries(patch)) {
+            // @ts-ignore
+            await updateSetting.mutateAsync({ key: k, value: v });
+          }
+          toast.success('Hero posters updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* 10. Fancy Posters (bottom) */}
-      <PosterManager posters={posters} onSave={async (newPosters) => {
-        await updateSetting.mutateAsync({ key: 'homepage_posters', value: JSON.stringify(newPosters) });
-        toast.success('Posters updated!');
-      }} />
+      <CollapsibleSection title="9. Category Banners" subtitle={`${categoryBanners.length} banner(s)`}>
+        <CategoryBannerManager banners={categoryBanners} onSave={async (newBanners) => {
+          await updateSetting.mutateAsync({ key: 'homepage_category_banners', value: JSON.stringify(newBanners) });
+          toast.success('Category banners updated!');
+        }} />
+      </CollapsibleSection>
 
-      {/* Other: Categories Popup */}
-      <CategoriesPopupManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Categories Popup updated!');
-      }} />
+      <CollapsibleSection title="10. Fancy Posters (Bottom)" subtitle={`${posters.length} poster(s)`}>
+        <PosterManager posters={posters} onSave={async (newPosters) => {
+          await updateSetting.mutateAsync({ key: 'homepage_posters', value: JSON.stringify(newPosters) });
+          toast.success('Posters updated!');
+        }} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="Categories Popup">
+        <CategoriesPopupManager settings={settings} onSave={async (patch) => {
+          for (const [k, v] of Object.entries(patch)) {
+            // @ts-ignore
+            await updateSetting.mutateAsync({ key: k, value: v });
+          }
+          toast.success('Categories Popup updated!');
+        }} />
+      </CollapsibleSection>
     </div>
   );
 };
