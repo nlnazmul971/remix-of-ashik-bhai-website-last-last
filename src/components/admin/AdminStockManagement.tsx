@@ -294,6 +294,7 @@ const StockEditDrawer = ({ product, stocks, onClose, onSaved }: { product: any; 
       }
       toast.success('Stock updated');
       qc.invalidateQueries({ queryKey: ['stock-logs'] });
+      qc.invalidateQueries({ queryKey: ['product-size-stock'] });
       onSaved();
     } catch (e: any) { toast.error(e.message); }
     finally { setSaving(false); }
