@@ -131,8 +131,20 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
   const menuGroups = buildMenuGroups(role);
   const [parentKey, childKey] = activeTab.split(':');
   const { data: settings = {} } = useStoreSettings();
+  const [openParents, setOpenParents] = useState<Record<string, boolean>>({});
   const resolveTitle = (sub: SubItem) =>
     (sub.titleSettingKey && (settings as any)[sub.titleSettingKey]) || sub.title;
+  const isExpanded = (item: MenuItem) =>
+    !!item.children && !collapsed && (openParents[item.key] ?? (parentKey === item.key));
+  const handleParentClick = (item: MenuItem) => {
+    if (item.children) {
+      const currentlyOpen = openParents[item.key] ?? (parentKey === item.key);
+      setOpenParents(p => ({ ...p, [item.key]: !currentlyOpen }));
+      if (!currentlyOpen) onTabChange(item.key);
+    } else {
+      onTabChange(item.key);
+    }
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
