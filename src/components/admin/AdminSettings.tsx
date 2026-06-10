@@ -7,7 +7,7 @@ import AdminFooterSettings from './AdminFooterSettings';
 import AdminThemeSettings from './AdminThemeSettings';
 import CollapsibleSection from './CollapsibleSection';
 
-const AdminSettings = () => {
+const AdminSettings = ({ section }: { section?: string } = {}) => {
   const { user } = useAuth();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
