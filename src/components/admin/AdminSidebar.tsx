@@ -1,5 +1,6 @@
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, DatabaseBackup, ShieldCheck, Activity, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, DatabaseBackup, ShieldCheck, Activity, ChevronRight } from 'lucide-react';
 import adminLogo from '@/assets/admin-logo.png';
+import { useStoreSettings } from '@/hooks/useSupabase';
 import {
   Sidebar,
   SidebarContent,
@@ -14,23 +15,25 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-type SubItem = { title: string; key: string };
+type SubItem = { title: string; key: string; titleSettingKey?: string };
 type MenuItem = { title: string; key: string; icon: any; badge?: number; children?: SubItem[] };
 
+// `titleSettingKey` points to the store_settings field each section editor already
+// writes to — changing it there updates the sidebar (and the storefront) everywhere.
 export const HOMEPAGE_SECTIONS: SubItem[] = [
   { title: 'Announcement Bar', key: 'announcement' },
   { title: 'Site Logo', key: 'logo' },
-  { title: '1. Hero Slider', key: 'hero-slider' },
-  { title: '2. Video Carousel', key: 'video' },
-  { title: '3. Baby & Kids Fashion', key: 'baby-kids' },
-  { title: '4. Promo Posters', key: 'promo-posters' },
-  { title: '5. New Arrivals', key: 'new-arrivals' },
-  { title: '6. Explore Categories', key: 'explore-categories' },
-  { title: '7. Trending Products', key: 'trending' },
-  { title: '8. Hero Posters (Bottom)', key: 'hero-posters-bottom' },
-  { title: '9. Category Banners', key: 'category-banners' },
-  { title: '10. Fancy Posters', key: 'fancy-posters' },
-  { title: 'Categories Popup', key: 'categories-popup' },
+  { title: 'Hero Slider', key: 'hero-slider' },
+  { title: 'Video Carousel', key: 'video' },
+  { title: 'Baby & Kids Fashion', key: 'baby-kids', titleSettingKey: 'baby_kids_title' },
+  { title: 'Promo Posters', key: 'promo-posters' },
+  { title: 'New Arrivals', key: 'new-arrivals', titleSettingKey: 'new_arrivals_title' },
+  { title: 'Explore Categories', key: 'explore-categories', titleSettingKey: 'explore_cats_title' },
+  { title: 'Trending Products', key: 'trending', titleSettingKey: 'trending_title' },
+  { title: 'Hero Posters (Bottom)', key: 'hero-posters-bottom' },
+  { title: 'Category Banners', key: 'category-banners' },
+  { title: 'Fancy Posters', key: 'fancy-posters' },
+  { title: 'Categories Popup', key: 'categories-popup', titleSettingKey: 'categories_popup_title' },
 ];
 
 export const SETTINGS_SECTIONS: SubItem[] = [
