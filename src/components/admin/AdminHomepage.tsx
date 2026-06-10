@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import AdminAnnouncementBar from './AdminAnnouncementBar';
 import CollapsibleSection from './CollapsibleSection';
 
-const AdminHomepage = () => {
+const AdminHomepage = ({ section }: { section?: string } = {}) => {
   const { data: settings = {}, isLoading } = useStoreSettings();
   const updateSetting = useUpdateStoreSetting();
 
