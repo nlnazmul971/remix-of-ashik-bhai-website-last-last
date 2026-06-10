@@ -36,6 +36,9 @@ const AdminHomepage = () => {
 
   return (
     <div className="space-y-8">
+      {/* Announcement Bar — moved to top of Homepage */}
+      <AdminAnnouncementBar />
+
       <div className="border border-border p-4 bg-secondary/20 flex items-start gap-3">
         <Info size={16} className="text-muted-foreground shrink-0 mt-0.5" />
         <div className="text-xs text-muted-foreground space-y-1">
@@ -56,18 +59,6 @@ const AdminHomepage = () => {
         await updateSetting.mutateAsync({ key: 'hero_slides', value: JSON.stringify(newSlides) });
         toast.success('Slider updated!');
       }} />
-
-
-      {/* 1b. Hero Posters (2 vertical posters below slider) */}
-      <HeroPostersManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Hero posters updated!');
-      }} />
-
-
 
       {/* 2. Video Carousel */}
       <VideoManager videos={videos} onSave={async (newVideos) => {
@@ -102,15 +93,6 @@ const AdminHomepage = () => {
         toast.success('New Arrivals section updated!');
       }} />
 
-      {/* 5b. Trending Products */}
-      <TrendingProductsManager settings={settings} onSave={async (patch) => {
-        for (const [k, v] of Object.entries(patch)) {
-          // @ts-ignore
-          await updateSetting.mutateAsync({ key: k, value: v });
-        }
-        toast.success('Trending Products section updated!');
-      }} />
-
       {/* 6. Explore Categories */}
       <ExploreCategoriesManager settings={settings} onSave={async (patch) => {
         for (const [k, v] of Object.entries(patch)) {
@@ -120,13 +102,31 @@ const AdminHomepage = () => {
         toast.success('Explore Categories updated!');
       }} />
 
-      {/* 7. Category Banners (3 horizontal) */}
+      {/* 7. Trending Products */}
+      <TrendingProductsManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Trending Products section updated!');
+      }} />
+
+      {/* 8. Hero Posters (Below Slider) — actually renders at bottom of homepage */}
+      <HeroPostersManager settings={settings} onSave={async (patch) => {
+        for (const [k, v] of Object.entries(patch)) {
+          // @ts-ignore
+          await updateSetting.mutateAsync({ key: k, value: v });
+        }
+        toast.success('Hero posters updated!');
+      }} />
+
+      {/* 9. Category Banners (3 horizontal) */}
       <CategoryBannerManager banners={categoryBanners} onSave={async (newBanners) => {
         await updateSetting.mutateAsync({ key: 'homepage_category_banners', value: JSON.stringify(newBanners) });
         toast.success('Category banners updated!');
       }} />
 
-      {/* 8. Fancy Posters (bottom) */}
+      {/* 10. Fancy Posters (bottom) */}
       <PosterManager posters={posters} onSave={async (newPosters) => {
         await updateSetting.mutateAsync({ key: 'homepage_posters', value: JSON.stringify(newPosters) });
         toast.success('Posters updated!');
