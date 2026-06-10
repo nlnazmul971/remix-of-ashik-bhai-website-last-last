@@ -140,7 +140,6 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
     if (item.children) {
       const currentlyOpen = openParents[item.key] ?? (parentKey === item.key);
       setOpenParents(p => ({ ...p, [item.key]: !currentlyOpen }));
-      if (!currentlyOpen) onTabChange(item.key);
     } else {
       onTabChange(item.key);
     }
