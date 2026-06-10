@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, DatabaseBackup, ShieldCheck, Activity, ChevronRight } from 'lucide-react';
 import adminLogo from '@/assets/admin-logo.png';
 import { useStoreSettings } from '@/hooks/useSupabase';
