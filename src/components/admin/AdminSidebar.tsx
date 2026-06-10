@@ -129,6 +129,9 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
   const collapsed = state === 'collapsed';
   const menuGroups = buildMenuGroups(role);
   const [parentKey, childKey] = activeTab.split(':');
+  const { data: settings = {} } = useStoreSettings();
+  const resolveTitle = (sub: SubItem) =>
+    (sub.titleSettingKey && (settings as any)[sub.titleSettingKey]) || sub.title;
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
