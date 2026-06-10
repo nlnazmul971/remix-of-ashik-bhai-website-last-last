@@ -164,7 +164,7 @@ const AdminHomepage = ({ section }: { section?: string } = {}) => {
       )}
 
       {visible.map(s => (
-        <CollapsibleSection key={s.key} title={s.title} subtitle={s.subtitle} defaultOpen={!!section}>
+        <CollapsibleSection key={s.key} title={s.title} subtitle={s.subtitle} defaultOpen={true}>
           {s.render()}
         </CollapsibleSection>
       ))}

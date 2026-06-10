@@ -125,7 +125,7 @@ const AdminSettings = ({ section }: { section?: string } = {}) => {
   return (
     <div className="space-y-3 max-w-3xl">
       {visible.map(s => (
-        <CollapsibleSection key={s.key} title={s.title} subtitle={s.subtitle} defaultOpen={!!section}>
+        <CollapsibleSection key={s.key} title={s.title} subtitle={s.subtitle} defaultOpen={true}>
           {s.render()}
         </CollapsibleSection>
       ))}

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { LayoutDashboard, Package, ShoppingBag, MessageSquare, Users, Settings, LogOut, Store, Plug, Home, Heart, Mail, Trash2, Tag, Facebook, BarChart3, RotateCcw, PackageOpen, PackageCheck, FileImage, Megaphone, Truck, Wallet, Search, ArrowRightLeft, BookOpen, Rocket, DatabaseBackup, ShieldCheck, Activity, ChevronRight } from 'lucide-react';
 import adminLogo from '@/assets/admin-logo.png';
 import { useStoreSettings } from '@/hooks/useSupabase';
@@ -130,8 +131,20 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
   const menuGroups = buildMenuGroups(role);
   const [parentKey, childKey] = activeTab.split(':');
   const { data: settings = {} } = useStoreSettings();
+  const [openParents, setOpenParents] = useState<Record<string, boolean>>({});
   const resolveTitle = (sub: SubItem) =>
     (sub.titleSettingKey && (settings as any)[sub.titleSettingKey]) || sub.title;
+  const isExpanded = (item: MenuItem) =>
+    !!item.children && !collapsed && (openParents[item.key] ?? (parentKey === item.key));
+  const handleParentClick = (item: MenuItem) => {
+    if (item.children) {
+      const currentlyOpen = openParents[item.key] ?? (parentKey === item.key);
+      setOpenParents(p => ({ ...p, [item.key]: !currentlyOpen }));
+      if (!currentlyOpen) onTabChange(item.key);
+    } else {
+      onTabChange(item.key);
+    }
+  };
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
@@ -164,11 +177,11 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
                 {group.items.map((item) => {
                   const isActive = parentKey === item.key;
                   const badge = item.key === 'approvals' && role === 'admin' ? pendingApprovals : 0;
-                  const expanded = isActive && !collapsed && !!item.children;
+                  const expanded = isExpanded(item);
                   return (
                     <SidebarMenuItem key={item.key}>
                       <SidebarMenuButton
-                        onClick={() => onTabChange(item.key)}
+                        onClick={() => handleParentClick(item)}
                         isActive={isActive}
                         tooltip={item.title}
                         className={`group h-8 rounded-md px-2 transition-colors ${
