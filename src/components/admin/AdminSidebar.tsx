@@ -48,7 +48,7 @@ const buildMenuGroups = (role: 'admin' | 'moderator') => {
       label: 'Overview',
       items: [
         { title: 'Dashboard', key: 'dashboard', icon: LayoutDashboard },
-        { title: 'Homepage', key: 'homepage', icon: Home, children: HOMEPAGE_SECTIONS },
+        { title: 'Homepage', key: 'homepage', icon: Home },
         { title: 'Custom Pages', key: 'custom-pages', icon: FileImage },
         { title: 'Popups', key: 'popups', icon: Megaphone },
       ],
