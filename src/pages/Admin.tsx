@@ -151,41 +151,44 @@ const Admin = () => {
             </div>
           </header>
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-auto">
-            {activeTab === 'dashboard' && <AdminDashboard />}
-            {activeTab === 'homepage' && <AdminHomepage />}
-            {activeTab === 'subcategories' && <AdminSubcategories />}
-            {activeTab === 'custom-pages' && <AdminCustomPages />}
-            {activeTab === 'popups' && <AdminPopups />}
-            {activeTab === 'products' && <AdminProducts />}
-            {activeTab === 'orders' && <AdminOrders />}
-            {activeTab === 'facebook-orders' && <AdminFacebookOrders />}
-            {activeTab === 'offline-orders' && <AdminOfflineOrders />}
-            {activeTab === 'stock' && <AdminStockManagement />}
-            {activeTab === 'returns' && <AdminReturnParcels />}
-            {activeTab === 'packaging' && <AdminPackaging />}
-            {activeTab === 'delivered-items' && <AdminDeliveredItems />}
-            {activeTab === 'reviews' && <AdminReviews />}
-            {activeTab === 'wishlist' && <AdminWishlist />}
-            {activeTab === 'newsletter' && <AdminNewsletter />}
-            {activeTab === 'coupons' && <AdminCoupons />}
-            {activeTab === 'users' && <AdminUsers />}
-            {activeTab === 'trash' && <AdminTrash />}
-            {activeTab === 'settings' && <AdminSettings />}
-            {activeTab === 'delivery-charge' && <AdminDeliveryCharge />}
-            {activeTab === 'payment-methods' && <AdminPaymentMethods />}
-            {activeTab === 'api' && <AdminAPI />}
-            {activeTab === 'seo' && <AdminSEOHub />}
-            {activeTab === 'redirects' && <AdminRedirects />}
-            {activeTab === 'blog' && <AdminBlogs />}
-            {activeTab === 'landing-pages' && <AdminLandingPages />}
-            {activeTab === 'static-pages' && <AdminStaticPages />}
-            {activeTab === 'backup' && <AdminBackup />}
-            {activeTab === 'approvals' && <AdminApprovals />}
-            {activeTab === 'activity-log' && <AdminActivityLog onNavigate={setActiveTab} />}
-
-
-
+            {(() => {
+              const [parent, child] = activeTab.split(':');
+              return <>
+                {parent === 'dashboard' && <AdminDashboard />}
+                {parent === 'homepage' && <AdminHomepage section={child} />}
+                {parent === 'subcategories' && <AdminSubcategories />}
+                {parent === 'custom-pages' && <AdminCustomPages />}
+                {parent === 'popups' && <AdminPopups />}
+                {parent === 'products' && <AdminProducts />}
+                {parent === 'orders' && <AdminOrders />}
+                {parent === 'facebook-orders' && <AdminFacebookOrders />}
+                {parent === 'offline-orders' && <AdminOfflineOrders />}
+                {parent === 'stock' && <AdminStockManagement />}
+                {parent === 'returns' && <AdminReturnParcels />}
+                {parent === 'packaging' && <AdminPackaging />}
+                {parent === 'delivered-items' && <AdminDeliveredItems />}
+                {parent === 'reviews' && <AdminReviews />}
+                {parent === 'wishlist' && <AdminWishlist />}
+                {parent === 'newsletter' && <AdminNewsletter />}
+                {parent === 'coupons' && <AdminCoupons />}
+                {parent === 'users' && <AdminUsers />}
+                {parent === 'trash' && <AdminTrash />}
+                {parent === 'settings' && <AdminSettings section={child} />}
+                {parent === 'delivery-charge' && <AdminDeliveryCharge />}
+                {parent === 'payment-methods' && <AdminPaymentMethods />}
+                {parent === 'api' && <AdminAPI />}
+                {parent === 'seo' && <AdminSEOHub />}
+                {parent === 'redirects' && <AdminRedirects />}
+                {parent === 'blog' && <AdminBlogs />}
+                {parent === 'landing-pages' && <AdminLandingPages />}
+                {parent === 'static-pages' && <AdminStaticPages />}
+                {parent === 'backup' && <AdminBackup />}
+                {parent === 'approvals' && <AdminApprovals />}
+                {parent === 'activity-log' && <AdminActivityLog onNavigate={setActiveTab} />}
+              </>;
+            })()}
           </main>
+
         </div>
       </div>
     </SidebarProvider>
