@@ -34,6 +34,8 @@ const useProductSizeStock = () => {
       if (error) throw error;
       return (data || []) as SizeStock[];
     },
+    staleTime: 10_000,
+    refetchOnWindowFocus: true,
   });
 };
 
