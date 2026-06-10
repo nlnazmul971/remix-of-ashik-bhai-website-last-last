@@ -58,11 +58,12 @@ const AdminBackup = () => {
 
   const handleExport = async () => {
     setExporting(true);
+    const summary: Record<string, number> = {};
+    const errors: string[] = [];
     try {
       const dump: Record<string, any[]> = {};
       for (const table of BACKUP_TABLES) {
         setProgress(`Exporting ${table}…`);
-        // Paginate to get ALL rows (Supabase default cap is 1000)
         const all: any[] = [];
         const PAGE = 1000;
         let from = 0;
@@ -73,6 +74,7 @@ const AdminBackup = () => {
             .range(from, from + PAGE - 1);
           if (error) {
             console.error(`[backup] ${table}`, error);
+            errors.push(`${table}: ${error.message}`);
             break;
           }
           if (!data || data.length === 0) break;
@@ -82,10 +84,12 @@ const AdminBackup = () => {
           setProgress(`Exporting ${table}… (${all.length})`);
         }
         dump[table] = all;
+        summary[table] = all.length;
       }
       const payload = {
         version: 2,
         exported_at: new Date().toISOString(),
+        summary,
         tables: dump,
       };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -95,7 +99,18 @@ const AdminBackup = () => {
       a.download = `website-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success('Backup downloaded');
+      const total = Object.values(summary).reduce((a, b) => a + b, 0);
+      const nonEmpty = Object.entries(summary).filter(([, n]) => n > 0);
+      const emptyTables = Object.entries(summary).filter(([, n]) => n === 0).map(([t]) => t);
+      console.log('[backup] Per-table row counts:', summary);
+      if (emptyTables.length) console.log('[backup] Empty tables (no data in DB):', emptyTables);
+      toast.success(
+        `Backup downloaded — ${total} rows from ${nonEmpty.length}/${BACKUP_TABLES.length} tables. ${emptyTables.length} tables were empty in DB.`,
+        { duration: 8000 }
+      );
+      if (errors.length) {
+        toast.error(`${errors.length} table(s) failed: ${errors.slice(0, 3).join('; ')}`, { duration: 10000 });
+      }
     } catch (e: any) {
       toast.error(`Export failed: ${e.message}`);
     } finally {

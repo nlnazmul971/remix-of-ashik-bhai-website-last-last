@@ -36,8 +36,20 @@
     <priority>0.3</priority>
   </url>
   <url>
+    <loc>www.yourdomain.com/product/1e09830a-f57f-4ac8-82b7-ffd5d3845914</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>www.yourdomain.com/blog</loc>
     <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>www.yourdomain.com/l/eid-collection</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 </urlset>
