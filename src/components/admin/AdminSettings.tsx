@@ -121,8 +121,6 @@ const AdminSettings = () => {
 
       <AdminThemeSettings />
 
-      <AdminAnnouncementBar />
-
       <AdminFooterSettings />
     </div>
   );
