@@ -190,7 +190,7 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
                       </SidebarMenuButton>
 
                       {expanded && (
-                        <div className="relative ml-[18px] mt-1 mb-1.5 pl-3 flex flex-col gap-0.5 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-px before:bg-border">
+                        <div className="mt-1 mb-1.5 pl-2 flex flex-col gap-0.5">
                           {item.children!.map((sub) => {
                             const subActive = childKey === sub.key;
                             const label = resolveTitle(sub);
@@ -198,17 +198,12 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
                               <button
                                 key={sub.key}
                                 onClick={() => onTabChange(`${item.key}:${sub.key}`)}
-                                className={`group/sub relative text-left text-[12.5px] leading-tight rounded-md pl-3 pr-2 py-1.5 transition-all ${
+                                className={`text-left text-[12.5px] leading-tight rounded-md px-2 py-1.5 transition-all ${
                                   subActive
                                     ? 'bg-primary/10 text-primary font-semibold'
                                     : 'text-foreground/70 hover:bg-muted/70 hover:text-foreground'
                                 }`}
                               >
-                                <span
-                                  className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full transition-all ${
-                                    subActive ? 'bg-primary scale-150' : 'bg-foreground/30 group-hover/sub:bg-foreground/60'
-                                  }`}
-                                />
                                 <span className="truncate block">{label}</span>
                               </button>
                             );
