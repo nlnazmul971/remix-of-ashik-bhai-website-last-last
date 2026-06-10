@@ -3,6 +3,7 @@ import { useStoreSettings, useUpdateStoreSetting, useProducts } from '@/hooks/us
 import { uploadImage } from '@/lib/upload';
 import { Upload, X, Save, Loader2, Trash2, Info } from 'lucide-react';
 import { toast } from 'sonner';
+import AdminAnnouncementBar from './AdminAnnouncementBar';
 
 const AdminHomepage = () => {
   const { data: settings = {}, isLoading } = useStoreSettings();
