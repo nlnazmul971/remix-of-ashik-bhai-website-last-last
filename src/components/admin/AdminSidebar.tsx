@@ -185,25 +185,31 @@ const AdminSidebar = ({ activeTab, onTabChange, onSignOut, role = 'admin', pendi
                           </span>
                         )}
                         {item.children && !collapsed && (
-                          <ChevronDown className={`h-3.5 w-3.5 text-foreground/60 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+                          <ChevronRight className={`h-3.5 w-3.5 text-foreground/60 transition-transform ${expanded ? 'rotate-90' : ''}`} />
                         )}
                       </SidebarMenuButton>
 
                       {expanded && (
-                        <div className="ml-6 mt-0.5 mb-1 border-l border-border pl-2 flex flex-col gap-px">
+                        <div className="relative ml-[18px] mt-1 mb-1.5 pl-3 flex flex-col gap-0.5 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-px before:bg-border">
                           {item.children!.map((sub) => {
                             const subActive = childKey === sub.key;
+                            const label = resolveTitle(sub);
                             return (
                               <button
                                 key={sub.key}
                                 onClick={() => onTabChange(`${item.key}:${sub.key}`)}
-                                className={`text-left text-[12px] leading-tight rounded-md px-2 py-1.5 transition-colors ${
+                                className={`group/sub relative text-left text-[12.5px] leading-tight rounded-md pl-3 pr-2 py-1.5 transition-all ${
                                   subActive
-                                    ? 'bg-muted text-foreground font-semibold'
-                                    : 'text-foreground/75 hover:bg-muted/60 hover:text-foreground'
+                                    ? 'bg-primary/10 text-primary font-semibold'
+                                    : 'text-foreground/70 hover:bg-muted/70 hover:text-foreground'
                                 }`}
                               >
-                                {sub.title}
+                                <span
+                                  className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full transition-all ${
+                                    subActive ? 'bg-primary scale-150' : 'bg-foreground/30 group-hover/sub:bg-foreground/60'
+                                  }`}
+                                />
+                                <span className="truncate block">{label}</span>
                               </button>
                             );
                           })}
