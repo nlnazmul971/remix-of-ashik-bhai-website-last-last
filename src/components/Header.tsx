@@ -124,8 +124,8 @@ const Header = () => {
                 {/* Spacer to balance layout so search can sit absolutely centered */}
                 <div className="hidden sm:block flex-1" />
 
-                {/* Search bar - desktop absolute center */}
-                <form onSubmit={handleSearch} className="hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl px-4 z-10">
+                {/* Search bar - desktop center */}
+                <form onSubmit={handleSearch} className="hidden sm:flex w-full max-w-md px-4 z-10">
                   <div className="flex items-center w-full bg-primary text-primary-foreground rounded-sm overflow-hidden">
                     <input
                       type="text"
