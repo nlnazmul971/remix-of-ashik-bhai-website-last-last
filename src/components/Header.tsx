@@ -104,11 +104,11 @@ const Header = () => {
                 </button>
 
                 {/* Logo - centered on mobile */}
-                <Link to="/" className="site-logo-link shrink-0 flex items-center justify-center mt-4 sm:mt-6 absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0 sm:w-auto" aria-label="Home">
+                <Link to="/" className="site-logo-link shrink-0 flex items-center justify-center mt-4 sm:mt-0 absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0 sm:w-auto" aria-label="Home">
                   <img
                     src={siteLogo}
                     alt="Logo"
-                    className="site-logo-img block max-w-none h-auto sm:h-20 sm:w-auto object-contain relative z-10"
+                    className="site-logo-img block max-w-none h-auto sm:h-14 sm:w-auto object-contain relative z-10"
                     loading="eager"
                     fetchPriority={"high" as any}
                     decoding="async"
@@ -124,8 +124,8 @@ const Header = () => {
                 {/* Spacer to balance layout so search can sit absolutely centered */}
                 <div className="hidden sm:block flex-1" />
 
-                {/* Search bar - desktop absolute center */}
-                <form onSubmit={handleSearch} className="hidden sm:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl px-4 z-10">
+                {/* Search bar - desktop center */}
+                <form onSubmit={handleSearch} className="hidden sm:flex w-full max-w-md px-4 z-10">
                   <div className="flex items-center w-full bg-primary text-primary-foreground rounded-sm overflow-hidden">
                     <input
                       type="text"
@@ -139,6 +139,9 @@ const Header = () => {
                     </button>
                   </div>
                 </form>
+
+                {/* Spacer to balance right side */}
+                <div className="hidden sm:block flex-1" />
 
                 {/* Right icons */}
                 <div className="flex items-center gap-1 sm:gap-1 ml-auto sm:ml-0 sm:bg-background/50 sm:backdrop-blur-md sm:ring-1 sm:ring-foreground/15 sm:shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] sm:rounded-full sm:px-2 sm:py-1">
