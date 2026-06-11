@@ -104,7 +104,7 @@ const Header = () => {
                 </button>
 
                 {/* Logo - centered on mobile */}
-                <Link to="/" className="site-logo-link shrink-0 flex items-center justify-center mt-4 sm:mt-6 absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0 sm:w-auto" aria-label="Home">
+                <Link to="/" className="site-logo-link shrink-0 flex items-center justify-center mt-4 sm:mt-0 absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0 sm:w-auto" aria-label="Home">
                   <img
                     src={siteLogo}
                     alt="Logo"
